@@ -999,16 +999,16 @@
             const lobby = document.createElement('div');
             lobby.className = `lobby-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
             
-            // Header with title and dark mode toggle
+            // Header avec titre centré et bouton dark mode à droite
             const header = document.createElement('div');
-            header.className = 'flex justify-between items-center mb-6';
+            header.className = 'relative text-center mb-6';
             
             const title = document.createElement('h1');
             title.className = 'text-3xl font-bold';
             title.textContent = 'Ultimate Tic Tac Toe';
             
             const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             
