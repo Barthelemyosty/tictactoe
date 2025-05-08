@@ -857,7 +857,7 @@
             header.appendChild(title);
             
             const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'}';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             header.appendChild(toggleBtn);
@@ -1008,7 +1008,7 @@
             title.textContent = 'Ultimate Tic Tac Toe';
             
             const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'}';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             
@@ -1073,7 +1073,7 @@
             title.textContent = 'Ultimate Tic Tac Toe Rules';
             
             const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'}';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             
