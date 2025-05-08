@@ -633,10 +633,10 @@
 
         // AI opponent move logic
         function simulateOpponentMove() {
-            const { activeBoard, boardStates, smallBoardWinners, playerSymbol } = gameState;
-            const opponentSymbol = playerSymbol === 'X' ? 'O' : 'X';
+            const { activeBoard, boardStates, smallBoardWinners, currentTurn } = gameState;
+            const opponentSymbol = currentTurn; // L'IA joue toujours avec le symbole du tour actuel
             const validMoves = [];
-            
+
             // Find valid moves based on active board
             if (activeBoard === null) {
                 // Can play in any non-won board
@@ -649,14 +649,14 @@
                         }
                     }
                 }
-            } else if (smallBoardWinners[activeBoard] === null) {
+            }else if (smallBoardWinners[activeBoard] === null) {
                 // Must play in the active board
                 for (let j = 0; j < 9; j++) {
                     if (boardStates[activeBoard][j] === null) {
                         validMoves.push([activeBoard, j]);
                     }
                 }
-            } else {
+            }else {
                 // If active board is won, can play anywhere
                 for (let i = 0; i < 9; i++) {
                     if (smallBoardWinners[i] === null) {
@@ -668,16 +668,16 @@
                     }
                 }
             }
-            
+
             if (validMoves.length > 0) {
                 // Choose a random valid move
                 const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                
+
                 // Process the AI move
                 handleSquareClick(bigIndex, smallIndex);
             }
         }
-
+        
         // Handle board square click
         function handleSquareClick(bigIndex, smallIndex) {
             const { gameWinner, gameMode, currentTurn, playerSymbol, 
@@ -685,7 +685,6 @@
             
             // Early returns for invalid moves
             if (gameWinner || 
-                (gameMode === 'ai' && currentTurn !== playerSymbol) ||
                 (activeBoard !== null && activeBoard !== bigIndex) ||
                 smallBoardWinners[bigIndex] !== null ||
                 boardStates[bigIndex][smallIndex] !== null) {
