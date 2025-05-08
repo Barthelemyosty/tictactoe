@@ -858,6 +858,8 @@
             
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             header.appendChild(toggleBtn);
@@ -1009,6 +1011,8 @@
             
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             
@@ -1074,6 +1078,8 @@
             
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             
