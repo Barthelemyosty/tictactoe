@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Tic Tac Toe</title>
+    <style>
+        /* Global styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* Transitions for theme changes */
+        body, div, button, p, h1, h2, footer {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        /* Main containers */
+        .container {
+            width: 100%;
+            max-width: 512px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+            padding: 32px 16px;
+        }
+
+        /* Theme classes - Light mode */
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+        .bg-white {
+            background-color: #ffffff;
+        }
+        .text-gray-900 {
+            color: #111827;
+        }
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        .border-gray-300 {
+            border-color: #d1d5db;
+        }
+        .bg-gray-200 {
+            background-color: #e5e7eb;
+        }
+        .text-gray-800 {
+            color: #1f2937;
+        }
+        .hover\:bg-gray-300:hover {
+            background-color: #d1d5db;
+        }
+        .bg-blue-100 {
+            background-color: #dbeafe;
+        }
+        .bg-red-200 {
+            background-color: #fecaca;
+        }
+        .bg-blue-200 {
+            background-color: #bfdbfe;
+        }
+        .ring-yellow-400 {
+            box-shadow: 0 0 0 4px #fbbf24;
+        }
+        .text-gray-500 {
+            color: #6b7280;
+        }
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+
+        /* Theme classes - Dark mode */
+        .dark .bg-gray-900 {
+            background-color: #111827;
+        }
+        .dark .bg-gray-800 {
+            background-color: #1f2937;
+        }
+        .dark .text-white {
+            color: #ffffff;
+        }
+        .dark .text-gray-300 {
+            color: #d1d5db;
+        }
+        .dark .border-gray-700 {
+            border-color: #374151;
+        }
+        .dark .bg-gray-700 {
+            background-color: #374151;
+        }
+        .dark .bg-blue-900 {
+            background-color: #1e3a8a;
+        }
+        .dark .text-gray-200 {
+            color: #e5e7eb;
+        }
+        .dark .hover\:bg-gray-600:hover {
+            background-color: #4b5563;
+        }
+        .dark .bg-gray-600 {
+            background-color: #4b5563;
+        }
+        .dark .bg-red-900 {
+            background-color: #7f1d1d;
+        }
+        .dark .ring-yellow-500 {
+            box-shadow: 0 0 0 4px #f59e0b;
+        }
+        .dark .text-gray-400 {
+            color: #9ca3af;
+        }
+
+        /* Common button styles */
+        button {
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            border-radius: 0.375rem;
+        }
+
+        .bg-blue-500 {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .hover\:bg-blue-600:hover {
+            background-color: #2563eb;
+        }
+        
+        .bg-gray-500 {
+            background-color: #6b7280;
+            color: white;
+        }
+        .hover\:bg-gray-600:hover {
+            background-color: #4b5563;
+        }
+
+        .bg-purple-500 {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        .hover\:bg-purple-600:hover {
+            background-color: #7c3aed;
+        }
+
+        .bg-green-500 {
+            background-color: #10b981;
+            color: white;
+        }
+        .hover\:bg-green-600:hover {
+            background-color: #059669;
+        }
+
+        /* Layout utilities */
+        .flex {
+            display: flex;
+        }
+        .flex-col {
+            flex-direction: column;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .justify-between {
+            justify-between: space-between;
+        }
+        .gap-2 {
+            gap: 8px;
+        }
+        .gap-3 {
+            gap: 12px;
+        }
+        .gap-4 {
+            gap: 16px;
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+        .mt-6 {
+            margin-top: 24px;
+        }
+        .mt-8 {
+            margin-top: 32px;
+        }
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+        .mb-6 {
+            margin-bottom: 24px;
+        }
+        .p-2 {
+            padding: 8px;
+        }
+        .p-4 {
+            padding: 16px;
+        }
+        .p-6 {
+            padding: 24px;
+        }
+        .px-4 {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .py-2 {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        .py-3 {
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        .pt-4 {
+            padding-top: 16px;
+        }
+        .rounded {
+            border-radius: 0.25rem;
+        }
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        .border {
+            border-width: 1px;
+            border-style: solid;
+        }
+        .border-t {
+            border-top-width: 1px;
+            border-top-style: solid;
+        }
+        .border-2 {
+            border-width: 2px;
+            border-style: solid;
+        }
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .w-full {
+            width: 100%;
+        }
+        .max-w-sm {
+            max-width: 384px;
+        }
+        .max-w-md {
+            max-width: 448px;
+        }
+        .max-w-lg {
+            max-width: 512px;
+        }
+        .space-y-4 > * + * {
+            margin-top: 16px;
+        }
+        .flex-1 {
+            flex: 1 1 0%;
+        }
+
+        /* Text utilities */
+        .text-center {
+            text-align: center;
+        }
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        .text-4xl {
+            font-size: 2.25rem;
+        }
+        .text-5xl {
+            font-size: 3rem;
+        }
+        .font-medium {
+            font-weight: 500;
+        }
+        .font-semibold {
+            font-weight: 600;
+        }
+        .font-bold {
+            font-weight: 700;
+        }
+        .text-red-500 {
+            color: #ef4444;
+        }
+        .text-blue-500 {
+            color: #3b82f6;
+        }
+
+        /* Game board styles */
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 16px;
+            max-width: 512px;
+            margin: 0 auto;
+            border-radius: 0.5rem;
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        .small-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 0.25rem;
+            padding: 1px;
+            position: relative;
+        }
+
+        .small-board.active {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .small-board.won-x {
+            background-color: #fecaca;
+        }
+        .dark .small-board.won-x {
+            background-color: #7f1d1d;
+        }
+
+        .small-board.won-o {
+            background-color: #bfdbfe;
+        }
+        .dark .small-board.won-o {
+            background-color: #1e3a8a;
+        }
+
+        .small-board.draw {
+            opacity: 0.5;
+        }
+
+        .cell {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            cursor: default;
+        }
+
+        .cell.valid {
+            cursor: pointer;
+        }
+
+        .winner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.25rem;
+            font-weight: bold;
+        }
+
+        @media (min-width: 768px) {
+            .cell {
+                width: 40px;
+                height: 40px;
+            }
+            .grid-cols-2 {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        /* Game views */
+        .game-view, .lobby-view, .rules-view {
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin: 0 auto;
+        }
+
+        /* Game info section */
+        .game-info {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .game-info-header {
+            position: relative;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .player-info {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .player-box {
+            padding: 8px 16px;
+            border-radius: 0.5rem;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        
+        .modal-content {
+            border-radius: 0.5rem;
+            max-width: 384px;
+            width: 100%;
+            padding: 24px;
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: black;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 0.25rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            opacity: 0.9;
+            z-index: 50;
+            display: none;
+        }
+        
+        /* Utilities for positioning */
+        .relative {
+            position: relative;
+        }
+        
+        .absolute {
+            position: absolute;
+        }
+        
+        .right-0 {
+            right: 0;
+        }
+        
+        .top-0 {
+            top: 0;
+        }
+        
+        /* Footer */
+        footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        /* Button layouts */
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        @media (min-width: 768px) {
+            .button-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="app" class="min-h-screen">
+        <div class="container">
+            <!-- Views will be dynamically inserted here -->
+        </div>
+        
+        <footer class="text-gray-500">
+            Ultimate Tic Tac Toe © 2025
+        </footer>
+    </div>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script>
+        // Constants for reuse
+        const INITIAL_GAME_STATE = {
+            view: 'lobby', // lobby, game, rules
+            playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
+            playerSymbol: null,
+            currentTurn: 'X',
+            activeBoard: null,
+            boardStates: Array(9).fill().map(() => Array(9).fill(null)),
+            smallBoardWinners: Array(9).fill(null),
+            gameWinner: null,
+            tooltipMessage: '',
+            tooltipVisible: false,
+            gameMode: 'ai', // 'ai' or 'local'
+            darkMode: false
+        };
+
+        // Win patterns (used multiple times)
+        const WIN_PATTERNS = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]             // diagonals
+        ];
+
+        // Main game state
+        let gameState = {...INITIAL_GAME_STATE};
+
+        // Helper functions
+        function checkWinSmallBoard(board) {
+            return WIN_PATTERNS.some(([a, b, c]) => 
+                board[a] && board[a] === board[b] && board[a] === board[c]
+            );
+        }
+        
+        function checkWinBigBoard(winners) {
+            return WIN_PATTERNS.some(([a, b, c]) => 
+                winners[a] && winners[a] !== 'draw' && winners[a] === winners[b] && winners[a] === winners[c]
+            );
+        }
+        
+        function isBoardFull(board) {
+            return board.every(cell => cell !== null);
+        }
+        
+        function isBigBoardFull(winners, boardStates) {
+            if (winners.every(winner => winner !== null)) return true;
+            
+            return !boardStates.some((board, i) => 
+                winners[i] === null && board.some(cell => cell === null)
+            );
+        }
+
+        // UI functions
+        function showTooltip(message) {
+            gameState.tooltipMessage = message;
+            gameState.tooltipVisible = true;
+            
+            const tooltip = document.getElementById('tooltip');
+            tooltip.textContent = message;
+            tooltip.style.display = 'block';
+            
+            setTimeout(() => {
+                gameState.tooltipVisible = false;
+                tooltip.style.display = 'none';
+            }, 2000);
+        }
+
+        function toggleDarkMode() {
+            gameState.darkMode = !gameState.darkMode;
+            document.body.classList.toggle('dark', gameState.darkMode);
+            
+            // Mettre à jour le fond du body
+            document.body.classList.toggle('bg-gray-100', !gameState.darkMode);
+            document.body.classList.toggle('bg-gray-900', gameState.darkMode);
+            
+            // Mettre à jour également la div app qui couvre tout l'écran
+            const appDiv = document.getElementById('app');
+            appDiv.classList.toggle('bg-gray-100', !gameState.darkMode);
+            appDiv.classList.toggle('bg-gray-900', gameState.darkMode);
+            
+            renderView();
+        }
+
+        // Navigation functions
+        function startNewGame(mode = 'ai') {
+            const darkMode = gameState.darkMode; // Save current dark mode setting
+            gameState = {...INITIAL_GAME_STATE};
+            gameState.darkMode = darkMode; // Restore dark mode setting
+            gameState.view = 'game';
+            gameState.gameMode = mode;
+            gameState.playerSymbol = mode === 'ai' ? 'X' : null;
+            
+            renderView();
+        }
+        
+        function showRules() {
+            gameState.view = 'rules';
+            renderView();
+        }
+        
+        function backToLobby() {
+            gameState.view = 'lobby';
+            renderView();
+        }
+
+        // AI opponent move logic
+        function simulateOpponentMove() {
+            const { activeBoard, boardStates, smallBoardWinners, playerSymbol } = gameState;
+            const opponentSymbol = playerSymbol === 'X' ? 'O' : 'X';
+            const validMoves = [];
+            
+            // Find valid moves based on active board
+            if (activeBoard === null) {
+                // Can play in any non-won board
+                for (let i = 0; i < 9; i++) {
+                    if (smallBoardWinners[i] === null) {
+                        for (let j = 0; j < 9; j++) {
+                            if (boardStates[i][j] === null) {
+                                validMoves.push([i, j]);
+                            }
+                        }
+                    }
+                }
+            } else if (smallBoardWinners[activeBoard] === null) {
+                // Must play in the active board
+                for (let j = 0; j < 9; j++) {
+                    if (boardStates[activeBoard][j] === null) {
+                        validMoves.push([activeBoard, j]);
+                    }
+                }
+            } else {
+                // If active board is won, can play anywhere
+                for (let i = 0; i < 9; i++) {
+                    if (smallBoardWinners[i] === null) {
+                        for (let j = 0; j < 9; j++) {
+                            if (boardStates[i][j] === null) {
+                                validMoves.push([i, j]);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (validMoves.length > 0) {
+                // Choose a random valid move
+                const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
+                
+                // Process the AI move
+                handleSquareClick(bigIndex, smallIndex);
+            }
+        }
+
+        // Handle board square click
+        function handleSquareClick(bigIndex, smallIndex) {
+            const { gameWinner, gameMode, currentTurn, playerSymbol, 
+                   activeBoard, smallBoardWinners, boardStates } = gameState;
+            
+            // Early returns for invalid moves
+            if (gameWinner || 
+                (gameMode === 'ai' && currentTurn !== playerSymbol) ||
+                (activeBoard !== null && activeBoard !== bigIndex) ||
+                smallBoardWinners[bigIndex] !== null ||
+                boardStates[bigIndex][smallIndex] !== null) {
+                
+                // Show appropriate tooltip message
+                if (gameWinner) return;
+                if (activeBoard !== null && activeBoard !== bigIndex) {
+                    showTooltip("You must play in the indicated grid!");
+                } else if (smallBoardWinners[bigIndex] !== null) {
+                    showTooltip("This grid is already won!");
+                } else if (boardStates[bigIndex][smallIndex] !== null) {
+                    showTooltip("This cell is already taken!");
+                }
+                return;
+            }
+
+            // Make the move
+            const newBoardStates = JSON.parse(JSON.stringify(boardStates));
+            newBoardStates[bigIndex][smallIndex] = currentTurn;
+
+            // Check for small board win
+            const newSmallBoardWinners = [...gameState.smallBoardWinners];
+            if (checkWinSmallBoard(newBoardStates[bigIndex])) {
+                newSmallBoardWinners[bigIndex] = currentTurn;
+            } else if (isBoardFull(newBoardStates[bigIndex])) {
+                newSmallBoardWinners[bigIndex] = 'draw';
+            }
+
+            // Determine next active board
+            let nextActiveBoard = smallIndex;
+            if (newSmallBoardWinners[smallIndex] !== null) {
+                nextActiveBoard = null;
+            }
+
+            // Check for game win
+            let newGameWinner = null;
+            if (checkWinBigBoard(newSmallBoardWinners)) {
+                newGameWinner = currentTurn;
+            } else if (isBigBoardFull(newSmallBoardWinners, newBoardStates)) {
+                newGameWinner = 'draw';
+            }
+
+            // Update game state
+            gameState = {
+                ...gameState,
+                boardStates: newBoardStates,
+                smallBoardWinners: newSmallBoardWinners,
+                currentTurn: currentTurn === 'X' ? 'O' : 'X',
+                activeBoard: nextActiveBoard,
+                gameWinner: newGameWinner
+            };
+
+            // Re-render the view with updated state
+            renderView();
+
+            // In AI mode, simulate opponent move after delay
+            if (gameMode === 'ai' && !newGameWinner && gameState.currentTurn !== playerSymbol) {
+                setTimeout(() => simulateOpponentMove(), 1000);
+            }
+        }
+
+        // Render functions
+        function renderCell(bigIndex, smallIndex) {
+            const { boardStates, gameMode, playerSymbol, currentTurn, 
+                   activeBoard, smallBoardWinners, darkMode } = gameState;
+            
+            const value = boardStates[bigIndex][smallIndex];
+            const theme = darkMode ? 'dark' : 'light';
+            
+            let cellClass = "cell ";
+            
+            if (value === null) {
+                const isInteractive = (gameMode === 'ai' && playerSymbol === currentTurn) || gameMode === 'local';
+                const isValidTarget = (activeBoard === null || activeBoard === bigIndex) && smallBoardWinners[bigIndex] === null;
+                
+                cellClass += theme === 'dark' ? 'bg-gray-800 ' : 'bg-white ';
+                
+                if (isInteractive && isValidTarget) {
+                    cellClass += theme === 'dark' ? 'hover:bg-gray-600 ' : 'hover:bg-blue-100 ';
+                    cellClass += 'valid';
+                }
+            } else {
+                cellClass += theme === 'dark' ? 'bg-gray-800 ' : 'bg-white ';
+                cellClass += value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold';
+            }
+            
+            const cell = document.createElement('div');
+            cell.className = cellClass;
+            cell.textContent = value || '';
+            
+            if (cellClass.includes('valid')) {
+                cell.addEventListener('click', () => handleSquareClick(bigIndex, smallIndex));
+            }
+            
+            return cell;
+        }
+
+        function renderSmallBoard(index) {
+            const { activeBoard, smallBoardWinners, darkMode } = gameState;
+            const winner = smallBoardWinners[index];
+            const theme = darkMode ? 'dark' : 'light';
+            
+            const boardDiv = document.createElement('div');
+            boardDiv.className = `small-board ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`;
+            
+            // Active board styling
+            if (activeBoard === index && winner === null) {
+                boardDiv.classList.add('active');
+                boardDiv.style.boxShadow = `0 0 0 4px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
+            }
+            
+            // Winner styling
+            if (winner !== null) {
+                if (winner === 'draw') {
+                    boardDiv.classList.add('draw');
+                } else {
+                    boardDiv.classList.add(winner === 'X' ? 'won-x' : 'won-o');
+                }
+            }
+            
+            if (winner !== null && winner !== 'draw') {
+                // Show winner symbol
+                const winnerOverlay = document.createElement('div');
+                winnerOverlay.className = 'winner-overlay';
+                
+                const symbol = document.createElement('span');
+                symbol.className = winner === 'X' ? 'text-red-500' : 'text-blue-500';
+                symbol.textContent = winner;
+                
+                winnerOverlay.appendChild(symbol);
+                boardDiv.appendChild(winnerOverlay);
+            } else {
+                // Render cells
+                for (let i = 0; i < 9; i++) {
+                    boardDiv.appendChild(renderCell(index, i));
+                }
+            }
+            
+            return boardDiv;
+        }
+
+        function renderGameBoard() {
+            const { darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            
+            const boardContainer = document.createElement('div');
+            boardContainer.className = `game-board ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'}`;
+            
+            for (let i = 0; i < 9; i++) {
+                boardContainer.appendChild(renderSmallBoard(i));
+            }
+            
+            return boardContainer;
+        }
+
+        function renderGameInfo() {
+            const { gameMode, currentTurn, playerSymbol, activeBoard, darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            
+            const infoDiv = document.createElement('div');
+            infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
+            
+            // Header with title and dark mode toggle
+            const header = document.createElement('div');
+            header.className = 'game-info-header';
+            
+            const title = document.createElement('h2');
+            title.className = 'text-2xl font-bold';
+            title.textContent = 'Ultimate Tic Tac Toe';
+            header.appendChild(title);
+            
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
+            toggleBtn.addEventListener('click', toggleDarkMode);
+            header.appendChild(toggleBtn);
+            
+            infoDiv.appendChild(header);
+            
+            // Game mode info
+            const modeInfo = document.createElement('p');
+            modeInfo.className = 'text-xl font-semibold mb-2';
+            modeInfo.textContent = gameMode === 'ai' ? 'Mode: Solo vs AI' : 'Mode: Local Multiplayer';
+            infoDiv.appendChild(modeInfo);
+            
+            // Player info
+            if (gameMode === 'local') {
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
+                
+                const playerX = document.createElement('div');
+                playerX.className = `player-box ${currentTurn === 'X' ? 
+                                              (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : 
+                                              (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - Your turn' : ''}`;
+                
+                const playerO = document.createElement('div');
+                playerO.className = `player-box ${currentTurn === 'O' ? 
+                                              (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : 
+                                              (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - Your turn' : ''}`;
+                
+                playerInfo.appendChild(playerX);
+                playerInfo.appendChild(playerO);
+                infoDiv.appendChild(playerInfo);
+            }
+            
+            if (gameMode === 'ai') {
+                const turnInfo = document.createElement('p');
+                turnInfo.className = 'text-lg mb-2';
+                turnInfo.textContent = currentTurn === playerSymbol ? 'Your turn' : "AI is thinking...";
+                infoDiv.appendChild(turnInfo);
+            }
+            
+            // Active board info
+            const boardInfo = document.createElement('p');
+            boardInfo.className = `text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} font-medium`;
+            boardInfo.textContent = activeBoard === null 
+                ? "You can play in any open grid" 
+                : `You must play in grid ${activeBoard + 1}`;
+            infoDiv.appendChild(boardInfo);
+            
+            // Game controls
+            const controls = document.createElement('div');
+            controls.className = 'mt-6 flex justify-center gap-2';
+            
+            const newGameBtn = document.createElement('button');
+            newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+            newGameBtn.textContent = 'New Game';
+            newGameBtn.addEventListener('click', () => startNewGame(gameMode));
+            
+            const lobbyBtn = document.createElement('button');
+            lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
+            lobbyBtn.textContent = 'Back to Lobby';
+            lobbyBtn.addEventListener('click', backToLobby);
+            
+            controls.appendChild(newGameBtn);
+            controls.appendChild(lobbyBtn);
+            infoDiv.appendChild(controls);
+            
+            return infoDiv;
+        }
+
+        function renderGameOverModal() {
+            const { gameWinner, gameMode, playerSymbol, darkMode } = gameState;
+            
+            if (!gameWinner) return null;
+            
+            const theme = darkMode ? 'dark' : 'light';
+            
+            let message = "";
+            let iconSymbol = "";
+            
+            if (gameWinner === 'draw') {
+                message = "Draw!";
+                iconSymbol = "🤝";
+            } else if (gameMode === 'ai') {
+                message = gameWinner === playerSymbol ? "You won!" : "AI won!";
+                iconSymbol = gameWinner === playerSymbol ? "🏆" : "🤖";
+            } else {
+                message = `Player ${gameWinner} won!`;
+                iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
+            }
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            
+            const modal = document.createElement('div');
+            modal.className = `modal-content ${theme === 'dark' ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border`;
+            
+            const header = document.createElement('div');
+            header.className = 'modal-header';
+            
+            const icon = document.createElement('div');
+            icon.className = 'text-5xl mb-4';
+            icon.textContent = iconSymbol;
+            
+            const title = document.createElement('h2');
+            title.className = 'text-2xl font-bold mb-2';
+            title.textContent = message;
+            
+            header.appendChild(icon);
+            header.appendChild(title);
+            
+            const buttons = document.createElement('div');
+            buttons.className = 'modal-buttons';
+            
+            const newGameBtn = document.createElement('button');
+            newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
+            newGameBtn.textContent = 'New Game';
+            newGameBtn.addEventListener('click', () => startNewGame(gameMode));
+            
+            const lobbyBtn = document.createElement('button');
+            lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex-1';
+            lobbyBtn.textContent = 'Back to Lobby';
+            lobbyBtn.addEventListener('click', backToLobby);
+            
+            buttons.appendChild(newGameBtn);
+            buttons.appendChild(lobbyBtn);
+            
+            modal.appendChild(header);
+            modal.appendChild(buttons);
+            overlay.appendChild(modal);
+            
+            return overlay;
+        }
+
+        function renderLobbyView() {
+            const { darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            
+            const lobby = document.createElement('div');
+            lobby.className = `lobby-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
+            
+            // Header with title and dark mode toggle
+            const header = document.createElement('div');
+            header.className = 'flex justify-between items-center mb-6';
+            
+            const title = document.createElement('h1');
+            title.className = 'text-3xl font-bold';
+            title.textContent = 'Ultimate Tic Tac Toe';
+            
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
+            toggleBtn.addEventListener('click', toggleDarkMode);
+            
+            header.appendChild(title);
+            header.appendChild(toggleBtn);
+            lobby.appendChild(header);
+            
+            // Game mode buttons
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'flex flex-col gap-4';
+            
+            const gameButtons = document.createElement('div');
+            gameButtons.className = 'button-grid';
+            
+            const multiplayerBtn = document.createElement('button');
+            multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
+            multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
+            multiplayerBtn.addEventListener('click', () => startNewGame('local'));
+            
+            const aiBtn = document.createElement('button');
+            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
+            aiBtn.innerHTML = '<span>🤖</span> Play against AI';
+            aiBtn.addEventListener('click', () => startNewGame('ai'));
+            
+            gameButtons.appendChild(multiplayerBtn);
+            gameButtons.appendChild(aiBtn);
+            
+            const rulesBtn = document.createElement('button');
+            rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
+            rulesBtn.textContent = 'Game Rules';
+            rulesBtn.addEventListener('click', showRules);
+            
+            buttonContainer.appendChild(gameButtons);
+            buttonContainer.appendChild(rulesBtn);
+            lobby.appendChild(buttonContainer);
+            
+            return lobby;
+        }
+
+        function renderRulesView() {
+            const { darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            
+            const rules = [
+                "Ultimate Tic Tac Toe consists of 9 small Tic Tac Toe grids, forming one large grid.",
+                "On each turn, you must play in the small grid corresponding to the cell played by your opponent in their small grid.",
+                "For example, if your opponent plays in the top-right cell of their small grid, you must play in the top-right small grid of the large grid.",
+                "If you are sent to a grid that is already won or full, you can play in any open grid.",
+                "To win a small grid, align 3 symbols as in classic Tic Tac Toe.",
+                "To win the game, align 3 won small grids."
+            ];
+            
+            const rulesView = document.createElement('div');
+            rulesView.className = `rules-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
+            
+            // Header with title and dark mode toggle
+            const header = document.createElement('div');
+            header.className = 'flex justify-between items-center mb-4';
+            
+            const title = document.createElement('h1');
+            title.className = 'text-2xl font-bold';
+            title.textContent = 'Ultimate Tic Tac Toe Rules';
+            
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
+            toggleBtn.addEventListener('click', toggleDarkMode);
+            
+            header.appendChild(title);
+            header.appendChild(toggleBtn);
+            rulesView.appendChild(header);
+            
+            // Rules list
+            const rulesList = document.createElement('div');
+            rulesList.className = `space-y-4 mb-6 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'} pt-4`;
+            
+            rules.forEach((rule, index) => {
+                const ruleItem = document.createElement('div');
+                ruleItem.className = 'flex gap-3';
+                
+                const number = document.createElement('div');
+                number.className = 'text-2xl';
+                number.textContent = `${index + 1}️⃣`;
+                
+                const text = document.createElement('p');
+                text.textContent = rule;
+                
+                ruleItem.appendChild(number);
+                ruleItem.appendChild(text);
+                rulesList.appendChild(ruleItem);
+            });
+            
+            rulesView.appendChild(rulesList);
+            
+            // Back button
+            const backBtn = document.createElement('button');
+            backBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full';
+            backBtn.textContent = 'Back to Lobby';
+            backBtn.addEventListener('click', backToLobby);
+            
+            rulesView.appendChild(backBtn);
+            
+            return rulesView;
+        }
+
+        function renderGameView() {
+            const container = document.createElement('div');
+            
+            container.appendChild(renderGameInfo());
+            container.appendChild(renderGameBoard());
+            
+            const modal = renderGameOverModal();
+            if (modal) {
+                container.appendChild(modal);
+            }
+            
+            return container;
+        }
+
+        function renderView() {
+            const appContainer = document.querySelector('#app .container');
+            appContainer.innerHTML = '';
+            
+            // Apply dark mode to body
+            document.body.classList.toggle('dark', gameState.darkMode);
+            
+            // Render the appropriate view
+            switch (gameState.view) {
+                case 'lobby':
+                    appContainer.appendChild(renderLobbyView());
+                    break;
+                case 'rules':
+                    appContainer.appendChild(renderRulesView());
+                    break;
+                case 'game':
+                    appContainer.appendChild(renderGameView());
+                    break;
+            }
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView();
+        });
+    </script>
+</body>
+</html>
