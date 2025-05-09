@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Tic Tac Toe</title>
     <style>
+
         /* Global styles */
         * {
             box-sizing: border-box;
@@ -310,6 +311,42 @@
             color: #3b82f6;
         }
 
+        @media (max-width: 512px) {
+            .game-board {
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .cell {
+                width: 24px;
+                height: 24px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .cell {
+                width: 20px;
+                height: 20px;
+                font-size: 0.875rem;
+            }
+
+            .game-board {
+                gap: 6px;
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
         /* Game board styles */
         .game-board {
             display: grid;
@@ -576,6 +613,23 @@
             return !boardStates.some((board, i) => 
                 winners[i] === null && board.some(cell => cell === null)
             );
+        }
+
+        function adjustGameBoardSize() {
+            const viewportWidth = window.innerWidth;
+            const gameBoard = document.querySelector('.game-board');
+
+            if (!gameBoard) return;
+
+            if (viewportWidth < 360) {
+                gameBoard.style.maxWidth = '280px';
+            } else if (viewportWidth < 400) {
+                gameBoard.style.maxWidth = '320px';
+            } else if (viewportWidth < 500) {
+                gameBoard.style.maxWidth = '400px';
+            } else {
+                gameBoard.style.maxWidth = '512px';
+            }
         }
 
         // UI functions
@@ -972,7 +1026,7 @@
             header.appendChild(title);
             
             const buttons = document.createElement('div');
-            buttons.className = 'modal-buttons';
+            buttons.className = window.innerWidth < 400 ? 'modal-buttons flex flex-col gap-2' : 'modal-buttons flex gap-2';
             
             const newGameBtn = document.createElement('button');
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
@@ -1158,6 +1212,11 @@
         // Initialize the game
         document.addEventListener('DOMContentLoaded', () => {
             renderView();
+            adjustGameBoardSize();
+
+            window.addEventListener('resize', () => {
+                adjustGameBoardSize();
+            });
         });
     </script>
 </body>
