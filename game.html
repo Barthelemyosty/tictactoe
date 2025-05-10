@@ -355,18 +355,6 @@
                 gap: 4px;
                 padding: 4px;
             }
-            
-            .header-responsive {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .title-responsive {
-                flex: 1;
-                text-align: center;
-                padding-right: 42px;
-            }
         }
 
         @media (max-width: 400px) {
@@ -1244,7 +1232,7 @@
             
             // Header with title and dark mode toggle
             const header = document.createElement('div');
-            header.className = 'relative mb-4';
+            header.className = 'relative text-center mb-6 header-responsive';
             
             const title = document.createElement('h1');
             title.className = 'text-2xl font-bold text-center';
