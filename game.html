@@ -343,6 +343,18 @@
                 gap: 4px;
                 padding: 4px;
             }
+            
+            .header-responsive {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .title-responsive {
+                flex: 1;
+                text-align: center;
+                padding-right: 42px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -1153,10 +1165,10 @@
             
             // Header avec titre centré et bouton dark mode à droite
             const header = document.createElement('div');
-            header.className = 'relative text-center mb-6';
+            header.className = 'relative text-center mb-6 header-responsive';
             
             const title = document.createElement('h1');
-            title.className = 'text-3xl font-bold';
+            title.className = 'text-3xl font-bold title-responsive';
             title.textContent = 'Ultimate Tic Tac Toe';
             
             const toggleBtn = document.createElement('button');
