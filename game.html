@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -319,26 +318,47 @@
             }
 
             .cell {
-                width: 24px;
-                height: 24px;
-                font-size: 1rem;
+                width: 28px;
+                height: 28px;
+                font-size: 0.95rem;
+            }
+
+            .small-board {
+                gap: 1px;
+                padding: 1px;
             }
         }
 
         @media (max-width: 360px) {
             .cell {
-                width: 20px;
-                height: 20px;
-                font-size: 0.875rem;
+                width: 22px;
+                height: 22px;
+                font-size: 0.75rem;
             }
 
             .game-board {
-                gap: 6px;
-                padding: 6px;
+                gap: 4px;
+                padding: 4px;
             }
         }
 
         @media (max-width: 400px) {
+            .game-board {
+                gap: 6px;
+                padding: 6px;
+            }   
+
+            .cell {
+                width: 24px; 
+                height: 24px;
+                font-size: 0.875rem;
+            }
+
+            .small-board {
+                gap: 0px;
+                padding: 1px;
+            }
+            
             .button-grid {
                 grid-template-columns: 1fr;
             }
@@ -364,16 +384,17 @@
         .small-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
+            gap: 2px;
             border-width: 1px;
             border-style: solid;
             border-radius: 0.25rem;
-            padding: 1px;
+            padding: 2px;
             position: relative;
+            overflow: hidden;
         }
 
         .small-board.active {
-            transform: scale(1.05);
+            transform: scale(1.03);
             z-index: 10;
         }
 
@@ -396,6 +417,8 @@
         }
 
         .cell {
+            box-sizing: border-box;
+            overflow: hidden;
             width: 32px;
             height: 32px;
             display: flex;
