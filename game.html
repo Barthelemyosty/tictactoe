@@ -321,18 +321,21 @@
                 width: 28px;
                 height: 28px;
                 font-size: 0.95rem;
+                aspect-ratio: 1 / 1;
             }
 
             .small-board {
                 gap: 1px;
                 padding: 1px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
         @media (max-width: 360px) {
             .cell {
-                width: 22px;
-                height: 22px;
+                aspect-ratio: 1 / 1;
+                min-width: 18px;
                 font-size: 0.75rem;
             }
 
@@ -349,8 +352,10 @@
             }   
 
             .cell {
-                width: 24px; 
-                height: 24px;
+                width: auto; 
+                height: auto;
+                aspect-ratio: 1 / 1;
+                min-width: 20px;
                 font-size: 0.875rem;
             }
 
@@ -395,7 +400,6 @@
 
         .small-board.active {
             transform: scale(1.03);
-            z-index: 10;
         }
 
         .small-board.won-x {
@@ -419,13 +423,11 @@
         .cell {
             box-sizing: border-box;
             overflow: hidden;
-            width: 32px;
-            height: 32px;
+            aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.125rem;
-            cursor: default;
         }
 
         .cell.valid {
@@ -684,6 +686,15 @@
                     }
                 }
             });
+            ensureSquareCells();
+        }
+
+        function ensureSquareCells() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                const width = cell.offsetWidth;
+                cell.style.height = `${width}px`;
+            });
         }
 
         // UI functions
@@ -882,6 +893,9 @@
             const cell = document.createElement('div');
             cell.className = cellClass;
             cell.textContent = value || '';
+
+            const columnPosition = smallIndex % 3;
+            cell.dataset.column = columnPosition;
             
             if (cellClass.includes('valid')) {
                 cell.addEventListener('click', () => handleSquareClick(bigIndex, smallIndex));
@@ -898,6 +912,10 @@
             
             const boardDiv = document.createElement('div');
             boardDiv.className = `small-board ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`;
+
+            boardDiv.style.display = 'grid';
+            boardDiv.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            boardDiv.style.gridTemplateRows = 'repeat(3, 1fr)';
             
             // Active board styling
             if (activeBoard === index && winner === null) {
@@ -945,6 +963,25 @@
             
             const boardContainer = document.createElement('div');
             boardContainer.className = `game-board ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'}`;
+
+            boardContainer.style.display = 'grid';
+            boardContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            boardContainer.style.gridTemplateRows = 'repeat(3, 1fr)';
+
+            const viewportWidth = window.innerWidth;
+            if (viewportWidth < 360) {
+                boardContainer.style.gap = '4px';
+                boardContainer.style.padding = '4px';
+            } else if (viewportWidth < 400) {
+                boardContainer.style.gap = '6px';
+                boardContainer.style.padding = '6px';
+            } else if (viewportWidth < 512) {
+                boardContainer.style.gap = '8px';
+                boardContainer.style.padding = '8px';
+            } else {
+                boardContainer.style.gap = '16px';
+                boardContainer.style.padding = '16px';
+            }
             
             for (let i = 0; i < 9; i++) {
                 boardContainer.appendChild(renderSmallBoard(i));
