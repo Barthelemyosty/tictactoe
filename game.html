@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultimate Tic Tac Toe</title>
     <style>
 
@@ -646,14 +646,44 @@
             if (!gameBoard) return;
 
             if (viewportWidth < 360) {
-                gameBoard.style.maxWidth = '280px';
+                gameBoard.style.maxWidth = '270px';
             } else if (viewportWidth < 400) {
-                gameBoard.style.maxWidth = '320px';
+                gameBoard.style.maxWidth = '310px';
             } else if (viewportWidth < 500) {
-                gameBoard.style.maxWidth = '400px';
+                gameBoard.style.maxWidth = '390px';
             } else {
                 gameBoard.style.maxWidth = '512px';
             }
+
+            const cells = document.querySelectorAll('.cell');
+            const smallBoards = document.querySelectorAll('.small-board');
+
+            if (viewportWidth < 360) {
+                smallBoards.forEach(board => {
+                    board.style.gap = '0px';
+                    board.style.padding = '1px';
+                });
+            } else if (viewportWidth < 400) {
+                smallBoards.forEach(board => {
+                    board.style.gap = '1px';
+                    board.style.padding = '1px';
+                });
+            }
+        }
+
+        //Réajustement taille après rendu
+        function postRenderAdjustments() {
+            adjustGameBoardSize();
+            const smallBoards = document.querySelectorAll('.small-board');
+            smallBoards.forEach((board, index) => {
+                if (gameState.activeBoard === index && gameState.smallBoardWinners[index] === null) {
+                    const viewportWidth = window.innerWidth;
+                    if (viewportWidth < 400) {
+                        board.style.transform = 'scale(1.02)';
+                        board.style.boxShadow = '0 0 0 2px #fbbf24';
+                    }
+                }
+            });
         }
 
         // UI functions
@@ -864,6 +894,7 @@
             const { activeBoard, smallBoardWinners, darkMode } = gameState;
             const winner = smallBoardWinners[index];
             const theme = darkMode ? 'dark' : 'light';
+            const viewportWidth = window.innerWidth;
             
             const boardDiv = document.createElement('div');
             boardDiv.className = `small-board ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`;
@@ -871,7 +902,11 @@
             // Active board styling
             if (activeBoard === index && winner === null) {
                 boardDiv.classList.add('active');
-                boardDiv.style.boxShadow = `0 0 0 4px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
+                if (viewportWidth < 400) {
+                    boardDiv.style.boxShadow = `0 0 0 2px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
+                } else {
+                    boardDiv.style.boxShadow = `0 0 0 4px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
+                }
             }
             
             // Winner styling
@@ -1229,6 +1264,7 @@
                     break;
                 case 'game':
                     appContainer.appendChild(renderGameView());
+                    setTimeout(postRenderAdjustments, 0);
                     break;
             }
         }
