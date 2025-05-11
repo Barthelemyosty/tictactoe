@@ -616,6 +616,7 @@
             tooltipVisible: false,
             gameMode: 'ai', // 'ai' or 'local'
             darkMode: false
+            aiDifficulty: null
         };
 
         // Win patterns (used multiple times)
@@ -745,11 +746,72 @@
             const darkMode = gameState.darkMode; // Save current dark mode setting
             gameState = {...INITIAL_GAME_STATE};
             gameState.darkMode = darkMode; // Restore dark mode setting
-            gameState.view = 'game';
+            gameState.view = mode === 'ai' ? 'difficulty' : 'game';
             gameState.gameMode = mode;
             gameState.playerSymbol = mode === 'ai' ? 'X' : null;
             
             renderView();
+        }
+
+        function startGameWithDifficulty(difficulty) {
+            gameState.aiDifficulty = difficulty;
+            gameState.view = 'game';
+            renderView();
+        }
+
+        function renderDifficultyView() {
+            const { darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+    
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+    
+            const modal = document.createElement('div');
+            modal.className = `modal-content ${theme === 'dark' ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border`;
+    
+            const header = document.createElement('div');
+            header.className = 'modal-header';
+    
+            const icon = document.createElement('div');
+            icon.className = 'text-5xl mb-4';
+            icon.textContent = '🤖';
+    
+            const title = document.createElement('h2');
+            title.className = 'text-2xl font-bold mb-4';
+            title.textContent = 'Select AI Difficulty';
+    
+            header.appendChild(icon);
+            header.appendChild(title);
+    
+            const buttons = document.createElement('div');
+            buttons.className = 'flex flex-col gap-3';
+    
+            const difficulties = [
+                { name: 'Easy', level: 2, color: 'green' },
+                { name: 'Medium', level: 4, color: 'blue' },
+                { name: 'Hard', level: 6, color: 'orange' },
+                { name: 'Expert', level: 8, color: 'red' }
+            ];
+    
+            difficulties.forEach(diff => {
+                const btn = document.createElement('button');
+                btn.className = `bg-${diff.color}-500 text-white px-4 py-3 rounded hover:bg-${diff.color}-600`;
+                btn.textContent = diff.name;
+                btn.addEventListener('click', () => startGameWithDifficulty(diff.level));
+                buttons.appendChild(btn);
+            });
+    
+            const backBtn = document.createElement('button');
+            backBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-3';
+            backBtn.textContent = 'Back to Lobby';
+            backBtn.addEventListener('click', backToLobby);
+    
+            modal.appendChild(header);
+            modal.appendChild(buttons);
+            modal.appendChild(backBtn);
+            overlay.appendChild(modal);
+    
+            return overlay;
         }
         
         function showRules() {
@@ -789,7 +851,7 @@
             // Utiliser l'approfondissement itératif pour trouver le meilleur coup
             // Commencer avec une profondeur faible et augmenter progressivement
             let bestMove = null;
-            const maxDepth = 5; // Profondeur maximale (ajustable)
+            const maxDepth = aiDifficulty || 4; // Profondeur maximale (ajustable)
     
             // Timer pour limiter le temps de calcul
             const startTime = Date.now();
@@ -1830,6 +1892,9 @@
                     break;
                 case 'rules':
                     appContainer.appendChild(renderRulesView());
+                    break;
+                case 'difficulty':
+                    appContainer.appendChild(renderDifficultyView());
                     break;
                 case 'game':
                     appContainer.appendChild(renderGameView());
