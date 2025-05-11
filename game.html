@@ -119,6 +119,31 @@
         }
 
         /* Common button styles */
+
+        .difficulty-selector {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .difficulty-selector label {
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .difficulty-dropdown {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .difficulty-dropdown:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
         button {
             cursor: pointer;
             font-weight: 500;
@@ -605,19 +630,20 @@
     <script>
         // Constants for reuse
         const INITIAL_GAME_STATE = {
-            view: 'lobby', // lobby, game, rules
-            playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
-            playerSymbol: null,
-            currentTurn: 'X',
-            activeBoard: null,
-            boardStates: Array(9).fill().map(() => Array(9).fill(null)),
-            smallBoardWinners: Array(9).fill(null),
-            gameWinner: null,
-            tooltipMessage: '',
-            tooltipVisible: false,
-            gameMode: 'ai', // 'ai' or 'local'
-            darkMode: false
-        };
+           view: 'lobby', // lobby, game, rules
+           playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
+           playerSymbol: null,
+           currentTurn: 'X',
+           activeBoard: null,
+           boardStates: Array(9).fill().map(() => Array(9).fill(null)),
+           smallBoardWinners: Array(9).fill(null),
+           gameWinner: null,
+           tooltipMessage: '',
+           tooltipVisible: false,
+           gameMode: 'ai', // 'ai' or 'local'
+           darkMode: false,
+           difficulty: 'medium' // Ajoutez cette ligne pour le niveau de difficulté
+       };
 
         // Win patterns (used multiple times)
         const WIN_PATTERNS = [
@@ -743,12 +769,14 @@
 
         // Navigation functions
         function startNewGame(mode = 'ai') {
+            const difficulty = document.getElementById('difficulty').value;
             const darkMode = gameState.darkMode; // Save current dark mode setting
             gameState = {...INITIAL_GAME_STATE};
             gameState.darkMode = darkMode; // Restore dark mode setting
             gameState.view = 'game';
             gameState.gameMode = mode;
             gameState.playerSymbol = mode === 'ai' ? 'X' : null;
+            gameState.difficulty = difficulty; // Ajouter la difficulté à l'état du jeu
             
             renderView();
         }
@@ -780,7 +808,7 @@
 
         // Fonction principale pour simuler un coup de l'IA
         function simulateOpponentMove() {
-            const { activeBoard, boardStates, smallBoardWinners, currentTurn } = gameState;
+            const { activeBoard, boardStates, smallBoardWinners, currentTurn, difficulty } = gameState;
             const opponentSymbol = currentTurn;
             const playerSymbol = opponentSymbol === 'X' ? 'O' : 'X';
     
@@ -790,11 +818,27 @@
             // Utiliser l'approfondissement itératif pour trouver le meilleur coup
             // Commencer avec une profondeur faible et augmenter progressivement
             let bestMove = null;
-            const maxDepth = 5; // Profondeur maximale (ajustable)
-    
+            let maxDepth;
+            switch (difficulty) {
+                    case '3': // Easy
+                        maxDepth = 3;
+                        break;
+                    case '5': // Normal
+                        maxDepth = 5;
+                        break;
+                    case '6': // difficult
+                        maxDepth = 6;
+                        break;
+                    case '8': // Hardcore
+                        maxDepth = 8;
+                        break;
+                    default:
+                        maxDepth = 5; // Valeur par défaut si la difficulté n'est pas reconnue
+                }
+            
             // Timer pour limiter le temps de calcul
             const startTime = Date.now();
-            const timeLimit = 1000; // Limite de temps en ms (1 seconde)
+            const timeLimit = 2000; // Limite de temps en ms (1 seconde)
     
             // Approfondissement itératif
             for (let depth = 1; depth <= maxDepth; depth++) {
@@ -1680,60 +1724,105 @@
         function renderLobbyView() {
             const { darkMode } = gameState;
             const theme = darkMode ? 'dark' : 'light';
-            
+
             const lobby = document.createElement('div');
             lobby.className = `lobby-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
-            
+
             // Header avec titre centré et bouton dark mode à droite
             const header = document.createElement('div');
             header.className = 'relative text-center mb-6 header-responsive';
-            
+
             const title = document.createElement('h1');
             title.className = 'text-3xl font-bold title-responsive';
             title.textContent = 'Ultimate Tic Tac Toe';
-            
+
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
             toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
             toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
-            
+
             header.appendChild(title);
             header.appendChild(toggleBtn);
             lobby.appendChild(header);
-            
+
             // Game mode buttons
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'flex flex-col gap-4';
-            
+
             const gameButtons = document.createElement('div');
             gameButtons.className = 'button-grid';
-            
+
             const multiplayerBtn = document.createElement('button');
             multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
             multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
             multiplayerBtn.addEventListener('click', () => startNewGame('local'));
-            
+
             const aiBtn = document.createElement('button');
             aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
             aiBtn.addEventListener('click', () => startNewGame('ai'));
-            
+
             gameButtons.appendChild(multiplayerBtn);
             gameButtons.appendChild(aiBtn);
-            
+
             const rulesBtn = document.createElement('button');
             rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
             rulesBtn.textContent = 'Game Rules';
             rulesBtn.addEventListener('click', showRules);
-            
+
+            // Ajoutez le menu déroulant pour le niveau de difficulté
+            const difficultySelector = document.createElement('div');
+            difficultySelector.className = 'difficulty-selector';
+
+            const difficultyLabel = document.createElement('label');
+            difficultyLabel.setAttribute('for', 'difficulty');
+            difficultyLabel.textContent = 'Difficulty Level:';
+
+            const difficultyDropdown = document.createElement('select');
+            difficultyDropdown.id = 'difficulty';
+            difficultyDropdown.className = 'difficulty-dropdown';
+
+            const easyOption = document.createElement('option');
+            easyOption.value = '3'; // Mode à 4
+            easyOption.textContent = 'Easy';
+
+            const mediumOption1 = document.createElement('option');
+            mediumOption1.value = '5'; // Mode à 6
+            mediumOption1.textContent = 'Normal';
+            mediumOption1.selected = true; // Définir cette option comme sélectionnée par défaut
+
+            const mediumOption2 = document.createElement('option');
+            mediumOption2.value = '6'; // Mode à 7
+            mediumOption2.textContent = 'Difficult';
+
+            const hardOption = document.createElement('option');
+            hardOption.value = '8'; // Mode à 8
+            hardOption.textContent = 'Hardcore';
+
+            difficultyDropdown.appendChild(easyOption);
+            difficultyDropdown.appendChild(mediumOption1);
+            difficultyDropdown.appendChild(mediumOption2);
+            difficultyDropdown.appendChild(hardOption);
+
+            difficultySelector.appendChild(difficultyLabel);
+            difficultySelector.appendChild(difficultyDropdown);
+
             buttonContainer.appendChild(gameButtons);
+            buttonContainer.appendChild(difficultySelector);
             buttonContainer.appendChild(rulesBtn);
             lobby.appendChild(buttonContainer);
-            
+
+            difficultyDropdown.addEventListener('change', function() {
+                gameState.difficulty = this.value;
+                console.log('Difficulty level changed to:', gameState.difficulty);
+                showTooltip(`Difficulty level set to: ${gameState.difficulty}`);
+            });
+
             return lobby;
         }
+
 
         function renderRulesView() {
             const { darkMode } = gameState;
