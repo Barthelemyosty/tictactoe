@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -616,14 +617,6 @@
             tooltipVisible: false,
             gameMode: 'ai', // 'ai' or 'local'
             darkMode: false
-            aiDifficulty: 'medium'
-        };
-
-        const DIFFICULTY_DEPTHS = {
-            'easy': 2,
-            'medium': 4,
-            'hard': 6,
-            'expert': 8
         };
 
         // Win patterns (used multiple times)
@@ -751,10 +744,8 @@
         // Navigation functions
         function startNewGame(mode = 'ai') {
             const darkMode = gameState.darkMode; // Save current dark mode setting
-            const aiDifficulty = gameState.aiDifficulty;
             gameState = {...INITIAL_GAME_STATE};
             gameState.darkMode = darkMode; // Restore dark mode setting
-            gameState.aiDifficulty = aiDifficulty;
             gameState.view = 'game';
             gameState.gameMode = mode;
             gameState.playerSymbol = mode === 'ai' ? 'X' : null;
@@ -799,7 +790,7 @@
             // Utiliser l'approfondissement itératif pour trouver le meilleur coup
             // Commencer avec une profondeur faible et augmenter progressivement
             let bestMove = null;
-            const maxDepth = DIFFICULTY_DEPTHS[aiDifficulty]; // Profondeur maximale (ajustable)
+            const maxDepth = 5; // Profondeur maximale (ajustable)
     
             // Timer pour limiter le temps de calcul
             const startTime = Date.now();
@@ -1408,81 +1399,6 @@
         }
 
         // Render functions
-
-        function showDifficultySelection() {
-            gameState.view = 'difficulty';
-            renderView();
-        }
-        
-        function selectDifficulty(level) {
-            gameState.aiDifficulty = level;
-            startNewGame('ai');
-        }
-
-        function renderDifficultyView() {
-            const { darkMode } = gameState;
-            const theme = darkMode ? 'dark' : 'light';
-    
-            const difficultyView = document.createElement('div');
-            difficultyView.className = `difficulty-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
-    
-            // Header with title and dark mode toggle
-            const header = document.createElement('div');
-            header.className = 'relative mb-8';
-    
-            const title = document.createElement('h1');
-            title.className = 'text-2xl font-bold text-center';
-            title.textContent = 'Select AI Difficulty';
-    
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'p-2 rounded-full absolute right-0 top-0';
-            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
-            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
-            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
-            toggleBtn.addEventListener('click', toggleDarkMode);
-    
-            header.appendChild(title);
-            header.appendChild(toggleBtn);
-            difficultyView.appendChild(header);
-    
-            // Difficulty options
-            const options = [
-                { id: 'easy', label: 'Easy', emoji: '🙂', color: 'green' },
-                { id: 'medium', label: 'Medium', emoji: '😐', color: 'blue' },
-                { id: 'hard', label: 'Hard', emoji: '😈', color: 'orange' },
-                { id: 'expert', label: 'Expert', emoji: '🤖', color: 'red' }
-            ];
-    
-            const difficultyButtons = document.createElement('div');
-            difficultyButtons.className = 'flex flex-col gap-4 mb-8';
-    
-            options.forEach(option => {
-                const button = document.createElement('button');
-                button.className = `bg-${option.color}-500 text-white px-4 py-3 rounded-lg hover:bg-${option.color}-600 text-lg flex items-center justify-center gap-2`;
-                button.innerHTML = `<span>${option.emoji}</span> ${option.label}`;
-        
-                // Highlight current selection
-                if (gameState.aiDifficulty === option.id) {
-                    button.style.boxShadow = `0 0 0 3px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
-                }
-        
-                button.addEventListener('click', () => selectDifficulty(option.id));
-                difficultyButtons.appendChild(button);
-            });
-    
-            difficultyView.appendChild(difficultyButtons);
-    
-            // Back button
-            const backBtn = document.createElement('button');
-            backBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full';
-            backBtn.textContent = 'Back to Lobby';
-            backBtn.addEventListener('click', backToLobby);
-    
-            difficultyView.appendChild(backBtn);
-    
-            return difficultyView;
-        }
-        
         function renderCell(bigIndex, smallIndex) {
             const { boardStates, gameMode, playerSymbol, currentTurn, 
                    activeBoard, smallBoardWinners, darkMode } = gameState;
@@ -1671,14 +1587,6 @@
             // Active board info
             const boardInfo = document.createElement('p');
             boardInfo.className = `text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} font-medium`;
-            const difficultyEmojis = {
-                'easy': '🙂',
-                'medium': '😐',
-                'hard': '😈',
-                'expert': '🤖'
-            };
-            difficultyInfo.textContent = `Difficulty: ${gameState.aiDifficulty.charAt(0).toUpperCase() + gameState.aiDifficulty.slice(1)} ${difficultyEmojis[gameState.aiDifficulty]}`;
-            infoDiv.appendChild(difficultyInfo);
             boardInfo.textContent = activeBoard === null 
                 ? "You can play in any open grid" 
                 : `You must play in grid ${activeBoard + 1}`;
@@ -1810,7 +1718,7 @@
             const aiBtn = document.createElement('button');
             aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
-            aiBtn.addEventListener('click', showDifficultySelection);
+            aiBtn.addEventListener('click', () => startNewGame('ai'));
             
             gameButtons.appendChild(multiplayerBtn);
             gameButtons.appendChild(aiBtn);
@@ -1923,9 +1831,6 @@
                     break;
                 case 'rules':
                     appContainer.appendChild(renderRulesView());
-                    break;
-                case 'difficulty':
-                    appContainer.appendChild(renderDifficultyView());
                     break;
                 case 'game':
                     appContainer.appendChild(renderGameView());
