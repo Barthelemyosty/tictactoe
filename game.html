@@ -1105,15 +1105,15 @@
                 case '6': // Difficult
                     maxDepth = 6;
                     break;
-                case '10': // Hardcore
-                    maxDepth = 10;
+                case '15': // Hardcore
+                    maxDepth = 15;
                     break;
                 default:
                     maxDepth = 4;
             }
 
             const startTime = Date.now();
-            const timeLimit = 2000;
+            const timeLimit = 5000;
 
             for (let depth = 1; depth <= maxDepth; depth++) {
                 const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
@@ -1539,7 +1539,7 @@
                 '1': 'Easy',
                 '4': 'Normal',
                 '6': 'Difficult',
-                '10': 'Impossible'
+                '15': 'Impossible'
             };
 
             const difficultyName = difficultyNames[difficulty] || 'Unknown';
@@ -1685,7 +1685,7 @@
             mediumOption2.textContent = 'Difficult';
 
             const hardOption = document.createElement('option');
-            hardOption.value = '10'; // Mode à 8
+            hardOption.value = '15'; // Mode à 8
             hardOption.textContent = 'Impossible';
 
             difficultyDropdown.appendChild(easyOption);
