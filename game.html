@@ -769,18 +769,19 @@
 
         // Navigation functions
         function startNewGame(mode = 'ai') {
-            const difficulty = document.getElementById('difficulty').value;
-            const darkMode = gameState.darkMode; // Save current dark mode setting
+            const difficultyDropdown = document.getElementById('difficulty');
+            const difficulty = difficultyDropdown ? difficultyDropdown.value : 'medium'; // Valeur par défaut si l'élément n'existe pas
+            const darkMode = gameState.darkMode; // Sauvegardez le paramètre du mode sombre
             gameState = {...INITIAL_GAME_STATE};
-            gameState.darkMode = darkMode; // Restore dark mode setting
+            gameState.darkMode = darkMode; // Restaurez le paramètre du mode sombre
             gameState.view = 'game';
             gameState.gameMode = mode;
             gameState.playerSymbol = mode === 'ai' ? 'X' : null;
-            gameState.difficulty = difficulty; // Ajouter la difficulté à l'état du jeu
-            
+            gameState.difficulty = difficulty; // Ajoutez la difficulté à l'état du jeu
+
+            console.log("New game state:", gameState); // Ajoutez ceci pour le débogage
             renderView();
         }
-        
         function showRules() {
             gameState.view = 'rules';
             renderView();
