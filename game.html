@@ -820,17 +820,17 @@
             let bestMove = null;
             let maxDepth;
             switch (difficulty) {
-                    case '3': // Easy
-                        maxDepth = 3;
+                    case '2': // Easy
+                        maxDepth = 2;
                         break;
-                    case '5': // Normal
-                        maxDepth = 5;
+                    case '4': // Normal
+                        maxDepth = 4;
                         break;
                     case '6': // difficult
                         maxDepth = 6;
                         break;
-                    case '8': // Hardcore
-                        maxDepth = 8;
+                    case '9': // Hardcore
+                        maxDepth = 9;
                         break;
                     default:
                         maxDepth = 5; // Valeur par défaut si la difficulté n'est pas reconnue
@@ -1785,11 +1785,11 @@
             difficultyDropdown.className = 'difficulty-dropdown';
 
             const easyOption = document.createElement('option');
-            easyOption.value = '3'; // Mode à 4
+            easyOption.value = '2'; // Mode à 4
             easyOption.textContent = 'Easy';
 
             const mediumOption1 = document.createElement('option');
-            mediumOption1.value = '5'; // Mode à 6
+            mediumOption1.value = '4'; // Mode à 6
             mediumOption1.textContent = 'Normal';
             mediumOption1.selected = true; // Définir cette option comme sélectionnée par défaut
 
@@ -1798,8 +1798,8 @@
             mediumOption2.textContent = 'Difficult';
 
             const hardOption = document.createElement('option');
-            hardOption.value = '8'; // Mode à 8
-            hardOption.textContent = 'Hardcore';
+            hardOption.value = '9'; // Mode à 8
+            hardOption.textContent = 'Impossible';
 
             difficultyDropdown.appendChild(easyOption);
             difficultyDropdown.appendChild(mediumOption1);
