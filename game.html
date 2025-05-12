@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1659,68 +1658,89 @@
         }
 
         function renderGameOverModal() {
-            const { gameWinner, gameMode, playerSymbol, darkMode } = gameState;
-            
+            const { gameWinner, gameMode, playerSymbol, darkMode, difficulty } = gameState;
+
             if (!gameWinner) return null;
-            
+
             const theme = darkMode ? 'dark' : 'light';
-            
+
             let message = "";
             let iconSymbol = "";
-            
+            let additionalInfo = ""; // Nouvelle variable pour les informations supplémentaires
+
+            // Mapper les valeurs de difficulté aux noms
+            const difficultyNames = {
+                '2': 'Easy',
+                '4': 'Normal',
+                '6': 'Difficult',
+                '9': 'Impossible'
+            };
+
+            const difficultyName = difficultyNames[difficulty] || 'Unknown';
+
             if (gameWinner === 'draw') {
-                message = "Draw!";
+                message = "The game ended in a draw.";
                 iconSymbol = "🤝";
+                additionalInfo = "Both players played well.";
             } else if (gameMode === 'ai') {
-                message = gameWinner === playerSymbol ? "You won!" : "AI won!";
+                message = gameWinner === playerSymbol ? "You won." : "AI won.";
                 iconSymbol = gameWinner === playerSymbol ? "🏆" : "🤖";
+                additionalInfo = gameWinner === playerSymbol ? `You defeated the AI at level ${difficultyName}.` : `The AI won at level ${difficultyName}.`;
             } else {
-                message = `Player ${gameWinner} won!`;
+                message = `Player ${gameWinner} won.`;
                 iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
+                additionalInfo = `Player ${gameWinner} played well.`;
             }
-            
+
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
-            
+
             const modal = document.createElement('div');
             modal.className = `modal-content ${theme === 'dark' ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border`;
-            
+
             const header = document.createElement('div');
             header.className = 'modal-header';
-            
+
             const icon = document.createElement('div');
             icon.className = 'text-5xl mb-4';
             icon.textContent = iconSymbol;
-            
+
             const title = document.createElement('h2');
             title.className = 'text-2xl font-bold mb-2';
             title.textContent = message;
-            
+
+            const info = document.createElement('p');
+            info.className = 'text-lg mb-4';
+            info.textContent = additionalInfo;
+
             header.appendChild(icon);
             header.appendChild(title);
-            
+            header.appendChild(info);
+
             const buttons = document.createElement('div');
             buttons.className = window.innerWidth < 400 ? 'modal-buttons flex flex-col gap-2' : 'modal-buttons flex gap-2';
-            
+
             const newGameBtn = document.createElement('button');
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
             newGameBtn.textContent = 'New Game';
             newGameBtn.addEventListener('click', () => startNewGame(gameMode));
-            
+
             const lobbyBtn = document.createElement('button');
             lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex-1';
             lobbyBtn.textContent = 'Back to Lobby';
             lobbyBtn.addEventListener('click', backToLobby);
-            
+
             buttons.appendChild(newGameBtn);
             buttons.appendChild(lobbyBtn);
-            
+
             modal.appendChild(header);
             modal.appendChild(buttons);
             overlay.appendChild(modal);
-            
+
             return overlay;
         }
+
+
 
         function renderLobbyView() {
             const { darkMode } = gameState;
