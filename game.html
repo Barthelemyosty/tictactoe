@@ -779,13 +779,13 @@
 
             // Choisir aléatoirement le symbole du joueur
             gameState.playerSymbol = mode === 'ai' ? (Math.random() < 0.5 ? 'X' : 'O') : null;
-            // Vérifiez si l'IA doit commencer
-            if (mode === 'ai' && gameState.playerSymbol === 'O') {
-                setTimeout(() => simulateOpponentMove(), 1000);
-            }
 
-            console.log("New game state:", gameState); // Ajoutez ceci pour le débogage
             renderView();
+
+            if (mode === 'ai') {
+                const modal = renderFirstPlayerModal();
+                document.body.appendChild(modal);
+            }
         }
         
         function showRules() {
@@ -1801,16 +1801,66 @@
 
         function renderGameView() {
             const container = document.createElement('div');
-            
+
             container.appendChild(renderGameInfo());
             container.appendChild(renderGameBoard());
-            
+
             const modal = renderGameOverModal();
-            if (modal) {
+            if (modal && !document.querySelector('.modal-overlay')) {
                 container.appendChild(modal);
             }
-            
+        
             return container;
+        }
+
+        function renderFirstPlayerModal() {
+            const { playerSymbol, darkMode } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+
+            const modal = document.createElement('div');
+            modal.className = `modal-content ${theme === 'dark' ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border`;
+
+            const header = document.createElement('div');
+            header.className = 'modal-header';
+
+            const icon = document.createElement('div');
+            icon.className = 'text-5xl mb-4';
+            icon.textContent = playerSymbol === 'X' ? '❌' : '⭕';
+
+            const title = document.createElement('h2');
+            title.className = 'text-2xl font-bold mb-2';
+            title.textContent = `You are playing as ${playerSymbol}`;
+
+            const info = document.createElement('p');
+            info.className = 'text-lg mb-4';
+            info.textContent = playerSymbol === 'X' ? 'You go first!' : 'AI goes first!';
+        
+            header.appendChild(icon);
+            header.appendChild(title);
+            header.appendChild(info);
+
+            const buttons = document.createElement('div');
+            buttons.className = 'modal-buttons flex gap-2';
+
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
+            continueBtn.textContent = 'Continue';
+            continueBtn.addEventListener('click', () => {
+                overlay.remove();
+                if (playerSymbol === 'O') {
+                    setTimeout(() => simulateOpponentMove(), 1000);
+                }
+            });
+
+            buttons.appendChild(continueBtn);
+            modal.appendChild(header);
+            modal.appendChild(buttons);
+            overlay.appendChild(modal);
+
+            return overlay;
         }
 
         function renderView() {
