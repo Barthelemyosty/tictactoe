@@ -769,18 +769,25 @@
         // Navigation functions
         function startNewGame(mode = 'ai') {
             const difficultyDropdown = document.getElementById('difficulty');
-            const difficulty = difficultyDropdown ? difficultyDropdown.value : gameState.difficulty
+            const difficulty = difficultyDropdown ? difficultyDropdown.value : gameState.difficulty;
             const darkMode = gameState.darkMode; // Sauvegardez le paramètre du mode sombre
             gameState = {...INITIAL_GAME_STATE};
             gameState.darkMode = darkMode; // Restaurez le paramètre du mode sombre
             gameState.view = 'game';
             gameState.gameMode = mode;
-            gameState.playerSymbol = mode === 'ai' ? 'X' : null;
             gameState.difficulty = difficulty; // Ajoutez la difficulté à l'état du jeu
+
+            // Choisir aléatoirement le symbole du joueur
+            gameState.playerSymbol = mode === 'ai' ? (Math.random() < 0.5 ? 'X' : 'O') : null;
+            // Vérifiez si l'IA doit commencer
+            if (mode === 'ai' && gameState.playerSymbol === 'O') {
+                setTimeout(() => simulateOpponentMove(), 1000);
+            }
 
             console.log("New game state:", gameState); // Ajoutez ceci pour le débogage
             renderView();
         }
+        
         function showRules() {
             gameState.view = 'rules';
             renderView();
@@ -1114,6 +1121,19 @@
 
             const startTime = Date.now();
             const timeLimit = 5000;
+
+            // Vérifiez si c'est le premier tour de l'IA
+            const isFirstMove = boardStates.every(board => board.every(cell => cell === null));
+
+            if (isFirstMove) {
+                // Choisissez un mouvement aléatoire pour le premier tour
+                const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
+                if (validMoves.length > 0) {
+                    const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    handleSquareClick(bigIndex, smallIndex);
+                    return;
+                }
+            }
 
             for (let depth = 1; depth <= maxDepth; depth++) {
                 const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
