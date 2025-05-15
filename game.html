@@ -13,6 +13,76 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
+      
+        /* Animation de rebond */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: scale(1);
+            }
+            40% {
+                transform: scale(1.2);
+            }
+            60% {
+                transform: scale(0.9);
+            }
+        }
+
+        /* Appliquez l'animation de rebond aux symboles */
+        .symbol.bounce {
+            animation: bounce 0.5s;
+        }
+
+        /* Animation d'entrée */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInlayout {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Animation de sortie */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Appliquer l'animation d'entrée aux layouts */
+        .lobby-view, .game-view, .rules-view {
+            animation: fadeInlayout 0.3s ease-in-out;
+        }
+
+        /* Appliquer l'animation de sortie aux layouts */
+        .lobby-view.exit, .game-view.exit, .rules-view.exit {
+            animation: fadeOut 0.3s ease-in-out;
+        }
+        /* Appliquer l'animation d'entrée aux messages */
+        .tooltip, .modal-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        /* Appliquer l'animation de sortie aux messages */
+        .tooltip.exit, .modal-content.exit {
+            animation: fadeOut 0.3s ease-in-out;
+        }
+
 
         /* Transitions for theme changes */
         body, div, button, p, h1, h2, footer {
@@ -627,6 +697,14 @@
     <div id="tooltip" class="tooltip"></div>
 
     <script>
+         
+        // Fonction pour fermer un message avec animation
+        function closeMessage(element) {
+            element.classList.add('exit');
+            setTimeout(() => {
+                element.remove();
+            }, 100); // Attendre la fin de l'animation de sortie
+        }
         // Constants for reuse
         const INITIAL_GAME_STATE = {
            view: 'lobby', // lobby, game, rules
@@ -743,6 +821,8 @@
             const tooltip = document.getElementById('tooltip');
             tooltip.textContent = message;
             tooltip.style.display = 'block';
+            tooltip.classList.remove('exit');
+            tooltip.classList.add('tooltip');
             
             setTimeout(() => {
                 gameState.tooltipVisible = false;
@@ -1112,8 +1192,8 @@
                 case '6': // Difficult
                     maxDepth = 6;
                     break;
-                case '15': // Hardcore
-                    maxDepth = 15;
+                case '10': // Hardcore
+                    maxDepth = 10;
                     break;
                 default:
                     maxDepth = 4;
@@ -1260,17 +1340,17 @@
             }
             return true;
         }
-        // Handle board square click
+      
         function handleSquareClick(bigIndex, smallIndex) {
-            const { gameWinner, gameMode, currentTurn, playerSymbol, 
-                   activeBoard, smallBoardWinners, boardStates } = gameState;
-            
+            const { gameWinner, gameMode, currentTurn, playerSymbol,
+           activeBoard, smallBoardWinners, boardStates } = gameState;
+
             // Early returns for invalid moves
-            if (gameWinner || 
+            if (gameWinner ||
                 (activeBoard !== null && activeBoard !== bigIndex) ||
                 smallBoardWinners[bigIndex] !== null ||
                 boardStates[bigIndex][smallIndex] !== null) {
-                
+
                 // Show appropriate tooltip message
                 if (gameWinner) return;
                 if (activeBoard !== null && activeBoard !== bigIndex) {
@@ -1316,7 +1396,8 @@
                 smallBoardWinners: newSmallBoardWinners,
                 currentTurn: currentTurn === 'X' ? 'O' : 'X',
                 activeBoard: nextActiveBoard,
-                gameWinner: newGameWinner
+                gameWinner: newGameWinner,
+                lastMove: { bigIndex, smallIndex } // Ajoutez cette ligne pour suivre le dernier mouvement
             };
 
             // Re-render the view with updated state
@@ -1328,44 +1409,62 @@
             }
         }
 
+
         // Render functions
         function renderCell(bigIndex, smallIndex) {
-            const { boardStates, gameMode, playerSymbol, currentTurn, 
-                   activeBoard, smallBoardWinners, darkMode } = gameState;
-            
+            const { boardStates, gameMode, playerSymbol, currentTurn,
+                   activeBoard, smallBoardWinners, darkMode, lastMove } = gameState;
+
             const value = boardStates[bigIndex][smallIndex];
             const theme = darkMode ? 'dark' : 'light';
-            
+
             let cellClass = "cell ";
-            
+
             if (value === null) {
                 const isInteractive = (gameMode === 'ai' && playerSymbol === currentTurn) || gameMode === 'local';
                 const isValidTarget = (activeBoard === null || activeBoard === bigIndex) && smallBoardWinners[bigIndex] === null;
-                
+
                 cellClass += theme === 'dark' ? 'bg-gray-800 ' : 'bg-white ';
-                
+
                 if (isInteractive && isValidTarget) {
                     cellClass += theme === 'dark' ? 'hover:bg-gray-600 ' : 'hover:bg-blue-100 ';
                     cellClass += 'valid';
                 }
             } else {
                 cellClass += theme === 'dark' ? 'bg-gray-800 ' : 'bg-white ';
-                cellClass += value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold';
             }
-            
+
             const cell = document.createElement('div');
             cell.className = cellClass;
-            cell.textContent = value || '';
+
+            if (value) {
+                const symbol = document.createElement('span');
+                symbol.className = `symbol ${value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold'}`;
+                symbol.textContent = value;
+
+                // Appliquez l'animation uniquement si c'est le dernier symbole posé
+                if (lastMove && lastMove.bigIndex === bigIndex && lastMove.smallIndex === smallIndex) {
+                    symbol.classList.add('bounce');
+                    setTimeout(() => {
+                        symbol.classList.remove('bounce');
+                    }, 500); // Supprimez la classe après la fin de l'animation
+                }
+
+                cell.appendChild(symbol);
+            }
 
             const columnPosition = smallIndex % 3;
             cell.dataset.column = columnPosition;
-            
+            cell.dataset.row = Math.floor(smallIndex / 3);
+
             if (cellClass.includes('valid')) {
                 cell.addEventListener('click', () => handleSquareClick(bigIndex, smallIndex));
             }
-            
+
             return cell;
         }
+
+
 
         function renderSmallBoard(index) {
             const { activeBoard, smallBoardWinners, darkMode } = gameState;
@@ -1559,7 +1658,7 @@
                 '1': 'Easy',
                 '4': 'Normal',
                 '6': 'Difficult',
-                '15': 'Impossible'
+                '10': 'Impossible'
             };
 
             const difficultyName = difficultyNames[difficulty] || 'Unknown';
@@ -1609,12 +1708,18 @@
             const newGameBtn = document.createElement('button');
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
             newGameBtn.textContent = 'New Game';
-            newGameBtn.addEventListener('click', () => startNewGame(gameMode));
+            newGameBtn.addEventListener('click', () => {
+                  closeMessage(overlay);
+                  startNewGame(gameMode);
+            });
 
             const lobbyBtn = document.createElement('button');
             lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex-1';
             lobbyBtn.textContent = 'Back to Lobby';
-            lobbyBtn.addEventListener('click', backToLobby);
+            lobbyBtn.addEventListener('click', () => {
+                  closeMessage(overlay);
+                  backToLobby();
+            });
 
             buttons.appendChild(newGameBtn);
             buttons.appendChild(lobbyBtn);
@@ -1705,7 +1810,7 @@
             mediumOption2.textContent = 'Difficult';
 
             const hardOption = document.createElement('option');
-            hardOption.value = '15'; // Mode à 8
+            hardOption.value = '10'; // Mode à 8
             hardOption.textContent = 'Impossible';
 
             difficultyDropdown.appendChild(easyOption);
@@ -1849,7 +1954,7 @@
             continueBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
             continueBtn.textContent = 'Continue';
             continueBtn.addEventListener('click', () => {
-                overlay.remove();
+                closeMessage(overlay);
                 if (playerSymbol === 'O') {
                     setTimeout(() => simulateOpponentMove(), 1000);
                 }
