@@ -248,6 +248,14 @@
         .hover\:bg-green-600:hover {
             background-color: #059669;
         }
+        
+        /* Ajoutez cette classe dans votre section CSS */
+       .hover\:bg-yellow-400:hover {
+            background-color: #facc15; /* Code couleur pour orange-600 */
+       }
+       .hover\:bg-emerald-600:hover {
+           background-color: #84cc16; /* Code couleur pour vert émeraude-600 */
+       }
 
         /* Layout utilities */
         .flex {
@@ -1702,7 +1710,7 @@
             infoDiv.appendChild(modeInfo);
 
             // Player info
-            if (gameMode === 'local' || gameMode === 'timed') {
+            if (gameMode === 'local') {
                 const playerInfo = document.createElement('div');
                 playerInfo.className = 'player-info';
 
@@ -1722,11 +1730,12 @@
                 playerInfo.appendChild(playerO);
                 infoDiv.appendChild(playerInfo);
             }
+            const aiSymbol = playerSymbol === 'X' ? 'O' : 'X';
 
-            if (gameMode === 'ai') {
+            if (gameMode === 'ai' || gameMode === 'timed') {
                 const turnInfo = document.createElement('p');
                 turnInfo.className = 'text-lg mb-2';
-                turnInfo.textContent = currentTurn === playerSymbol ? 'Your turn' : "AI is thinking...";
+                turnInfo.textContent = currentTurn === playerSymbol ? `👤 Your turn: ${playerSymbol}` : gameMode === 'ai' ? `🤖 AI turn: ${aiSymbol}` : `🤖 AI turn: ${aiSymbol}`;
                 infoDiv.appendChild(turnInfo);
             }
 
@@ -1747,15 +1756,6 @@
                 timers.appendChild(timerO);
                 infoDiv.appendChild(timers);
             }
-
-            // Active board info
-            const boardInfo = document.createElement('p');
-            boardInfo.className = `text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} font-medium`;
-            boardInfo.textContent = activeBoard === null
-                ? "You can play in any open grid"
-                : `You must play in grid ${activeBoard + 1}`;
-            infoDiv.appendChild(boardInfo);
-
             // Game controls
             const controls = document.createElement('div');
             controls.className = 'mt-6 flex justify-center gap-2';
@@ -1910,7 +1910,7 @@
             firstRow.className = 'flex flex-col gap-4';
 
             const aiBtn = document.createElement('button');
-            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
+            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-emerald-600 text-lg flex items-center justify-center gap-2';
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
             aiBtn.addEventListener('click', () => startNewGame('ai'));
 
