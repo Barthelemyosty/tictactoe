@@ -1905,60 +1905,41 @@
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'flex flex-col gap-4';
 
-            const gameButtons = document.createElement('div');
-            gameButtons.className = 'button-grid';
-
-            const multiplayerBtn = document.createElement('button');
-            multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
-            multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
-            multiplayerBtn.addEventListener('click', () => startNewGame('local'));
+            // Première ligne de boutons
+            const firstRow = document.createElement('div');
+            firstRow.className = 'flex flex-col gap-4';
 
             const aiBtn = document.createElement('button');
-            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
+            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
             aiBtn.addEventListener('click', () => startNewGame('ai'));
 
-            const timedBtn = document.createElement('button');
-            timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
-            timedBtn.innerHTML = '<span>⏱️</span> Timed Mode';
-            timedBtn.addEventListener('click', () => startNewGame('timed'));
-
-            gameButtons.appendChild(multiplayerBtn);
-            gameButtons.appendChild(aiBtn);
-            gameButtons.appendChild(timedBtn);
-
-            const rulesBtn = document.createElement('button');
-            rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
-            rulesBtn.textContent = 'Game Rules';
-            rulesBtn.addEventListener('click', showRules);
-
-            // Ajoutez le menu déroulant pour le niveau de difficulté
             const difficultySelector = document.createElement('div');
             difficultySelector.className = 'difficulty-selector';
 
             const difficultyLabel = document.createElement('label');
             difficultyLabel.setAttribute('for', 'difficulty');
-            difficultyLabel.textContent = 'Difficulty Level:';
+            difficultyLabel.textContent = 'Difficulty:';
 
             const difficultyDropdown = document.createElement('select');
             difficultyDropdown.id = 'difficulty';
             difficultyDropdown.className = 'difficulty-dropdown';
 
             const easyOption = document.createElement('option');
-            easyOption.value = '1'; // Mode à 4
+            easyOption.value = '1';
             easyOption.textContent = 'Easy';
 
             const mediumOption1 = document.createElement('option');
-            mediumOption1.value = '4'; // Mode à 6
+            mediumOption1.value = '4';
             mediumOption1.textContent = 'Normal';
-            mediumOption1.selected = true; // Définir cette option comme sélectionnée par défaut
+            mediumOption1.selected = true;
 
             const mediumOption2 = document.createElement('option');
-            mediumOption2.value = '6'; // Mode à 7
+            mediumOption2.value = '6';
             mediumOption2.textContent = 'Difficult';
 
             const hardOption = document.createElement('option');
-            hardOption.value = '9'; // Mode à 8
+            hardOption.value = '9';
             hardOption.textContent = 'Impossible';
 
             difficultyDropdown.appendChild(easyOption);
@@ -1969,19 +1950,48 @@
             difficultySelector.appendChild(difficultyLabel);
             difficultySelector.appendChild(difficultyDropdown);
 
-            buttonContainer.appendChild(gameButtons);
-            buttonContainer.appendChild(difficultySelector);
+            firstRow.appendChild(aiBtn);
+            firstRow.appendChild(difficultySelector);
+
+            // Deuxième ligne de boutons
+            const secondRow = document.createElement('div');
+            secondRow.className = 'flex flex-col gap-4';
+
+            const multiplayerBtn = document.createElement('button');
+            multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
+            multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
+            multiplayerBtn.addEventListener('click', () => startNewGame('local'));
+
+            const timedBtn = document.createElement('button');
+            timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
+            timedBtn.innerHTML = '<span>⏱️</span> Timed Mode';
+            timedBtn.addEventListener('click', () => startNewGame('timed'));
+
+            secondRow.appendChild(multiplayerBtn);
+            secondRow.appendChild(timedBtn);
+
+            // Bouton des règles
+            const rulesBtn = document.createElement('button');
+            rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
+            rulesBtn.textContent = 'Game Rules';
+            rulesBtn.addEventListener('click', showRules);
+
+            buttonContainer.appendChild(firstRow);
+            buttonContainer.appendChild(secondRow);
             buttonContainer.appendChild(rulesBtn);
             lobby.appendChild(buttonContainer);
 
             difficultyDropdown.addEventListener('change', function() {
                 gameState.difficulty = this.value;
-                console.log('Difficulty level changed to:', gameState.difficulty);
-                showTooltip(`Difficulty level set to: ${gameState.difficulty}`);
+                console.log('Difficulty changed to:', gameState.difficulty);
+                showTooltip(`Difficulty set to: ${gameState.difficulty}`);
             });
 
             return lobby;
         }
+
+
+
 
         function renderRulesView() {
             const { darkMode } = gameState;
