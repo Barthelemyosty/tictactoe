@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultimate Tic Tac Toe</title>
     <style>
-
         /* Global styles */
         * {
             box-sizing: border-box;
@@ -13,7 +12,7 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-      
+
         /* Animation de rebond */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
@@ -51,7 +50,7 @@
                 opacity: 1;
             }
         }
-        
+
         /* Animation de sortie */
         @keyframes fadeOut {
             from {
@@ -77,12 +76,11 @@
         .tooltip, .modal-content {
             animation: fadeIn 0.3s ease-in-out;
         }
-        
+
         /* Appliquer l'animation de sortie aux messages */
         .tooltip.exit, .modal-content.exit {
             animation: fadeOut 0.3s ease-in-out;
         }
-
 
         /* Transitions for theme changes */
         body, div, button, p, h1, h2, footer {
@@ -188,7 +186,6 @@
         }
 
         /* Common button styles */
-
         .difficulty-selector {
             margin-bottom: 16px;
             text-align: center;
@@ -227,7 +224,7 @@
         .hover\:bg-blue-600:hover {
             background-color: #2563eb;
         }
-        
+
         .bg-gray-500 {
             background-color: #6b7280;
             color: white;
@@ -431,7 +428,7 @@
                 justify-content: space-between;
                 align-items: center;
             }
-            
+
             .title-responsive {
                 flex: 1;
                 text-align: center;
@@ -456,10 +453,10 @@
             .game-board {
                 gap: 6px;
                 padding: 6px;
-            }   
+            }
 
             .cell {
-                width: auto; 
+                width: auto;
                 height: auto;
                 aspect-ratio: 1 / 1;
                 min-width: 20px;
@@ -470,7 +467,7 @@
                 gap: 0px;
                 padding: 1px;
             }
-            
+
             .button-grid {
                 grid-template-columns: 1fr;
             }
@@ -579,25 +576,25 @@
             margin-bottom: 24px;
             text-align: center;
         }
-        
+
         .game-info-header {
             position: relative;
             margin-bottom: 16px;
             text-align: center;
         }
-        
+
         .player-info {
             display: flex;
             justify-content: center;
             gap: 16px;
             margin-bottom: 8px;
         }
-        
+
         .player-box {
             padding: 8px 16px;
             border-radius: 0.5rem;
         }
-        
+
         /* Modal styles */
         .modal-overlay {
             position: fixed;
@@ -611,24 +608,24 @@
             justify-content: center;
             z-index: 50;
         }
-        
+
         .modal-content {
             border-radius: 0.5rem;
             max-width: 384px;
             width: 100%;
             padding: 24px;
         }
-        
+
         .modal-header {
             text-align: center;
             margin-bottom: 24px;
         }
-        
+
         .modal-buttons {
             display: flex;
             gap: 12px;
         }
-        
+
         /* Tooltip */
         .tooltip {
             position: fixed;
@@ -644,38 +641,38 @@
             z-index: 50;
             display: none;
         }
-        
+
         /* Utilities for positioning */
         .relative {
             position: relative;
         }
-        
+
         .absolute {
             position: absolute;
         }
-        
+
         .right-0 {
             right: 0;
         }
-        
+
         .top-0 {
             top: 0;
         }
-        
+
         /* Footer */
         footer {
             margin-top: 32px;
             text-align: center;
             font-size: 0.875rem;
         }
-        
+
         /* Button layouts */
         .button-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
         }
-        
+
         @media (min-width: 768px) {
             .button-grid {
                 grid-template-columns: 1fr 1fr;
@@ -688,7 +685,7 @@
         <div class="container">
             <!-- Views will be dynamically inserted here -->
         </div>
-        
+
         <footer class="text-gray-500">
             Ultimate Tic Tac Toe © 2025
         </footer>
@@ -697,7 +694,6 @@
     <div id="tooltip" class="tooltip"></div>
 
     <script>
-         
         // Fonction pour fermer un message avec animation
         function closeMessage(element) {
             element.classList.add('exit');
@@ -717,7 +713,12 @@
            gameWinner: null,
            tooltipMessage: '',
            tooltipVisible: false,
-           gameMode: 'ai', // 'ai' or 'local'
+           gameMode: 'ai', // 'ai' or 'local' or 'timed'
+           playerTimes: {
+               X: 60, // 60 secondes pour le joueur X
+               O: 60  // 60 secondes pour le joueur O
+           },
+           activeTimer: null,
            darkMode: false,
            difficulty: 'medium' // Ajoutez cette ligne pour le niveau de difficulté
        };
@@ -734,25 +735,25 @@
 
         // Helper functions
         function checkWinSmallBoard(board) {
-            return WIN_PATTERNS.some(([a, b, c]) => 
+            return WIN_PATTERNS.some(([a, b, c]) =>
                 board[a] && board[a] === board[b] && board[a] === board[c]
             );
         }
-        
+
         function checkWinBigBoard(winners) {
-            return WIN_PATTERNS.some(([a, b, c]) => 
+            return WIN_PATTERNS.some(([a, b, c]) =>
                 winners[a] && winners[a] !== 'draw' && winners[a] === winners[b] && winners[a] === winners[c]
             );
         }
-        
+
         function isBoardFull(board) {
             return board.every(cell => cell !== null);
         }
-        
+
         function isBigBoardFull(winners, boardStates) {
             if (winners.every(winner => winner !== null)) return true;
-            
-            return !boardStates.some((board, i) => 
+
+            return !boardStates.some((board, i) =>
                 winners[i] === null && board.some(cell => cell === null)
             );
         }
@@ -817,13 +818,13 @@
         function showTooltip(message) {
             gameState.tooltipMessage = message;
             gameState.tooltipVisible = true;
-            
+
             const tooltip = document.getElementById('tooltip');
             tooltip.textContent = message;
             tooltip.style.display = 'block';
             tooltip.classList.remove('exit');
             tooltip.classList.add('tooltip');
-            
+
             setTimeout(() => {
                 gameState.tooltipVisible = false;
                 tooltip.style.display = 'none';
@@ -833,49 +834,101 @@
         function toggleDarkMode() {
             gameState.darkMode = !gameState.darkMode;
             document.body.classList.toggle('dark', gameState.darkMode);
-            
+
             // Mettre à jour le fond du body
             document.body.classList.toggle('bg-gray-100', !gameState.darkMode);
             document.body.classList.toggle('bg-gray-900', gameState.darkMode);
-            
+
             // Mettre à jour également la div app qui couvre tout l'écran
             const appDiv = document.getElementById('app');
             appDiv.classList.toggle('bg-gray-100', !gameState.darkMode);
             appDiv.classList.toggle('bg-gray-900', gameState.darkMode);
-            
+
             renderView();
         }
 
         // Navigation functions
         function startNewGame(mode = 'ai') {
             const difficultyDropdown = document.getElementById('difficulty');
-            const difficulty = difficultyDropdown ? difficultyDropdown.value : gameState.difficulty;
+            const difficulty = mode === 'timed' ? '4' : (difficultyDropdown ? difficultyDropdown.value : gameState.difficulty);
             const darkMode = gameState.darkMode; // Sauvegardez le paramètre du mode sombre
             gameState = {...INITIAL_GAME_STATE};
             gameState.darkMode = darkMode; // Restaurez le paramètre du mode sombre
             gameState.view = 'game';
             gameState.gameMode = mode;
             gameState.difficulty = difficulty; // Ajoutez la difficulté à l'état du jeu
-
             // Choisir aléatoirement le symbole du joueur
-            gameState.playerSymbol = mode === 'ai' ? (Math.random() < 0.5 ? 'X' : 'O') : null;
+            gameState.playerSymbol = Math.random() < 0.5 ? 'X' : 'O';
+
+            // Initialiser les chronomètres pour le mode "contre la montre"
+            if (mode === 'timed') {
+                gameState.playerTimes = {
+                    X: 60,
+                    O: 60
+                };
+                // Ne pas démarrer le chronomètre immédiatement
+            }
 
             renderView();
 
-            if (mode === 'ai') {
+            if (mode === 'ai' || mode === 'timed') {
                 const modal = renderFirstPlayerModal();
                 document.body.appendChild(modal);
             }
         }
-        
+
+
         function showRules() {
             gameState.view = 'rules';
             renderView();
         }
-        
+
         function backToLobby() {
+            // Arrêter le chronomètre s'il est en cours d'exécution
+            if (gameState.activeTimer) {
+                clearInterval(gameState.activeTimer);
+                gameState.activeTimer = null;
+            }
+
+            // Réinitialiser les temps des joueurs
+            gameState.playerTimes = {
+                X: 60,
+                O: 60
+            };
+
+            // Réinitialiser l'état du jeu
+            gameState = {...INITIAL_GAME_STATE};
             gameState.view = 'lobby';
+            gameState.preventAIMove = true; // Ajoutez un drapeau pour empêcher les mouvements de l'IA
             renderView();
+        }
+        // Fonctions timed mode
+        function startTimer(player) {
+            // Assurez-vous qu'il n'y a pas de chronomètres multiples en cours d'exécution
+            if (gameState.activeTimer) {
+                clearInterval(gameState.activeTimer);
+                gameState.activeTimer = null;
+            }
+
+            gameState.activeTimer = setInterval(() => {
+                if (gameState.playerTimes[player] > 0 && !gameState.gameWinner) {
+                    gameState.playerTimes[player]--;
+                    renderView();
+                } else {
+                    clearInterval(gameState.activeTimer);
+                    if (!gameState.gameWinner) {
+                        gameState.gameWinner = player === 'X' ? 'O' : 'X';
+                    }
+                    renderView();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (gameState.activeTimer) {
+                clearInterval(gameState.activeTimer);
+                gameState.activeTimer = null;
+            }
         }
 
         // Transposition table for memoization
@@ -907,13 +960,19 @@
             // Evaluate next board advantage
             score += evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 40;
 
+            // Évaluez les fourches
+            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
+                if (smallBoardWinners[boardIdx] === null) {
+                score += evaluateForks(boardStates[boardIdx], aiSymbol);
+                }
+           }
             return score;
         }
 
         // Evaluate the big board
         function evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
-        
+
             for (const pattern of WIN_PATTERNS) {
                 const [a, b, c] = pattern;
                 const aiCount = pattern.filter(idx => smallBoardWinners[idx] === aiSymbol).length;
@@ -928,7 +987,6 @@
 
             return score;
         }
-
         // Evaluate strategic positions
         function evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
@@ -1007,6 +1065,38 @@
                 if ([0, 2, 6, 8, 4].includes(activeBoard)) score += 10;
             } else {
                 score += 15;
+            }
+
+            return score;
+        }
+
+        function evaluateForks(board, symbol) {
+            let score = 0;
+            const opponentSymbol = symbol === 'X' ? 'O' : 'X';
+
+            // Vérifiez chaque case vide pour voir si elle crée une fourche
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    const tempBoard = [...board];
+                    tempBoard[i] = symbol;
+
+                    // Vérifiez si ce mouvement crée deux menaces de victoire
+                    let forkCount = 0;
+                    for (const pattern of WIN_PATTERNS) {
+                        const [a, b, c] = pattern;
+                        const symbolCount = [a, b, c].filter(idx => tempBoard[idx] === symbol).length;
+                        const emptyCount = [a, b, c].filter(idx => tempBoard[idx] === null).length;
+
+                        if (symbolCount === 2 && emptyCount === 1) {
+                            forkCount++;
+                        }
+                    }
+
+                    // Si deux menaces de victoire sont créées, c'est une fourche
+                    if (forkCount >= 2) {
+                        score += 80; // Attribuez un score élevé pour les fourches
+                    }
+                }
             }
 
             return score;
@@ -1174,7 +1264,10 @@
 
         // Simulate opponent move
         function simulateOpponentMove() {
-            const { activeBoard, boardStates, smallBoardWinners, currentTurn, difficulty } = gameState;
+            if (gameState.preventAIMove) {
+                return;
+            }
+            const { activeBoard, boardStates, smallBoardWinners, currentTurn, difficulty, gameMode } = gameState;
             const opponentSymbol = currentTurn;
             const playerSymbol = opponentSymbol === 'X' ? 'O' : 'X';
 
@@ -1192,15 +1285,26 @@
                 case '6': // Difficult
                     maxDepth = 6;
                     break;
-                case '10': // Hardcore
-                    maxDepth = 10;
+                case '9': // Hardcore
+                    maxDepth = 9;
                     break;
                 default:
                     maxDepth = 4;
             }
 
             const startTime = Date.now();
-            const timeLimit = 5000;
+            const timeLimit = 6000; // 6 secondes
+
+            for (let depth = 1; depth <= maxDepth; depth++) {
+                const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
+
+                if (Date.now() - startTime > timeLimit) {
+                    console.log(`Max depth reached: ${depth-1}`);
+                    break;
+                }
+
+                bestMove = move;
+            }
 
             // Vérifiez si c'est le premier tour de l'IA
             const isFirstMove = boardStates.every(board => board.every(cell => cell === null));
@@ -1210,7 +1314,8 @@
                 const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
                 if (validMoves.length > 0) {
                     const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    handleSquareClick(bigIndex, smallIndex);
+                    const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                    setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
                     return;
                 }
             }
@@ -1227,16 +1332,17 @@
             }
 
             if (bestMove) {
-                handleSquareClick(bestMove[0], bestMove[1]);
+                const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                setTimeout(() => handleSquareClick(bestMove[0], bestMove[1]), delay);
             } else {
                 const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
                 if (validMoves.length > 0) {
                     const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    handleSquareClick(bigIndex, smallIndex);
+                    const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                    setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
                 }
             }
         }
-
         // Find best move with Minimax
         function findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol, depth) {
             const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
@@ -1340,34 +1446,40 @@
             }
             return true;
         }
-      
+
         function handleSquareClick(bigIndex, smallIndex) {
             const { gameWinner, gameMode, currentTurn, playerSymbol,
-           activeBoard, smallBoardWinners, boardStates } = gameState;
+                   activeBoard, smallBoardWinners, boardStates } = gameState;
 
-            // Early returns for invalid moves
-            if (gameWinner ||
-                (activeBoard !== null && activeBoard !== bigIndex) ||
-                smallBoardWinners[bigIndex] !== null ||
-                boardStates[bigIndex][smallIndex] !== null) {
-
-                // Show appropriate tooltip message
-                if (gameWinner) return;
-                if (activeBoard !== null && activeBoard !== bigIndex) {
-                    showTooltip("You must play in the indicated grid!");
-                } else if (smallBoardWinners[bigIndex] !== null) {
-                    showTooltip("This grid is already won!");
-                } else if (boardStates[bigIndex][smallIndex] !== null) {
-                    showTooltip("This cell is already taken!");
-                }
+            // Vérifiez si le jeu est déjà terminé
+            if (gameWinner) {
+                showTooltip("The game is already over!");
                 return;
             }
 
-            // Make the move
+            // Vérifiez si le joueur peut jouer dans la grille indiquée
+            if (activeBoard !== null && activeBoard !== bigIndex) {
+                showTooltip("You must play in the indicated grid!");
+                return;
+            }
+
+            // Vérifiez si la grille est déjà gagnée
+            if (smallBoardWinners[bigIndex] !== null) {
+                showTooltip("This grid is already won!");
+                return;
+            }
+
+            // Vérifiez si la cellule est déjà prise
+            if (boardStates[bigIndex][smallIndex] !== null) {
+                showTooltip("This cell is already taken!");
+                return;
+            }
+
+            // Faites le mouvement
             const newBoardStates = JSON.parse(JSON.stringify(boardStates));
             newBoardStates[bigIndex][smallIndex] = currentTurn;
 
-            // Check for small board win
+            // Vérifiez si la petite grille est gagnée
             const newSmallBoardWinners = [...gameState.smallBoardWinners];
             if (checkWinSmallBoard(newBoardStates[bigIndex])) {
                 newSmallBoardWinners[bigIndex] = currentTurn;
@@ -1375,13 +1487,13 @@
                 newSmallBoardWinners[bigIndex] = 'draw';
             }
 
-            // Determine next active board
+            // Déterminez la prochaine grille active
             let nextActiveBoard = smallIndex;
             if (newSmallBoardWinners[smallIndex] !== null) {
                 nextActiveBoard = null;
             }
 
-            // Check for game win
+            // Vérifiez si le jeu est gagné
             let newGameWinner = null;
             if (checkWinBigBoard(newSmallBoardWinners)) {
                 newGameWinner = currentTurn;
@@ -1389,7 +1501,7 @@
                 newGameWinner = 'draw';
             }
 
-            // Update game state
+            // Mettez à jour l'état du jeu
             gameState = {
                 ...gameState,
                 boardStates: newBoardStates,
@@ -1397,18 +1509,25 @@
                 currentTurn: currentTurn === 'X' ? 'O' : 'X',
                 activeBoard: nextActiveBoard,
                 gameWinner: newGameWinner,
-                lastMove: { bigIndex, smallIndex } // Ajoutez cette ligne pour suivre le dernier mouvement
+                lastMove: { bigIndex, smallIndex }
             };
 
             // Re-render the view with updated state
             renderView();
 
-            // In AI mode, simulate opponent move after delay
-            if (gameMode === 'ai' && !newGameWinner && gameState.currentTurn !== playerSymbol) {
+            // En mode "contre la montre", basculez les chronomètres
+            if (gameMode === 'timed') {
+                pauseTimer();
+                if (!newGameWinner) {
+                    startTimer(gameState.currentTurn);
+                }
+            }
+
+            // En mode "contre la montre" ou "ai", simulez le mouvement de l'IA après un délai
+            if ((gameMode === 'ai' || gameMode === 'timed') && !newGameWinner && gameState.currentTurn !== playerSymbol) {
                 setTimeout(() => simulateOpponentMove(), 1000);
             }
         }
-
 
         // Render functions
         function renderCell(bigIndex, smallIndex) {
@@ -1421,7 +1540,7 @@
             let cellClass = "cell ";
 
             if (value === null) {
-                const isInteractive = (gameMode === 'ai' && playerSymbol === currentTurn) || gameMode === 'local';
+                const isInteractive = (gameMode === 'ai' || gameMode === 'timed') && playerSymbol === currentTurn || gameMode === 'local';
                 const isValidTarget = (activeBoard === null || activeBoard === bigIndex) && smallBoardWinners[bigIndex] === null;
 
                 cellClass += theme === 'dark' ? 'bg-gray-800 ' : 'bg-white ';
@@ -1464,21 +1583,19 @@
             return cell;
         }
 
-
-
         function renderSmallBoard(index) {
             const { activeBoard, smallBoardWinners, darkMode } = gameState;
             const winner = smallBoardWinners[index];
             const theme = darkMode ? 'dark' : 'light';
             const viewportWidth = window.innerWidth;
-            
+
             const boardDiv = document.createElement('div');
             boardDiv.className = `small-board ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'}`;
 
             boardDiv.style.display = 'grid';
             boardDiv.style.gridTemplateColumns = 'repeat(3, 1fr)';
             boardDiv.style.gridTemplateRows = 'repeat(3, 1fr)';
-            
+
             // Active board styling
             if (activeBoard === index && winner === null) {
                 boardDiv.classList.add('active');
@@ -1488,7 +1605,7 @@
                     boardDiv.style.boxShadow = `0 0 0 4px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
                 }
             }
-            
+
             // Winner styling
             if (winner !== null) {
                 if (winner === 'draw') {
@@ -1497,16 +1614,16 @@
                     boardDiv.classList.add(winner === 'X' ? 'won-x' : 'won-o');
                 }
             }
-            
+
             if (winner !== null && winner !== 'draw') {
                 // Show winner symbol
                 const winnerOverlay = document.createElement('div');
                 winnerOverlay.className = 'winner-overlay';
-                
+
                 const symbol = document.createElement('span');
                 symbol.className = winner === 'X' ? 'text-red-500' : 'text-blue-500';
                 symbol.textContent = winner;
-                
+
                 winnerOverlay.appendChild(symbol);
                 boardDiv.appendChild(winnerOverlay);
             } else {
@@ -1515,14 +1632,14 @@
                     boardDiv.appendChild(renderCell(index, i));
                 }
             }
-            
+
             return boardDiv;
         }
 
         function renderGameBoard() {
             const { darkMode } = gameState;
             const theme = darkMode ? 'dark' : 'light';
-            
+
             const boardContainer = document.createElement('div');
             boardContainer.className = `game-board ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'}`;
 
@@ -1544,30 +1661,30 @@
                 boardContainer.style.gap = '16px';
                 boardContainer.style.padding = '16px';
             }
-            
+
             for (let i = 0; i < 9; i++) {
                 boardContainer.appendChild(renderSmallBoard(i));
             }
-            
+
             return boardContainer;
         }
 
         function renderGameInfo() {
-            const { gameMode, currentTurn, playerSymbol, activeBoard, darkMode } = gameState;
+            const { gameMode, currentTurn, playerSymbol, activeBoard, darkMode, playerTimes } = gameState;
             const theme = darkMode ? 'dark' : 'light';
-            
+
             const infoDiv = document.createElement('div');
             infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
-            
+
             // Header with title and dark mode toggle
             const header = document.createElement('div');
             header.className = 'game-info-header';
-            
+
             const title = document.createElement('h2');
             title.className = 'text-2xl font-bold';
             title.textContent = 'Ultimate Tic Tac Toe';
             header.appendChild(title);
-            
+
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
             toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
@@ -1575,75 +1692,98 @@
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
             header.appendChild(toggleBtn);
-            
+
             infoDiv.appendChild(header);
-            
+
             // Game mode info
             const modeInfo = document.createElement('p');
             modeInfo.className = 'text-xl font-semibold mb-2';
-            modeInfo.textContent = gameMode === 'ai' ? 'Mode: Solo vs AI' : 'Mode: Local Multiplayer';
+            modeInfo.textContent = gameMode === 'ai' ? 'Mode: Solo vs AI' : gameMode === 'local' ? 'Mode: Local Multiplayer' : 'Mode: Timed';
             infoDiv.appendChild(modeInfo);
-            
+
             // Player info
-            if (gameMode === 'local') {
+            if (gameMode === 'local' || gameMode === 'timed') {
                 const playerInfo = document.createElement('div');
                 playerInfo.className = 'player-info';
-                
+
                 const playerX = document.createElement('div');
-                playerX.className = `player-box ${currentTurn === 'X' ? 
-                                              (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : 
-                                              (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerX.className = `player-box ${currentTurn === 'X' ?
+                                      (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') :
+                                      (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
                 playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - Your turn' : ''}`;
-                
+
                 const playerO = document.createElement('div');
-                playerO.className = `player-box ${currentTurn === 'O' ? 
-                                              (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') : 
-                                              (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerO.className = `player-box ${currentTurn === 'O' ?
+                                      (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') :
+                                      (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
                 playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - Your turn' : ''}`;
-                
+
                 playerInfo.appendChild(playerX);
                 playerInfo.appendChild(playerO);
                 infoDiv.appendChild(playerInfo);
             }
-            
+
             if (gameMode === 'ai') {
                 const turnInfo = document.createElement('p');
                 turnInfo.className = 'text-lg mb-2';
                 turnInfo.textContent = currentTurn === playerSymbol ? 'Your turn' : "AI is thinking...";
                 infoDiv.appendChild(turnInfo);
             }
-            
+
+            // Timers for timed mode
+            if (gameMode === 'timed') {
+                const timers = document.createElement('div');
+                timers.className = 'flex justify-center gap-4 mt-4';
+
+                const timerX = document.createElement('div');
+                timerX.className = 'text-center';
+                timerX.innerHTML = `<div class="text-red-500 font-bold">X</div><div class="text-lg">${playerTimes.X}s</div>`;
+
+                const timerO = document.createElement('div');
+                timerO.className = 'text-center';
+                timerO.innerHTML = `<div class="text-blue-500 font-bold">O</div><div class="text-lg">${playerTimes.O}s</div>`;
+
+                timers.appendChild(timerX);
+                timers.appendChild(timerO);
+                infoDiv.appendChild(timers);
+            }
+
             // Active board info
             const boardInfo = document.createElement('p');
             boardInfo.className = `text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} font-medium`;
-            boardInfo.textContent = activeBoard === null 
-                ? "You can play in any open grid" 
+            boardInfo.textContent = activeBoard === null
+                ? "You can play in any open grid"
                 : `You must play in grid ${activeBoard + 1}`;
             infoDiv.appendChild(boardInfo);
-            
+
             // Game controls
             const controls = document.createElement('div');
             controls.className = 'mt-6 flex justify-center gap-2';
-            
+
             const newGameBtn = document.createElement('button');
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
             newGameBtn.textContent = 'New Game';
-            newGameBtn.addEventListener('click', () => startNewGame(gameMode));
-            
+            newGameBtn.addEventListener('click', () => {
+                if (gameState.gameMode === 'timed') {
+                    pauseTimer();
+                }
+                startNewGame(gameState.gameMode);
+            });
+
             const lobbyBtn = document.createElement('button');
             lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
             lobbyBtn.textContent = 'Back to Lobby';
             lobbyBtn.addEventListener('click', backToLobby);
-            
+
             controls.appendChild(newGameBtn);
             controls.appendChild(lobbyBtn);
             infoDiv.appendChild(controls);
-            
+
             return infoDiv;
         }
 
         function renderGameOverModal() {
-            const { gameWinner, gameMode, playerSymbol, darkMode, difficulty } = gameState;
+            const { gameWinner, gameMode, playerSymbol, darkMode, difficulty, playerTimes } = gameState;
 
             if (!gameWinner) return null;
 
@@ -1651,14 +1791,14 @@
 
             let message = "";
             let iconSymbol = "";
-            let additionalInfo = ""; // Nouvelle variable pour les informations supplémentaires
+            let additionalInfo = "";
 
             // Mapper les valeurs de difficulté aux noms
             const difficultyNames = {
                 '1': 'Easy',
                 '4': 'Normal',
                 '6': 'Difficult',
-                '10': 'Impossible'
+                '9': 'Impossible'
             };
 
             const difficultyName = difficultyNames[difficulty] || 'Unknown';
@@ -1671,6 +1811,10 @@
                 message = gameWinner === playerSymbol ? "You won." : "AI won.";
                 iconSymbol = gameWinner === playerSymbol ? "🏆" : "🤖";
                 additionalInfo = gameWinner === playerSymbol ? `You defeated the AI at level ${difficultyName}.` : `The AI won at level ${difficultyName}.`;
+            } else if (gameMode === 'timed') {
+                message = gameWinner === 'X' ? "Player O ran out of time. Player X wins!" : "Player X ran out of time. Player O wins!";
+                iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
+                additionalInfo = `Time's up!`;
             } else {
                 message = `Player ${gameWinner} won.`;
                 iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
@@ -1731,8 +1875,6 @@
             return overlay;
         }
 
-
-
         function renderLobbyView() {
             const { darkMode } = gameState;
             const theme = darkMode ? 'dark' : 'light';
@@ -1776,8 +1918,14 @@
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
             aiBtn.addEventListener('click', () => startNewGame('ai'));
 
+            const timedBtn = document.createElement('button');
+            timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
+            timedBtn.innerHTML = '<span>⏱️</span> Timed Mode';
+            timedBtn.addEventListener('click', () => startNewGame('timed'));
+
             gameButtons.appendChild(multiplayerBtn);
             gameButtons.appendChild(aiBtn);
+            gameButtons.appendChild(timedBtn);
 
             const rulesBtn = document.createElement('button');
             rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
@@ -1810,7 +1958,7 @@
             mediumOption2.textContent = 'Difficult';
 
             const hardOption = document.createElement('option');
-            hardOption.value = '10'; // Mode à 8
+            hardOption.value = '9'; // Mode à 8
             hardOption.textContent = 'Impossible';
 
             difficultyDropdown.appendChild(easyOption);
@@ -1835,11 +1983,10 @@
             return lobby;
         }
 
-
         function renderRulesView() {
             const { darkMode } = gameState;
             const theme = darkMode ? 'dark' : 'light';
-            
+
             const rules = [
                 "Ultimate Tic Tac Toe consists of 9 small Tic Tac Toe grids, forming one large grid.",
                 "On each turn, you must play in the small grid corresponding to the cell played by your opponent in their small grid.",
@@ -1848,59 +1995,59 @@
                 "To win a small grid, align 3 symbols as in classic Tic Tac Toe.",
                 "To win the game, align 3 won small grids."
             ];
-            
+
             const rulesView = document.createElement('div');
             rulesView.className = `rules-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
-            
+
             // Header with title and dark mode toggle
             const header = document.createElement('div');
             header.className = 'relative mb-4';
-            
+
             const title = document.createElement('h1');
             title.className = 'text-2xl font-bold text-center';
             title.textContent = 'Game Rules';
-            
+
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'p-2 rounded-full absolute right-0 top-0';
             toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
             toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
-            
+
             header.appendChild(title);
             header.appendChild(toggleBtn);
             rulesView.appendChild(header);
-            
+
             // Rules list
             const rulesList = document.createElement('div');
             rulesList.className = `space-y-4 mb-6 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'} pt-4`;
-            
+
             rules.forEach((rule, index) => {
                 const ruleItem = document.createElement('div');
                 ruleItem.className = 'flex gap-3';
-                
+
                 const number = document.createElement('div');
                 number.className = 'text-2xl';
                 number.textContent = `${index + 1}️⃣`;
-                
+
                 const text = document.createElement('p');
                 text.textContent = rule;
-                
+
                 ruleItem.appendChild(number);
                 ruleItem.appendChild(text);
                 rulesList.appendChild(ruleItem);
             });
-            
+
             rulesView.appendChild(rulesList);
-            
+
             // Back button
             const backBtn = document.createElement('button');
             backBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full';
             backBtn.textContent = 'Back to Lobby';
             backBtn.addEventListener('click', backToLobby);
-            
+
             rulesView.appendChild(backBtn);
-            
+
             return rulesView;
         }
 
@@ -1914,7 +2061,7 @@
             if (modal && !document.querySelector('.modal-overlay')) {
                 container.appendChild(modal);
             }
-        
+
             return container;
         }
 
@@ -1942,7 +2089,7 @@
             const info = document.createElement('p');
             info.className = 'text-lg mb-4';
             info.textContent = playerSymbol === 'X' ? 'You go first!' : 'AI goes first!';
-        
+
             header.appendChild(icon);
             header.appendChild(title);
             header.appendChild(info);
@@ -1957,6 +2104,13 @@
                 closeMessage(overlay);
                 if (playerSymbol === 'O') {
                     setTimeout(() => simulateOpponentMove(), 1000);
+                } else if (gameState.gameMode === 'timed') {
+                    // Assurez-vous que le chronomètre est correctement démarré
+                    if (gameState.activeTimer) {
+                        clearInterval(gameState.activeTimer);
+                        gameState.activeTimer = null;
+                    }
+                    startTimer(playerSymbol);
                 }
             });
 
@@ -1971,10 +2125,10 @@
         function renderView() {
             const appContainer = document.querySelector('#app .container');
             appContainer.innerHTML = '';
-            
+
             // Apply dark mode to body
             document.body.classList.toggle('dark', gameState.darkMode);
-            
+
             // Render the appropriate view
             switch (gameState.view) {
                 case 'lobby':
