@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultimate Tic Tac Toe</title>
     <style>
-        /* Global styles */
+        /* Styles globaux */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -26,7 +26,7 @@
             }
         }
 
-        /* Appliquez l'animation de rebond aux symboles */
+        /* animation de rebond aux symboles */
         .symbol.bounce {
             animation: bounce 0.5s;
         }
@@ -63,31 +63,31 @@
             }
         }
 
-        /* Appliquer l'animation d'entrée aux layouts */
+        /* animation d'entrée aux layouts */
         .lobby-view, .game-view, .rules-view {
             animation: fadeInlayout 0.3s ease-in-out;
         }
 
-        /* Appliquer l'animation de sortie aux layouts */
+        /* animation de sortie aux layouts */
         .lobby-view.exit, .game-view.exit, .rules-view.exit {
             animation: fadeOut 0.3s ease-in-out;
         }
-        /* Appliquer l'animation d'entrée aux messages */
+        /* animation d'entrée aux messages */
         .tooltip, .modal-content {
             animation: fadeIn 0.3s ease-in-out;
         }
 
-        /* Appliquer l'animation de sortie aux messages */
+        /* animation de sortie aux messages */
         .tooltip.exit, .modal-content.exit {
             animation: fadeOut 0.3s ease-in-out;
         }
 
-        /* Transitions for theme changes */
+        /* Transition pour le changement de thème */
         body, div, button, p, h1, h2, footer {
             transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
-        /* Main containers */
+        /* containers principaux */
         .container {
             width: 100%;
             max-width: 512px;
@@ -100,7 +100,7 @@
             padding: 32px 16px;
         }
 
-        /* Theme classes - Light mode */
+        /* Light mode */
         .bg-gray-100 {
             background-color: #f3f4f6;
         }
@@ -210,6 +210,7 @@
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
+
         button {
             cursor: pointer;
             font-weight: 500;
@@ -248,16 +249,15 @@
         .hover\:bg-green-600:hover {
             background-color: #059669;
         }
-        
-        /* Ajoutez cette classe dans votre section CSS */
+
        .hover\:bg-yellow-400:hover {
-            background-color: #facc15; /* Code couleur pour orange-600 */
+            background-color: #facc15;
        }
        .hover\:bg-emerald-600:hover {
-           background-color: #84cc16; /* Code couleur pour vert émeraude-600 */
+           background-color: #84cc16;
        }
 
-        /* Layout utilities */
+        /* Layout */
         .flex {
             display: flex;
         }
@@ -370,7 +370,7 @@
             flex: 1 1 0%;
         }
 
-        /* Text utilities */
+        /* Texte */
         .text-center {
             text-align: center;
         }
@@ -667,7 +667,7 @@
             top: 0;
         }
 
-        /* Footer */
+        /* Footer glitché */
         footer {
             margin-top: 32px;
             text-align: center;
@@ -691,7 +691,6 @@
 <body class="bg-gray-100">
     <div id="app" class="min-h-screen">
         <div class="container">
-            <!-- Views will be dynamically inserted here -->
         </div>
 
         <footer class="text-gray-500">
@@ -702,16 +701,9 @@
     <div id="tooltip" class="tooltip"></div>
 
     <script>
-        // Fonction pour fermer un message avec animation
-        function closeMessage(element) {
-            element.classList.add('exit');
-            setTimeout(() => {
-                element.remove();
-            }, 100); // Attendre la fin de l'animation de sortie
-        }
         // Constants for reuse
         const INITIAL_GAME_STATE = {
-           view: 'lobby', // lobby, game, rules
+           view: 'lobby',
            playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
            playerSymbol: null,
            currentTurn: 'X',
@@ -721,25 +713,26 @@
            gameWinner: null,
            tooltipMessage: '',
            tooltipVisible: false,
-           gameMode: 'ai', // 'ai' or 'local' or 'timed'
+           gameMode: 'ai',
            playerTimes: {
-               X: 60, // 60 secondes pour le joueur X
-               O: 60  // 60 secondes pour le joueur O
+               X: 60,
+               O: 60
            },
            activeTimer: null,
            darkMode: false,
-           difficulty: 'medium' // Ajoutez cette ligne pour le niveau de difficulté
+           difficulty: 'medium'
        };
 
-        // Constants for reuse
         const WIN_PATTERNS = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-            [0, 4, 8], [2, 4, 6]             // diagonals
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
         ];
 
-        // Main game state
         let gameState = {...INITIAL_GAME_STATE};
+
+        // Transposition table for memoization
+        const transpositionTable = new Map();
 
         // Helper functions
         function checkWinSmallBoard(board) {
@@ -760,7 +753,6 @@
 
         function isBigBoardFull(winners, boardStates) {
             if (winners.every(winner => winner !== null)) return true;
-
             return !boardStates.some((board, i) =>
                 winners[i] === null && board.some(cell => cell === null)
             );
@@ -798,7 +790,6 @@
             }
         }
 
-        //Réajustement taille après rendu
         function postRenderAdjustments() {
             adjustGameBoardSize();
             const smallBoards = document.querySelectorAll('.small-board');
@@ -822,7 +813,6 @@
             });
         }
 
-        // UI functions
         function showTooltip(message) {
             gameState.tooltipMessage = message;
             gameState.tooltipVisible = true;
@@ -842,12 +832,9 @@
         function toggleDarkMode() {
             gameState.darkMode = !gameState.darkMode;
             document.body.classList.toggle('dark', gameState.darkMode);
-
-            // Mettre à jour le fond du body
             document.body.classList.toggle('bg-gray-100', !gameState.darkMode);
             document.body.classList.toggle('bg-gray-900', gameState.darkMode);
 
-            // Mettre à jour également la div app qui couvre tout l'écran
             const appDiv = document.getElementById('app');
             appDiv.classList.toggle('bg-gray-100', !gameState.darkMode);
             appDiv.classList.toggle('bg-gray-900', gameState.darkMode);
@@ -855,26 +842,22 @@
             renderView();
         }
 
-        // Navigation functions
         function startNewGame(mode = 'ai') {
             const difficultyDropdown = document.getElementById('difficulty');
             const difficulty = mode === 'timed' ? '4' : (difficultyDropdown ? difficultyDropdown.value : gameState.difficulty);
-            const darkMode = gameState.darkMode; // Sauvegardez le paramètre du mode sombre
+            const darkMode = gameState.darkMode;
             gameState = {...INITIAL_GAME_STATE};
-            gameState.darkMode = darkMode; // Restaurez le paramètre du mode sombre
+            gameState.darkMode = darkMode;
             gameState.view = 'game';
             gameState.gameMode = mode;
-            gameState.difficulty = difficulty; // Ajoutez la difficulté à l'état du jeu
-            // Choisir aléatoirement le symbole du joueur
+            gameState.difficulty = difficulty;
             gameState.playerSymbol = Math.random() < 0.5 ? 'X' : 'O';
 
-            // Initialiser les chronomètres pour le mode "contre la montre"
             if (mode === 'timed') {
                 gameState.playerTimes = {
                     X: 60,
                     O: 60
                 };
-                // Ne pas démarrer le chronomètre immédiatement
             }
 
             renderView();
@@ -885,34 +868,32 @@
             }
         }
 
-
         function showRules() {
             gameState.view = 'rules';
             renderView();
         }
 
         function backToLobby() {
-            // Arrêter le chronomètre s'il est en cours d'exécution
             if (gameState.activeTimer) {
                 clearInterval(gameState.activeTimer);
                 gameState.activeTimer = null;
             }
 
-            // Réinitialiser les temps des joueurs
             gameState.playerTimes = {
                 X: 60,
                 O: 60
             };
 
-            // Réinitialiser l'état du jeu
+            const darkMode = gameState.darkMode;
             gameState = {...INITIAL_GAME_STATE};
             gameState.view = 'lobby';
-            gameState.preventAIMove = true; // Ajoutez un drapeau pour empêcher les mouvements de l'IA
+            gameState.preventAIMove = true;
+            gameState.darkMode = darkMode;
+
             renderView();
         }
-        // Fonctions timed mode
+
         function startTimer(player) {
-            // Assurez-vous qu'il n'y a pas de chronomètres multiples en cours d'exécution
             if (gameState.activeTimer) {
                 clearInterval(gameState.activeTimer);
                 gameState.activeTimer = null;
@@ -939,10 +920,6 @@
             }
         }
 
-        // Transposition table for memoization
-        const transpositionTable = new Map();
-
-        // Hash function for game states
         function hashGameState(boardStates, smallBoardWinners, activeBoard, isMaximizing) {
             return JSON.stringify({
                 bs: boardStates,
@@ -952,32 +929,17 @@
             });
         }
 
-        // Evaluate the position
         function evaluatePosition(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
-
-            // Evaluate the big board
             score += evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) * 150;
-
-            // Evaluate strategic positions
-            score += evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) * 80;
-
-            // Evaluate small boards
-            score += evaluateSmallBoards(boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 30;
-
-            // Evaluate next board advantage
-            score += evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 40;
-
-            // Évaluez les fourches
-            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
-                if (smallBoardWinners[boardIdx] === null) {
-                score += evaluateForks(boardStates[boardIdx], aiSymbol);
-                }
-           }
+            score += evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) * 100;
+            score += evaluateSmallBoards(boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 50;
+            score += evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 60;
+            score += evaluateThreats(boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 200;
+            score += evaluateTraps(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 200;
             return score;
         }
 
-        // Evaluate the big board
         function evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
 
@@ -995,30 +957,29 @@
 
             return score;
         }
-        // Evaluate strategic positions
+
         function evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
 
-            if (smallBoardWinners[4] === aiSymbol) score += 80;
-            else if (smallBoardWinners[4] === playerSymbol) score -= 75;
-            else if (smallBoardWinners[4] === null) score += 30;
+            if (smallBoardWinners[4] === aiSymbol) score += 200;
+            else if (smallBoardWinners[4] === playerSymbol) score -= 170;
+            else if (smallBoardWinners[4] === null) score += 100;
 
             const corners = [0, 2, 6, 8];
             for (const corner of corners) {
-                if (smallBoardWinners[corner] === aiSymbol) score += 50;
-                else if (smallBoardWinners[corner] === playerSymbol) score -= 45;
+                if (smallBoardWinners[corner] === aiSymbol) score += 80;
+                else if (smallBoardWinners[corner] === playerSymbol) score -= 70;
             }
 
             const sides = [1, 3, 5, 7];
             for (const side of sides) {
-                if (smallBoardWinners[side] === aiSymbol) score += 30;
-                else if (smallBoardWinners[side] === playerSymbol) score -= 25;
+                if (smallBoardWinners[side] === aiSymbol) score += 50;
+                else if (smallBoardWinners[side] === playerSymbol) score -= 40;
             }
 
             return score;
         }
 
-        // Evaluate small boards
         function evaluateSmallBoards(boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
 
@@ -1033,25 +994,24 @@
                     const playerCells = [a, b, c].filter(idx => board[idx] === playerSymbol).length;
                     const emptyCells = [a, b, c].filter(idx => board[idx] === null).length;
 
-                    if (aiCells === 2 && emptyCells === 1) score += 60;
-                    if (playerCells === 2 && emptyCells === 1) score -= 55;
-                    if (playerCells === 0 && emptyCells > 0) score += aiCells * 8;
-                    if (aiCells === 0 && emptyCells > 0) score -= playerCells * 7;
+                    if (aiCells === 2 && emptyCells === 1) score += 100;
+                    if (playerCells === 2 && emptyCells === 1) score -= 150;
+                    if (playerCells === 0 && emptyCells > 0) score += aiCells * 10;
+                    if (aiCells === 0 && emptyCells > 0) score -= playerCells * 15;
                 }
 
-                if (board[4] === aiSymbol) score += 7;
-                if (board[4] === playerSymbol) score -= 6;
+                if (board[4] === aiSymbol) score += 20;
+                if (board[4] === playerSymbol) score -= 15;
 
                 for (const corner of [0, 2, 6, 8]) {
-                    if (board[corner] === aiSymbol) score += 5;
-                    if (board[corner] === playerSymbol) score -= 4;
+                    if (board[corner] === aiSymbol) score += 10;
+                    if (board[corner] === playerSymbol) score -= 10;
                 }
             }
 
             return score;
         }
 
-        // Evaluate next board advantage
         function evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
             if (activeBoard === null) return 0;
 
@@ -1078,31 +1038,21 @@
             return score;
         }
 
-        function evaluateForks(board, symbol) {
+        function evaluateThreats(boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
             let score = 0;
-            const opponentSymbol = symbol === 'X' ? 'O' : 'X';
 
-            // Vérifiez chaque case vide pour voir si elle crée une fourche
-            for (let i = 0; i < 9; i++) {
-                if (board[i] === null) {
-                    const tempBoard = [...board];
-                    tempBoard[i] = symbol;
+            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
+                if (smallBoardWinners[boardIdx] === null) {
+                    const board = boardStates[boardIdx];
 
-                    // Vérifiez si ce mouvement crée deux menaces de victoire
-                    let forkCount = 0;
                     for (const pattern of WIN_PATTERNS) {
                         const [a, b, c] = pattern;
-                        const symbolCount = [a, b, c].filter(idx => tempBoard[idx] === symbol).length;
-                        const emptyCount = [a, b, c].filter(idx => tempBoard[idx] === null).length;
+                        const aiCells = [a, b, c].filter(idx => board[idx] === aiSymbol).length;
+                        const playerCells = [a, b, c].filter(idx => board[idx] === playerSymbol).length;
+                        const emptyCells = [a, b, c].filter(idx => board[idx] === null).length;
 
-                        if (symbolCount === 2 && emptyCount === 1) {
-                            forkCount++;
-                        }
-                    }
-
-                    // Si deux menaces de victoire sont créées, c'est une fourche
-                    if (forkCount >= 2) {
-                        score += 80; // Attribuez un score élevé pour les fourches
+                        if (aiCells === 2 && emptyCells === 1) score += 100;
+                        if (playerCells === 2 && emptyCells === 1) score -= 150;
                     }
                 }
             }
@@ -1110,7 +1060,23 @@
             return score;
         }
 
-        // Find valid moves
+        function evaluateTraps(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
+            let score = 0;
+
+            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
+                if (smallBoardWinners[boardIdx] === null) {
+                    const board = boardStates[boardIdx];
+                    const corners = [0, 2, 6, 8];
+                    const playerCorners = corners.filter(idx => board[idx] === playerSymbol).length;
+                    if (playerCorners >= 2) {
+                        score -= 100;
+                    }
+                }
+            }
+
+            return score;
+        }
+
         function findValidMoves(activeBoard, boardStates, smallBoardWinners) {
             const validMoves = [];
 
@@ -1135,7 +1101,6 @@
             return validMoves;
         }
 
-        // Minimax with alpha-beta pruning
         function minimax(activeBoard, boardStates, smallBoardWinners, depth, isMaximizing, alpha, beta, aiSymbol, playerSymbol) {
             const hash = hashGameState(boardStates, smallBoardWinners, activeBoard, isMaximizing);
             const cachedResult = transpositionTable.get(hash);
@@ -1246,7 +1211,6 @@
             }
         }
 
-        // Order moves for better alpha-beta pruning
         function orderMoves(validMoves, boardStates, smallBoardWinners, currentSymbol) {
             const scoredMoves = validMoves.map(move => {
                 const [bigIndex, smallIndex] = move;
@@ -1256,8 +1220,8 @@
                 tempBoard[smallIndex] = currentSymbol;
                 if (checkWinSmallBoard(tempBoard)) score += 1000;
 
-                if (smallIndex === 4) score += 30;
-                if ([0, 2, 6, 8].includes(smallIndex)) score += 20;
+                if (smallIndex === 4) score += 100;
+                if ([0, 2, 6, 8].includes(smallIndex)) score += 50;
 
                 if (smallBoardWinners[smallIndex] !== null) score += 50;
 
@@ -1270,7 +1234,6 @@
             return scoredMoves.map(item => item.move);
         }
 
-        // Simulate opponent move
         function simulateOpponentMove() {
             if (gameState.preventAIMove) {
                 return;
@@ -1284,16 +1247,16 @@
             let bestMove = null;
             let maxDepth;
             switch (difficulty) {
-                case '1': // Easy
+                case '1':
                     maxDepth = 1;
                     break;
-                case '4': // Normal
+                case '4':
                     maxDepth = 4;
                     break;
-                case '6': // Difficult
+                case '6':
                     maxDepth = 6;
                     break;
-                case '9': // Hardcore
+                case '9':
                     maxDepth = 9;
                     break;
                 default:
@@ -1301,7 +1264,7 @@
             }
 
             const startTime = Date.now();
-            const timeLimit = 6000; // 6 secondes
+            const timeLimit = 6000;
 
             for (let depth = 1; depth <= maxDepth; depth++) {
                 const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
@@ -1314,44 +1277,31 @@
                 bestMove = move;
             }
 
-            // Vérifiez si c'est le premier tour de l'IA
             const isFirstMove = boardStates.every(board => board.every(cell => cell === null));
 
             if (isFirstMove) {
-                // Choisissez un mouvement aléatoire pour le premier tour
                 const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
                 if (validMoves.length > 0) {
                     const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                    const delay = gameMode === 'timed' ? 900 : 0;
                     setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
                     return;
                 }
             }
 
-            for (let depth = 1; depth <= maxDepth; depth++) {
-                const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
-
-                if (Date.now() - startTime > timeLimit) {
-                    console.log(`Max depth reached: ${depth-1}`);
-                    break;
-                }
-
-                bestMove = move;
-            }
-
             if (bestMove) {
-                const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                const delay = gameMode === 'timed' ? 900 : 0;
                 setTimeout(() => handleSquareClick(bestMove[0], bestMove[1]), delay);
             } else {
                 const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
                 if (validMoves.length > 0) {
                     const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    const delay = gameMode === 'timed' ? 900 : 0; // Appliquer le délai uniquement en mode "timed"
+                    const delay = gameMode === 'timed' ? 900 : 0;
                     setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
                 }
             }
         }
-        // Find best move with Minimax
+
         function findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol, depth) {
             const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
             if (validMoves.length === 0) return null;
@@ -1423,71 +1373,33 @@
             return bestMove;
         }
 
-        // Check if a small board is won
-        function checkWinSmallBoard(board) {
-            return WIN_PATTERNS.some(([a, b, c]) =>
-                board[a] && board[a] === board[b] && board[a] === board[c]
-            );
-        }
-
-        // Check if a board is full
-        function isBoardFull(board) {
-            return board.every(cell => cell !== null);
-        }
-
-        // Check if the big board is won
-        function checkWinBigBoard(smallBoardWinners) {
-            return WIN_PATTERNS.some(([a, b, c]) =>
-                smallBoardWinners[a] &&
-                smallBoardWinners[a] !== 'draw' &&
-                smallBoardWinners[a] === smallBoardWinners[b] &&
-                smallBoardWinners[a] === smallBoardWinners[c]
-            );
-        }
-
-        // Check if the big board is full
-        function isBigBoardFull(smallBoardWinners, boardStates) {
-            for (let i = 0; i < 9; i++) {
-                if (smallBoardWinners[i] === null && boardStates[i].some(cell => cell === null)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
         function handleSquareClick(bigIndex, smallIndex) {
             const { gameWinner, gameMode, currentTurn, playerSymbol,
                    activeBoard, smallBoardWinners, boardStates } = gameState;
 
-            // Vérifiez si le jeu est déjà terminé
             if (gameWinner) {
                 showTooltip("The game is already over!");
                 return;
             }
 
-            // Vérifiez si le joueur peut jouer dans la grille indiquée
             if (activeBoard !== null && activeBoard !== bigIndex) {
                 showTooltip("You must play in the indicated grid!");
                 return;
             }
 
-            // Vérifiez si la grille est déjà gagnée
             if (smallBoardWinners[bigIndex] !== null) {
                 showTooltip("This grid is already won!");
                 return;
             }
 
-            // Vérifiez si la cellule est déjà prise
             if (boardStates[bigIndex][smallIndex] !== null) {
                 showTooltip("This cell is already taken!");
                 return;
             }
 
-            // Faites le mouvement
             const newBoardStates = JSON.parse(JSON.stringify(boardStates));
             newBoardStates[bigIndex][smallIndex] = currentTurn;
 
-            // Vérifiez si la petite grille est gagnée
             const newSmallBoardWinners = [...gameState.smallBoardWinners];
             if (checkWinSmallBoard(newBoardStates[bigIndex])) {
                 newSmallBoardWinners[bigIndex] = currentTurn;
@@ -1495,13 +1407,11 @@
                 newSmallBoardWinners[bigIndex] = 'draw';
             }
 
-            // Déterminez la prochaine grille active
             let nextActiveBoard = smallIndex;
             if (newSmallBoardWinners[smallIndex] !== null) {
                 nextActiveBoard = null;
             }
 
-            // Vérifiez si le jeu est gagné
             let newGameWinner = null;
             if (checkWinBigBoard(newSmallBoardWinners)) {
                 newGameWinner = currentTurn;
@@ -1509,7 +1419,6 @@
                 newGameWinner = 'draw';
             }
 
-            // Mettez à jour l'état du jeu
             gameState = {
                 ...gameState,
                 boardStates: newBoardStates,
@@ -1520,10 +1429,8 @@
                 lastMove: { bigIndex, smallIndex }
             };
 
-            // Re-render the view with updated state
             renderView();
 
-            // En mode "contre la montre", basculez les chronomètres
             if (gameMode === 'timed') {
                 pauseTimer();
                 if (!newGameWinner) {
@@ -1531,13 +1438,11 @@
                 }
             }
 
-            // En mode "contre la montre" ou "ai", simulez le mouvement de l'IA après un délai
             if ((gameMode === 'ai' || gameMode === 'timed') && !newGameWinner && gameState.currentTurn !== playerSymbol) {
                 setTimeout(() => simulateOpponentMove(), 1000);
             }
         }
 
-        // Render functions
         function renderCell(bigIndex, smallIndex) {
             const { boardStates, gameMode, playerSymbol, currentTurn,
                    activeBoard, smallBoardWinners, darkMode, lastMove } = gameState;
@@ -1569,12 +1474,11 @@
                 symbol.className = `symbol ${value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold'}`;
                 symbol.textContent = value;
 
-                // Appliquez l'animation uniquement si c'est le dernier symbole posé
                 if (lastMove && lastMove.bigIndex === bigIndex && lastMove.smallIndex === smallIndex) {
                     symbol.classList.add('bounce');
                     setTimeout(() => {
                         symbol.classList.remove('bounce');
-                    }, 500); // Supprimez la classe après la fin de l'animation
+                    }, 500);
                 }
 
                 cell.appendChild(symbol);
@@ -1604,7 +1508,6 @@
             boardDiv.style.gridTemplateColumns = 'repeat(3, 1fr)';
             boardDiv.style.gridTemplateRows = 'repeat(3, 1fr)';
 
-            // Active board styling
             if (activeBoard === index && winner === null) {
                 boardDiv.classList.add('active');
                 if (viewportWidth < 400) {
@@ -1614,7 +1517,6 @@
                 }
             }
 
-            // Winner styling
             if (winner !== null) {
                 if (winner === 'draw') {
                     boardDiv.classList.add('draw');
@@ -1624,7 +1526,6 @@
             }
 
             if (winner !== null && winner !== 'draw') {
-                // Show winner symbol
                 const winnerOverlay = document.createElement('div');
                 winnerOverlay.className = 'winner-overlay';
 
@@ -1635,7 +1536,6 @@
                 winnerOverlay.appendChild(symbol);
                 boardDiv.appendChild(winnerOverlay);
             } else {
-                // Render cells
                 for (let i = 0; i < 9; i++) {
                     boardDiv.appendChild(renderCell(index, i));
                 }
@@ -1684,7 +1584,6 @@
             const infoDiv = document.createElement('div');
             infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
 
-            // Header with title and dark mode toggle
             const header = document.createElement('div');
             header.className = 'game-info-header';
 
@@ -1703,13 +1602,11 @@
 
             infoDiv.appendChild(header);
 
-            // Game mode info
             const modeInfo = document.createElement('p');
             modeInfo.className = 'text-xl font-semibold mb-2';
             modeInfo.textContent = gameMode === 'ai' ? 'Mode: Solo vs AI' : gameMode === 'local' ? 'Mode: Local Multiplayer' : 'Mode: Timed';
             infoDiv.appendChild(modeInfo);
 
-            // Player info
             if (gameMode === 'local') {
                 const playerInfo = document.createElement('div');
                 playerInfo.className = 'player-info';
@@ -1739,7 +1636,6 @@
                 infoDiv.appendChild(turnInfo);
             }
 
-            // Timers for timed mode
             if (gameMode === 'timed') {
                 const timers = document.createElement('div');
                 timers.className = 'flex justify-center gap-4 mt-4';
@@ -1756,7 +1652,7 @@
                 timers.appendChild(timerO);
                 infoDiv.appendChild(timers);
             }
-            // Game controls
+
             const controls = document.createElement('div');
             controls.className = 'mt-6 flex justify-center gap-2';
 
@@ -1793,7 +1689,6 @@
             let iconSymbol = "";
             let additionalInfo = "";
 
-            // Mapper les valeurs de difficulté aux noms
             const difficultyNames = {
                 '1': 'Easy',
                 '4': 'Normal',
@@ -1812,9 +1707,15 @@
                 iconSymbol = gameWinner === playerSymbol ? "🏆" : "🤖";
                 additionalInfo = gameWinner === playerSymbol ? `You defeated the AI at level ${difficultyName}.` : `The AI won at level ${difficultyName}.`;
             } else if (gameMode === 'timed') {
-                message = gameWinner === 'X' ? "Player O ran out of time. Player X wins!" : "Player X ran out of time. Player O wins!";
-                iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
-                additionalInfo = `Time's up!`;
+                if (playerTimes.X <= 0 || playerTimes.O <= 0) {
+                    message = gameWinner === 'X' ? "Player O ran out of time. Player X wins!" : "Player X ran out of time. Player O wins!";
+                    iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
+                    additionalInfo = `Time's up!`;
+                } else {
+                    message = `Player ${gameWinner} won.`;
+                    iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
+                    additionalInfo = `Player ${gameWinner} played well.`;
+                }
             } else {
                 message = `Player ${gameWinner} won.`;
                 iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
@@ -1853,16 +1754,16 @@
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
             newGameBtn.textContent = 'New Game';
             newGameBtn.addEventListener('click', () => {
-                  closeMessage(overlay);
-                  startNewGame(gameMode);
+                closeMessage(overlay);
+                startNewGame(gameMode);
             });
 
             const lobbyBtn = document.createElement('button');
             lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex-1';
             lobbyBtn.textContent = 'Back to Lobby';
             lobbyBtn.addEventListener('click', () => {
-                  closeMessage(overlay);
-                  backToLobby();
+                closeMessage(overlay);
+                backToLobby();
             });
 
             buttons.appendChild(newGameBtn);
@@ -1882,7 +1783,6 @@
             const lobby = document.createElement('div');
             lobby.className = `lobby-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
 
-            // Header avec titre centré et bouton dark mode à droite
             const header = document.createElement('div');
             header.className = 'relative text-center mb-6 header-responsive';
 
@@ -1901,16 +1801,14 @@
             header.appendChild(toggleBtn);
             lobby.appendChild(header);
 
-            // Game mode buttons
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'flex flex-col gap-4';
 
-            // Première ligne de boutons
             const firstRow = document.createElement('div');
             firstRow.className = 'flex flex-col gap-4';
 
             const aiBtn = document.createElement('button');
-            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-emerald-600 text-lg flex items-center justify-center gap-2';
+            aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
             aiBtn.innerHTML = '<span>🤖</span> Play against AI';
             aiBtn.addEventListener('click', () => startNewGame('ai'));
 
@@ -1953,24 +1851,22 @@
             firstRow.appendChild(aiBtn);
             firstRow.appendChild(difficultySelector);
 
-            // Deuxième ligne de boutons
             const secondRow = document.createElement('div');
             secondRow.className = 'flex flex-col gap-4';
 
             const multiplayerBtn = document.createElement('button');
-            multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
+            multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
             multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
             multiplayerBtn.addEventListener('click', () => startNewGame('local'));
 
             const timedBtn = document.createElement('button');
-            timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 text-lg flex items-center justify-center gap-2';
+            timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
             timedBtn.innerHTML = '<span>⏱️</span> Timed Mode';
             timedBtn.addEventListener('click', () => startNewGame('timed'));
 
             secondRow.appendChild(multiplayerBtn);
             secondRow.appendChild(timedBtn);
 
-            // Bouton des règles
             const rulesBtn = document.createElement('button');
             rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
             rulesBtn.textContent = 'Game Rules';
@@ -1990,9 +1886,6 @@
             return lobby;
         }
 
-
-
-
         function renderRulesView() {
             const { darkMode } = gameState;
             const theme = darkMode ? 'dark' : 'light';
@@ -2009,7 +1902,6 @@
             const rulesView = document.createElement('div');
             rulesView.className = `rules-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
 
-            // Header with title and dark mode toggle
             const header = document.createElement('div');
             header.className = 'relative mb-4';
 
@@ -2028,7 +1920,6 @@
             header.appendChild(toggleBtn);
             rulesView.appendChild(header);
 
-            // Rules list
             const rulesList = document.createElement('div');
             rulesList.className = `space-y-4 mb-6 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300'} pt-4`;
 
@@ -2050,7 +1941,6 @@
 
             rulesView.appendChild(rulesList);
 
-            // Back button
             const backBtn = document.createElement('button');
             backBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full';
             backBtn.textContent = 'Back to Lobby';
@@ -2115,7 +2005,6 @@
                 if (playerSymbol === 'O') {
                     setTimeout(() => simulateOpponentMove(), 1000);
                 } else if (gameState.gameMode === 'timed') {
-                    // Assurez-vous que le chronomètre est correctement démarré
                     if (gameState.activeTimer) {
                         clearInterval(gameState.activeTimer);
                         gameState.activeTimer = null;
@@ -2132,14 +2021,19 @@
             return overlay;
         }
 
+        function closeMessage(element) {
+            element.classList.add('exit');
+            setTimeout(() => {
+                element.remove();
+            }, 100);
+        }
+
         function renderView() {
             const appContainer = document.querySelector('#app .container');
             appContainer.innerHTML = '';
 
-            // Apply dark mode to body
             document.body.classList.toggle('dark', gameState.darkMode);
 
-            // Render the appropriate view
             switch (gameState.view) {
                 case 'lobby':
                     appContainer.appendChild(renderLobbyView());
@@ -2154,7 +2048,6 @@
             }
         }
 
-        // Initialize the game
         document.addEventListener('DOMContentLoaded', () => {
             renderView();
             adjustGameBoardSize();
