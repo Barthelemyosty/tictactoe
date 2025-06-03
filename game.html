@@ -62,7 +62,19 @@
                 transform: translateY(-20px);
             }
         }
+        
+      @keyframes zoom {
+          0%, 100% {
+              transform: scale(1);
+          }
+          50% {
+              transform: scale(1.1);
+          }
+      }
 
+      .zoom {
+          animation: zoom 1s infinite;
+      }
         /* animation d'entrée aux layouts */
         .lobby-view, .game-view, .rules-view {
             animation: fadeInlayout 0.3s ease-in-out;
@@ -411,6 +423,14 @@
             color: #3b82f6;
         }
 
+        .turn-text {
+            color: #1f2937;
+        }
+
+        .dark .turn-text {
+            color: #ffffff;
+        }
+
         @media (max-width: 512px) {
             .game-board {
                 gap: 8px;
@@ -669,9 +689,14 @@
 
         /* Footer glitché */
         footer {
-            margin-top: 32px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            color: white;
             text-align: center;
+            padding: 10px 0;
             font-size: 0.875rem;
+            z-index: 100;
         }
 
         /* Button layouts */
@@ -685,6 +710,45 @@
             .button-grid {
                 grid-template-columns: 1fr 1fr;
             }
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .thinking-dots {
+            display: inline-block;
+            font-size: 24px;
+            margin: 10px;
+        }
+
+        .thinking-dots span {
+            display: inline-block;
+            opacity: 0;
+            animation: blink 1.4s infinite both;
+        }
+
+        .thinking-dots span:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dots span:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .thinking-dots span:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .turn-indicator {
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
         }
     </style>
 </head>
@@ -730,9 +794,7 @@
         ];
 
         let gameState = {...INITIAL_GAME_STATE};
-
-        // Transposition table for memoization
-        const transpositionTable = new Map();
+        let aiWorker;
 
         // Helper functions
         function checkWinSmallBoard(board) {
@@ -920,459 +982,6 @@
             }
         }
 
-        function hashGameState(boardStates, smallBoardWinners, activeBoard, isMaximizing) {
-            return JSON.stringify({
-                bs: boardStates,
-                sbw: smallBoardWinners,
-                ab: activeBoard,
-                im: isMaximizing
-            });
-        }
-
-        function evaluatePosition(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-            score += evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) * 150;
-            score += evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) * 100;
-            score += evaluateSmallBoards(boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 50;
-            score += evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 60;
-            score += evaluateThreats(boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 200;
-            score += evaluateTraps(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) * 200;
-            return score;
-        }
-
-        function evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-
-            for (const pattern of WIN_PATTERNS) {
-                const [a, b, c] = pattern;
-                const aiCount = pattern.filter(idx => smallBoardWinners[idx] === aiSymbol).length;
-                const playerCount = pattern.filter(idx => smallBoardWinners[idx] === playerSymbol).length;
-                const emptyCount = 3 - aiCount - playerCount;
-
-                if (aiCount === 2 && emptyCount === 1) score += 800;
-                if (playerCount === 2 && emptyCount === 1) score -= 750;
-                if (playerCount === 0) score += aiCount * 120;
-                if (aiCount === 0) score -= playerCount * 100;
-            }
-
-            return score;
-        }
-
-        function evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-
-            if (smallBoardWinners[4] === aiSymbol) score += 200;
-            else if (smallBoardWinners[4] === playerSymbol) score -= 170;
-            else if (smallBoardWinners[4] === null) score += 100;
-
-            const corners = [0, 2, 6, 8];
-            for (const corner of corners) {
-                if (smallBoardWinners[corner] === aiSymbol) score += 80;
-                else if (smallBoardWinners[corner] === playerSymbol) score -= 70;
-            }
-
-            const sides = [1, 3, 5, 7];
-            for (const side of sides) {
-                if (smallBoardWinners[side] === aiSymbol) score += 50;
-                else if (smallBoardWinners[side] === playerSymbol) score -= 40;
-            }
-
-            return score;
-        }
-
-        function evaluateSmallBoards(boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-
-            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
-                if (smallBoardWinners[boardIdx] !== null) continue;
-
-                const board = boardStates[boardIdx];
-
-                for (const pattern of WIN_PATTERNS) {
-                    const [a, b, c] = pattern;
-                    const aiCells = [a, b, c].filter(idx => board[idx] === aiSymbol).length;
-                    const playerCells = [a, b, c].filter(idx => board[idx] === playerSymbol).length;
-                    const emptyCells = [a, b, c].filter(idx => board[idx] === null).length;
-
-                    if (aiCells === 2 && emptyCells === 1) score += 100;
-                    if (playerCells === 2 && emptyCells === 1) score -= 150;
-                    if (playerCells === 0 && emptyCells > 0) score += aiCells * 10;
-                    if (aiCells === 0 && emptyCells > 0) score -= playerCells * 15;
-                }
-
-                if (board[4] === aiSymbol) score += 20;
-                if (board[4] === playerSymbol) score -= 15;
-
-                for (const corner of [0, 2, 6, 8]) {
-                    if (board[corner] === aiSymbol) score += 10;
-                    if (board[corner] === playerSymbol) score -= 10;
-                }
-            }
-
-            return score;
-        }
-
-        function evaluateNextBoardAdvantage(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
-            if (activeBoard === null) return 0;
-
-            let score = 0;
-
-            if (smallBoardWinners[activeBoard] === null) {
-                const board = boardStates[activeBoard];
-
-                for (const pattern of WIN_PATTERNS) {
-                    const [a, b, c] = pattern;
-                    const aiCells = [a, b, c].filter(idx => board[idx] === aiSymbol).length;
-                    const playerCells = [a, b, c].filter(idx => board[idx] === playerSymbol).length;
-                    const emptyCells = [a, b, c].filter(idx => board[idx] === null).length;
-
-                    if (aiCells === 2 && emptyCells === 1) score += 70;
-                    if (playerCells === 2 && emptyCells === 1) score -= 65;
-                }
-
-                if ([0, 2, 6, 8, 4].includes(activeBoard)) score += 10;
-            } else {
-                score += 15;
-            }
-
-            return score;
-        }
-
-        function evaluateThreats(boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-
-            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
-                if (smallBoardWinners[boardIdx] === null) {
-                    const board = boardStates[boardIdx];
-
-                    for (const pattern of WIN_PATTERNS) {
-                        const [a, b, c] = pattern;
-                        const aiCells = [a, b, c].filter(idx => board[idx] === aiSymbol).length;
-                        const playerCells = [a, b, c].filter(idx => board[idx] === playerSymbol).length;
-                        const emptyCells = [a, b, c].filter(idx => board[idx] === null).length;
-
-                        if (aiCells === 2 && emptyCells === 1) score += 100;
-                        if (playerCells === 2 && emptyCells === 1) score -= 150;
-                    }
-                }
-            }
-
-            return score;
-        }
-
-        function evaluateTraps(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol) {
-            let score = 0;
-
-            for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
-                if (smallBoardWinners[boardIdx] === null) {
-                    const board = boardStates[boardIdx];
-                    const corners = [0, 2, 6, 8];
-                    const playerCorners = corners.filter(idx => board[idx] === playerSymbol).length;
-                    if (playerCorners >= 2) {
-                        score -= 100;
-                    }
-                }
-            }
-
-            return score;
-        }
-
-        function findValidMoves(activeBoard, boardStates, smallBoardWinners) {
-            const validMoves = [];
-
-            if (activeBoard === null || smallBoardWinners[activeBoard] !== null) {
-                for (let i = 0; i < 9; i++) {
-                    if (smallBoardWinners[i] === null) {
-                        for (let j = 0; j < 9; j++) {
-                            if (boardStates[i][j] === null) {
-                                validMoves.push([i, j]);
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (let j = 0; j < 9; j++) {
-                    if (boardStates[activeBoard][j] === null) {
-                        validMoves.push([activeBoard, j]);
-                    }
-                }
-            }
-
-            return validMoves;
-        }
-
-        function minimax(activeBoard, boardStates, smallBoardWinners, depth, isMaximizing, alpha, beta, aiSymbol, playerSymbol) {
-            const hash = hashGameState(boardStates, smallBoardWinners, activeBoard, isMaximizing);
-            const cachedResult = transpositionTable.get(hash);
-            if (cachedResult && cachedResult.depth >= depth) {
-                return cachedResult.score;
-            }
-
-            if (depth === 0) {
-                const evaluation = evaluatePosition(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol);
-                transpositionTable.set(hash, { score: evaluation, depth });
-                return evaluation;
-            }
-
-            const winner = checkWinBigBoard(smallBoardWinners);
-            if (winner) {
-                const score = winner === aiSymbol ? 10000 + depth : -10000 - depth;
-                transpositionTable.set(hash, { score, depth: Infinity });
-                return score;
-            }
-
-            if (isBigBoardFull(smallBoardWinners, boardStates)) {
-                transpositionTable.set(hash, { score: 0, depth: Infinity });
-                return 0;
-            }
-
-            const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
-            if (validMoves.length === 0) {
-                transpositionTable.set(hash, { score: 0, depth: Infinity });
-                return 0;
-            }
-
-            const ratedMoves = orderMoves(validMoves, boardStates, smallBoardWinners, isMaximizing ? aiSymbol : playerSymbol);
-
-            if (isMaximizing) {
-                let maxEval = -Infinity;
-                for (const [bigIndex, smallIndex] of ratedMoves) {
-                    const newBoardStates = JSON.parse(JSON.stringify(boardStates));
-                    newBoardStates[bigIndex][smallIndex] = aiSymbol;
-
-                    const newSmallBoardWinners = [...smallBoardWinners];
-                    if (checkWinSmallBoard(newBoardStates[bigIndex])) {
-                        newSmallBoardWinners[bigIndex] = aiSymbol;
-                    } else if (isBoardFull(newBoardStates[bigIndex])) {
-                        newSmallBoardWinners[bigIndex] = 'draw';
-                    }
-
-                    let nextActiveBoard = smallIndex;
-                    if (newSmallBoardWinners[smallIndex] !== null) {
-                        nextActiveBoard = null;
-                    }
-
-                    const evalScore = minimax(
-                        nextActiveBoard,
-                        newBoardStates,
-                        newSmallBoardWinners,
-                        depth - 1,
-                        false,
-                        alpha,
-                        beta,
-                        aiSymbol,
-                        playerSymbol
-                    );
-
-                    maxEval = Math.max(maxEval, evalScore);
-                    alpha = Math.max(alpha, evalScore);
-                    if (beta <= alpha) break;
-                }
-
-                transpositionTable.set(hash, { score: maxEval, depth });
-                return maxEval;
-            } else {
-                let minEval = Infinity;
-                for (const [bigIndex, smallIndex] of ratedMoves) {
-                    const newBoardStates = JSON.parse(JSON.stringify(boardStates));
-                    newBoardStates[bigIndex][smallIndex] = playerSymbol;
-
-                    const newSmallBoardWinners = [...smallBoardWinners];
-                    if (checkWinSmallBoard(newBoardStates[bigIndex])) {
-                        newSmallBoardWinners[bigIndex] = playerSymbol;
-                    } else if (isBoardFull(newBoardStates[bigIndex])) {
-                        newSmallBoardWinners[bigIndex] = 'draw';
-                    }
-
-                    let nextActiveBoard = smallIndex;
-                    if (newSmallBoardWinners[smallIndex] !== null) {
-                        nextActiveBoard = null;
-                    }
-
-                    const evalScore = minimax(
-                        nextActiveBoard,
-                        newBoardStates,
-                        newSmallBoardWinners,
-                        depth - 1,
-                        true,
-                        alpha,
-                        beta,
-                        aiSymbol,
-                        playerSymbol
-                    );
-
-                    minEval = Math.min(minEval, evalScore);
-                    beta = Math.min(beta, evalScore);
-                    if (beta <= alpha) break;
-                }
-
-                transpositionTable.set(hash, { score: minEval, depth });
-                return minEval;
-            }
-        }
-
-        function orderMoves(validMoves, boardStates, smallBoardWinners, currentSymbol) {
-            const scoredMoves = validMoves.map(move => {
-                const [bigIndex, smallIndex] = move;
-                let score = 0;
-
-                const tempBoard = [...boardStates[bigIndex]];
-                tempBoard[smallIndex] = currentSymbol;
-                if (checkWinSmallBoard(tempBoard)) score += 1000;
-
-                if (smallIndex === 4) score += 100;
-                if ([0, 2, 6, 8].includes(smallIndex)) score += 50;
-
-                if (smallBoardWinners[smallIndex] !== null) score += 50;
-
-                if ([0, 2, 6, 8, 4].includes(bigIndex)) score += 10;
-
-                return { move, score };
-            });
-
-            scoredMoves.sort((a, b) => b.score - a.score);
-            return scoredMoves.map(item => item.move);
-        }
-
-        function simulateOpponentMove() {
-            if (gameState.preventAIMove) {
-                return;
-            }
-            const { activeBoard, boardStates, smallBoardWinners, currentTurn, difficulty, gameMode } = gameState;
-            const opponentSymbol = currentTurn;
-            const playerSymbol = opponentSymbol === 'X' ? 'O' : 'X';
-
-            transpositionTable.clear();
-
-            let bestMove = null;
-            let maxDepth;
-            switch (difficulty) {
-                case '1':
-                    maxDepth = 1;
-                    break;
-                case '4':
-                    maxDepth = 4;
-                    break;
-                case '6':
-                    maxDepth = 6;
-                    break;
-                case '9':
-                    maxDepth = 9;
-                    break;
-                default:
-                    maxDepth = 4;
-            }
-
-            const startTime = Date.now();
-            const timeLimit = 6000;
-
-            for (let depth = 1; depth <= maxDepth; depth++) {
-                const move = findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, opponentSymbol, playerSymbol, depth);
-
-                if (Date.now() - startTime > timeLimit) {
-                    console.log(`Max depth reached: ${depth-1}`);
-                    break;
-                }
-
-                bestMove = move;
-            }
-
-            const isFirstMove = boardStates.every(board => board.every(cell => cell === null));
-
-            if (isFirstMove) {
-                const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
-                if (validMoves.length > 0) {
-                    const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    const delay = gameMode === 'timed' ? 900 : 0;
-                    setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
-                    return;
-                }
-            }
-
-            if (bestMove) {
-                const delay = gameMode === 'timed' ? 900 : 0;
-                setTimeout(() => handleSquareClick(bestMove[0], bestMove[1]), delay);
-            } else {
-                const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
-                if (validMoves.length > 0) {
-                    const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    const delay = gameMode === 'timed' ? 900 : 0;
-                    setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
-                }
-            }
-        }
-
-        function findBestMoveWithMinimax(activeBoard, boardStates, smallBoardWinners, aiSymbol, playerSymbol, depth) {
-            const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
-            if (validMoves.length === 0) return null;
-
-            let bestScore = -Infinity;
-            let bestMove = null;
-
-            let alpha = -Infinity;
-            let beta = Infinity;
-
-            const ratedMoves = validMoves.map(move => {
-                const [bigIndex, smallIndex] = move;
-                let score = 0;
-
-                const tempBoardState = [...boardStates[bigIndex]];
-                tempBoardState[smallIndex] = aiSymbol;
-                if (checkWinSmallBoard(tempBoardState)) score += 1000;
-
-                if (smallIndex === 4) score += 30;
-                if ([0, 2, 6, 8].includes(smallIndex)) score += 20;
-
-                if (smallBoardWinners[smallIndex] !== null) score += 50;
-
-                if ([0, 2, 6, 8, 4].includes(bigIndex)) score += 10;
-
-                return { move, score };
-            });
-
-            ratedMoves.sort((a, b) => b.score - a.score);
-            const sortedMoves = ratedMoves.map(rated => rated.move);
-
-            for (const [bigIndex, smallIndex] of sortedMoves) {
-                const newBoardStates = JSON.parse(JSON.stringify(boardStates));
-                newBoardStates[bigIndex][smallIndex] = aiSymbol;
-
-                const newSmallBoardWinners = [...smallBoardWinners];
-                if (checkWinSmallBoard(newBoardStates[bigIndex])) {
-                    newSmallBoardWinners[bigIndex] = aiSymbol;
-                } else if (isBoardFull(newBoardStates[bigIndex])) {
-                    newSmallBoardWinners[bigIndex] = 'draw';
-                }
-
-                if (checkWinBigBoard(newSmallBoardWinners)) return [bigIndex, smallIndex];
-
-                let nextActiveBoard = smallIndex;
-                if (newSmallBoardWinners[smallIndex] !== null) nextActiveBoard = null;
-
-                const score = minimax(
-                    nextActiveBoard,
-                    newBoardStates,
-                    newSmallBoardWinners,
-                    depth - 1,
-                    false,
-                    alpha,
-                    beta,
-                    aiSymbol,
-                    playerSymbol
-                );
-
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestMove = [bigIndex, smallIndex];
-                }
-
-                alpha = Math.max(alpha, bestScore);
-                if (beta <= alpha) break;
-            }
-
-            return bestMove;
-        }
-
         function handleSquareClick(bigIndex, smallIndex) {
             const { gameWinner, gameMode, currentTurn, playerSymbol,
                    activeBoard, smallBoardWinners, boardStates } = gameState;
@@ -1441,6 +1050,97 @@
             if ((gameMode === 'ai' || gameMode === 'timed') && !newGameWinner && gameState.currentTurn !== playerSymbol) {
                 setTimeout(() => simulateOpponentMove(), 1000);
             }
+        }
+
+        function simulateOpponentMove() {
+            if (gameState.preventAIMove) {
+                return;
+            }
+            const { activeBoard, boardStates, smallBoardWinners, currentTurn, difficulty, gameMode } = gameState;
+            const opponentSymbol = currentTurn;
+            const playerSymbol = opponentSymbol === 'X' ? 'O' : 'X';
+
+            let maxDepth;
+            switch (difficulty) {
+                case '1':
+                    maxDepth = 1;
+                    break;
+                case '4':
+                    maxDepth = 4;
+                    break;
+                case '6':
+                    maxDepth = 6;
+                    break;
+                case '9':
+                    maxDepth = 9;
+                    break;
+                default:
+                    maxDepth = 4;
+            }
+
+            const isFirstMove = boardStates.every(board => board.every(cell => cell === null));
+
+            if (isFirstMove) {
+                const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
+                if (validMoves.length > 0) {
+                    const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    const delay = gameMode === 'timed' ? 900 : 0;
+                    setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
+                    return;
+                }
+            }
+
+            if (!aiWorker) {
+                aiWorker = new Worker('aiWorker.js');
+            }
+
+            aiWorker.onmessage = function(e) {
+                const bestMove = e.data;
+                if (bestMove) {
+                    const delay = gameMode === 'timed' ? 900 : 0;
+                    setTimeout(() => handleSquareClick(bestMove[0], bestMove[1]), delay);
+                } else {
+                    const validMoves = findValidMoves(activeBoard, boardStates, smallBoardWinners);
+                    if (validMoves.length > 0) {
+                        const [bigIndex, smallIndex] = validMoves[Math.floor(Math.random() * validMoves.length)];
+                        const delay = gameMode === 'timed' ? 900 : 0;
+                        setTimeout(() => handleSquareClick(bigIndex, smallIndex), delay);
+                    }
+                }
+            };
+
+            aiWorker.postMessage({
+                activeBoard,
+                boardStates,
+                smallBoardWinners,
+                aiSymbol: opponentSymbol,
+                playerSymbol,
+                depth: maxDepth
+            });
+        }
+
+        function findValidMoves(activeBoard, boardStates, smallBoardWinners) {
+            const validMoves = [];
+
+            if (activeBoard === null || smallBoardWinners[activeBoard] !== null) {
+                for (let i = 0; i < 9; i++) {
+                    if (smallBoardWinners[i] === null) {
+                        for (let j = 0; j < 9; j++) {
+                            if (boardStates[i][j] === null) {
+                                validMoves.push([i, j]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (let j = 0; j < 9; j++) {
+                    if (boardStates[activeBoard][j] === null) {
+                        validMoves.push([activeBoard, j]);
+                    }
+                }
+            }
+
+            return validMoves;
         }
 
         function renderCell(bigIndex, smallIndex) {
@@ -1578,105 +1278,115 @@
         }
 
         function renderGameInfo() {
-            const { gameMode, currentTurn, playerSymbol, activeBoard, darkMode, playerTimes } = gameState;
-            const theme = darkMode ? 'dark' : 'light';
+    const { gameMode, currentTurn, playerSymbol, darkMode, playerTimes } = gameState;
+    const theme = darkMode ? 'dark' : 'light';
 
-            const infoDiv = document.createElement('div');
-            infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
+    const infoDiv = document.createElement('div');
+    infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
 
-            const header = document.createElement('div');
-            header.className = 'game-info-header';
+    const header = document.createElement('div');
+    header.className = 'game-info-header';
 
-            const title = document.createElement('h2');
-            title.className = 'text-2xl font-bold';
-            title.textContent = 'Ultimate Tic Tac Toe';
-            header.appendChild(title);
+    const modeTitleContainer = document.createElement('div');
+    modeTitleContainer.className = 'mode-title-container';
+    modeTitleContainer.style.padding = '10px';
+    modeTitleContainer.style.borderRadius = '8px';
+    modeTitleContainer.style.display = 'inline-block';
+    modeTitleContainer.style.backgroundColor = darkMode ? '#4b5563' : '#d1d5db';
 
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
-            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
-            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
-            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
-            toggleBtn.addEventListener('click', toggleDarkMode);
-            header.appendChild(toggleBtn);
+    const modeTitle = document.createElement('h2');
+    modeTitle.className = 'text-3xl font-bold';
+    modeTitle.textContent = gameMode === 'ai' ? 'Solo vs AI' : gameMode === 'local' ? 'Local Multiplayer' : 'Timed Mode';
+    modeTitleContainer.appendChild(modeTitle);
+    header.appendChild(modeTitleContainer);
 
-            infoDiv.appendChild(header);
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+    toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+    toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
+    toggleBtn.textContent = darkMode ? '☀️' : '🌙';
+    toggleBtn.addEventListener('click', toggleDarkMode);
+    header.appendChild(toggleBtn);
 
-            const modeInfo = document.createElement('p');
-            modeInfo.className = 'text-xl font-semibold mb-2';
-            modeInfo.textContent = gameMode === 'ai' ? 'Mode: Solo vs AI' : gameMode === 'local' ? 'Mode: Local Multiplayer' : 'Mode: Timed';
-            infoDiv.appendChild(modeInfo);
+    infoDiv.appendChild(header);
 
-            if (gameMode === 'local') {
-                const playerInfo = document.createElement('div');
-                playerInfo.className = 'player-info';
+    if (gameMode === 'timed') {
+        const timers = document.createElement('div');
+        timers.className = 'player-info';
 
-                const playerX = document.createElement('div');
-                playerX.className = `player-box ${currentTurn === 'X' ?
-                                      (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') :
-                                      (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-                playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - Your turn' : ''}`;
+        const timerXContainer = document.createElement('div');
+        timerXContainer.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        timerXContainer.innerHTML = `<span class="text-red-500 font-bold">${playerSymbol === 'X' ? '👤' : '🤖'} X : ${playerTimes.X}s</span>`;
 
-                const playerO = document.createElement('div');
-                playerO.className = `player-box ${currentTurn === 'O' ?
-                                      (theme === 'dark' ? 'bg-blue-900' : 'bg-blue-100') :
-                                      (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-                playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - Your turn' : ''}`;
+        const timerOContainer = document.createElement('div');
+        timerOContainer.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        timerOContainer.innerHTML = `<span class="text-blue-500 font-bold">${playerSymbol === 'O' ? '👤' : '🤖'} O : ${playerTimes.O}s</span>`;
 
-                playerInfo.appendChild(playerX);
-                playerInfo.appendChild(playerO);
-                infoDiv.appendChild(playerInfo);
-            }
-            const aiSymbol = playerSymbol === 'X' ? 'O' : 'X';
+        timers.appendChild(timerXContainer);
+        timers.appendChild(timerOContainer);
+        infoDiv.appendChild(timers);
+    } else if (gameMode === 'local') {
+        const playerInfo = document.createElement('div');
+        playerInfo.className = 'player-info';
 
-            if (gameMode === 'ai' || gameMode === 'timed') {
-                const turnInfo = document.createElement('p');
-                turnInfo.className = 'text-lg mb-2';
-                turnInfo.textContent = currentTurn === playerSymbol ? `👤 Your turn: ${playerSymbol}` : gameMode === 'ai' ? `🤖 AI turn: ${aiSymbol}` : `🤖 AI turn: ${aiSymbol}`;
-                infoDiv.appendChild(turnInfo);
-            }
+        const playerX = document.createElement('div');
+        playerX.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - Your turn' : ''}`;
 
-            if (gameMode === 'timed') {
-                const timers = document.createElement('div');
-                timers.className = 'flex justify-center gap-4 mt-4';
+        const playerO = document.createElement('div');
+        playerO.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - Your turn' : ''}`;
 
-                const timerX = document.createElement('div');
-                timerX.className = 'text-center';
-                timerX.innerHTML = `<div class="text-red-500 font-bold">X</div><div class="text-lg">${playerTimes.X}s</div>`;
+        playerInfo.appendChild(playerX);
+        playerInfo.appendChild(playerO);
+        infoDiv.appendChild(playerInfo);
+    } else if (gameMode === 'ai') {
+        const playerInfo = document.createElement('div');
+        playerInfo.className = 'player-info';
 
-                const timerO = document.createElement('div');
-                timerO.className = 'text-center';
-                timerO.innerHTML = `<div class="text-blue-500 font-bold">O</div><div class="text-lg">${playerTimes.O}s</div>`;
+        const playerSymbolElement = document.createElement('div');
+        playerSymbolElement.className = `player-box ${currentTurn === playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        playerSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-red-500' : 'text-blue-500'} font-bold">${playerSymbol === 'X' ? '👤 X' : '👤 O'}</span>${currentTurn === playerSymbol ? ' - Your turn' : ''}`;
 
-                timers.appendChild(timerX);
-                timers.appendChild(timerO);
-                infoDiv.appendChild(timers);
-            }
+        const aiSymbolElement = document.createElement('div');
+        aiSymbolElement.className = `player-box ${currentTurn !== playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+        aiSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-blue-500' : 'text-red-500'} font-bold">🤖 ${playerSymbol === 'X' ? 'O' : 'X'}</span>${currentTurn !== playerSymbol ? ' - AI is thinking' : ''}`;
 
-            const controls = document.createElement('div');
-            controls.className = 'mt-6 flex justify-center gap-2';
+        playerInfo.appendChild(playerSymbolElement);
+        playerInfo.appendChild(aiSymbolElement);
+        infoDiv.appendChild(playerInfo);
+    }
 
-            const newGameBtn = document.createElement('button');
-            newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
-            newGameBtn.textContent = 'New Game';
-            newGameBtn.addEventListener('click', () => {
-                if (gameState.gameMode === 'timed') {
-                    pauseTimer();
-                }
-                startNewGame(gameState.gameMode);
-            });
+    const controls = document.createElement('div');
+    controls.className = 'mt-6 flex justify-center gap-2';
 
-            const lobbyBtn = document.createElement('button');
-            lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
-            lobbyBtn.textContent = 'Back to Lobby';
-            lobbyBtn.addEventListener('click', backToLobby);
-
-            controls.appendChild(newGameBtn);
-            controls.appendChild(lobbyBtn);
-            infoDiv.appendChild(controls);
-
-            return infoDiv;
+    const newGameBtn = document.createElement('button');
+    newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+    newGameBtn.textContent = 'New Game';
+    newGameBtn.addEventListener('click', () => {
+        if (gameState.gameMode === 'timed') {
+            pauseTimer();
         }
+        startNewGame(gameState.gameMode);
+    });
+
+    const lobbyBtn = document.createElement('button');
+    lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
+    lobbyBtn.textContent = 'Back to Lobby';
+    lobbyBtn.addEventListener('click', backToLobby);
+
+    controls.appendChild(newGameBtn);
+    controls.appendChild(lobbyBtn);
+    infoDiv.appendChild(controls);
+
+    return infoDiv;
+}
+
+        function renderTurnIndicator() {
+    // Retourne toujours un élément vide pour tous les modes
+    return document.createElement('div');
+}
+
 
         function renderGameOverModal() {
             const { gameWinner, gameMode, playerSymbol, darkMode, difficulty, playerTimes } = gameState;
@@ -1956,6 +1666,7 @@
 
             container.appendChild(renderGameInfo());
             container.appendChild(renderGameBoard());
+            container.appendChild(renderTurnIndicator());
 
             const modal = renderGameOverModal();
             if (modal && !document.querySelector('.modal-overlay')) {
