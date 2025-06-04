@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -842,252 +842,646 @@
     <script>
         // Ajoutez les traductions
         const translations = {
-            en: {
-                title: "Ultimate Tic Tac Toe",
-                playAgainstAI: "Play against AI",
-                localMultiplayer: "Local Multiplayer",
-                timedMode: "Timed Mode",
-                gameRules: "Game Rules",
-                settings: "Settings",
-                difficulty: "Difficulty",
-                close: "Close",
-                continue: "Continue",
-                newGame: "New Game",
-                backToLobby: "Back to Lobby",
-                language: "Language",
-                easy: "Easy",
-                normal: "Normal",
-                difficult: "Difficult",
-                impossible: "Impossible",
-                youArePlayingAs: "You are playing as",
-                youGoFirst: "You go first!",
-                aiGoesFirst: "AI goes first!",
-                youWon: "You won.",
-                aiWon: "AI won.",
-                playerWon: "Player won.",
-                gameEndedInDraw: "The game ended in a draw.",
-                playerXRanOutOfTime: "Player X ran out of time. Player O wins!",
-                playerORanOutOfTime: "Player O ran out of time. Player X wins!",
-                playerXWon: "Player X won.",
-                playerOWon: "Player O won.",
-                gameOver: "Game Over",
-                theGameIsAlreadyOver: "The game is already over!",
-                youMustPlayInTheIndicatedGrid: "You must play in the indicated grid!",
-                thisGridIsAlreadyWon: "This grid is already won!",
-                thisCellIsAlreadyTaken: "This cell is already taken!",
-                difficultyChangedTo: "Difficulty changed to:",
-                difficultyNames: {
-                    '1': 'Easy',
-                    '4': 'Normal',
-                    '6': 'Difficult',
-                    '9': 'Impossible'
-                },
-                yourTurn: "Your turn",
-                aiIsThinking: "AI is thinking",
-                rule1: "Ultimate Tic Tac Toe consists of 9 small Tic Tac Toe grids, forming one large grid.",
-                rule2: "On each turn, you must play in the small grid corresponding to the cell played by your opponent in their small grid.",
-                rule3: "For example, if your opponent plays in the top-right cell of their small grid, you must play in the top-right small grid of the large grid.",
-                rule4: "If you are sent to a grid that is already won or full, you can play in any open grid.",
-                rule5: "To win a small grid, align 3 symbols as in classic Tic Tac Toe.",
-                rule6: "To win the game, align 3 won small grids."
-            },
-            fr: {
-                title: "Morpion Ultime",
-                playAgainstAI: "Jouer contre l'IA",
-                localMultiplayer: "Multijoueur Local",
-                timedMode: "Mode Chronométré",
-                gameRules: "Règles du Jeu",
-                settings: "Paramètres",
-                difficulty: "Difficulté",
-                close: "Fermer",
-                continue: "Continuer",
-                newGame: "Nouvelle Partie",
-                backToLobby: "Retour au Lobby",
-                language: "Langue",
-                easy: "Facile",
-                normal: "Normal",
-                difficult: "Difficile",
-                impossible: "Impossible",
-                youArePlayingAs: "Vous jouez en tant que",
-                youGoFirst: "Vous commencez!",
-                aiGoesFirst: "L'IA commence!",
-                youWon: "Vous avez gagné.",
-                aiWon: "L'IA a gagné.",
-                playerWon: "Le joueur a gagné.",
-                gameEndedInDraw: "La partie s'est terminée par un match nul.",
-                playerXRanOutOfTime: "Le joueur X a manqué de temps. Le joueur O gagne!",
-                playerORanOutOfTime: "Le joueur O a manqué de temps. Le joueur X gagne!",
-                playerXWon: "Le joueur X a gagné.",
-                playerOWon: "Le joueur O a gagné.",
-                gameOver: "Fin de la partie",
-                theGameIsAlreadyOver: "La partie est déjà terminée!",
-                youMustPlayInTheIndicatedGrid: "Vous devez jouer dans la grille indiquée!",
-                thisGridIsAlreadyWon: "Cette grille est déjà gagnée!",
-                thisCellIsAlreadyTaken: "Cette cellule est déjà prise!",
-                difficultyChangedTo: "Difficulté changée en:",
-                difficultyNames: {
-                    '1': 'Facile',
-                    '4': 'Normal',
-                    '6': 'Difficile',
-                    '9': 'Impossible'
-                },
-                yourTurn: "Votre tour",
-                aiIsThinking: "L'IA réfléchit",
-                rule1: "Le Morpion Ultime est composé de 9 petites grilles de Morpion, formant une grande grille.",
-                rule2: "À chaque tour, vous devez jouer dans la petite grille correspondant à la cellule jouée par votre adversaire dans leur petite grille.",
-                rule3: "Par exemple, si votre adversaire joue dans la cellule en haut à droite de leur petite grille, vous devez jouer dans la petite grille en haut à droite de la grande grille.",
-                rule4: "Si vous êtes envoyé vers une grille déjà gagnée ou pleine, vous pouvez jouer dans n'importe quelle grille ouverte.",
-                rule5: "Pour gagner une petite grille, alignez 3 symboles comme dans le Morpion classique.",
-                rule6: "Pour gagner la partie, alignez 3 petites grilles gagnées."
-            },
-            de: {
-                title: "Ultimatives Tic Tac Toe",
-                playAgainstAI: "Gegen KI spielen",
-                localMultiplayer: "Lokaler Mehrspieler",
-                timedMode: "Zeitmodus",
-                gameRules: "Spielregeln",
-                settings: "Einstellungen",
-                difficulty: "Schwierigkeit",
-                close: "Schließen",
-                continue: "Fortsetzen",
-                newGame: "Neues Spiel",
-                backToLobby: "Zurück zur Lobby",
-                language: "Sprache",
-                easy: "Einfach",
-                normal: "Normal",
-                difficult: "Schwierig",
-                impossible: "Unmöglich",
-                youArePlayingAs: "Sie spielen als",
-                youGoFirst: "Sie beginnen!",
-                aiGoesFirst: "Die KI beginnt!",
-                youWon: "Sie haben gewonnen.",
-                aiWon: "Die KI hat gewonnen.",
-                playerWon: "Der Spieler hat gewonnen.",
-                gameEndedInDraw: "Das Spiel endete unentschieden.",
-                playerXRanOutOfTime: "Spieler X hat keine Zeit mehr. Spieler O gewinnt!",
-                playerORanOutOfTime: "Spieler O hat keine Zeit mehr. Spieler X gewinnt!",
-                playerXWon: "Spieler X hat gewonnen.",
-                playerOWon: "Spieler O hat gewonnen.",
-                gameOver: "Spiel vorbei",
-                theGameIsAlreadyOver: "Das Spiel ist bereits vorbei!",
-                youMustPlayInTheIndicatedGrid: "Sie müssen im angegebenen Feld spielen!",
-                thisGridIsAlreadyWon: "Dieses Feld ist bereits gewonnen!",
-                thisCellIsAlreadyTaken: "Diese Zelle ist bereits belegt!",
-                difficultyChangedTo: "Schwierigkeit geändert zu:",
-                difficultyNames: {
-                    '1': 'Einfach',
-                    '4': 'Normal',
-                    '6': 'Schwierig',
-                    '9': 'Unmöglich'
-                },
-                yourTurn: "Ihr Zug",
-                aiIsThinking: "Die KI denkt nach",
-                rule1: "Ultimatives Tic Tac Toe besteht aus 9 kleinen Tic Tac Toe-Rastern, die ein großes Raster bilden.",
-                rule2: "In jeder Runde müssen Sie in dem kleinen Raster spielen, das der Zelle entspricht, die Ihr Gegner in ihrem kleinen Raster gespielt hat.",
-                rule3: "Wenn Ihr Gegner zum Beispiel in der oberen rechten Zelle ihres kleinen Rasters spielt, müssen Sie im oberen rechten kleinen Raster des großen Rasters spielen.",
-                rule4: "Wenn Sie zu einem Raster geschickt werden, das bereits gewonnen oder voll ist, können Sie in jedem offenen Raster spielen.",
-                rule5: "Um ein kleines Raster zu gewinnen, richten Sie 3 Symbole wie beim klassischen Tic Tac Toe aus.",
-                rule6: "Um das Spiel zu gewinnen, richten Sie 3 gewonnene kleine Raster aus."
-            },
-            it: {
-                title: "Tris Ultimo",
-                playAgainstAI: "Gioca contro l'IA",
-                localMultiplayer: "Multigiocatore Locale",
-                timedMode: "Modalità Cronometrata",
-                gameRules: "Regole del Gioco",
-                settings: "Impostazioni",
-                difficulty: "Difficoltà",
-                close: "Chiudi",
-                continue: "Continua",
-                newGame: "Nuova Partita",
-                backToLobby: "Torna alla Lobby",
-                language: "Lingua",
-                easy: "Facile",
-                normal: "Normale",
-                difficult: "Difficile",
-                impossible: "Impossibile",
-                youArePlayingAs: "Stai giocando come",
-                youGoFirst: "Inizi tu!",
-                aiGoesFirst: "L'IA inizia!",
-                youWon: "Hai vinto.",
-                aiWon: "L'IA ha vinto.",
-                playerWon: "Il giocatore ha vinto.",
-                gameEndedInDraw: "La partita è finita in parità.",
-                playerXRanOutOfTime: "Il giocatore X ha finito il tempo. Il giocatore O vince!",
-                playerORanOutOfTime: "Il giocatore O ha finito il tempo. Il giocatore X vince!",
-                playerXWon: "Il giocatore X ha vinto.",
-                playerOWon: "Il giocatore O ha vinto.",
-                gameOver: "Partita finita",
-                theGameIsAlreadyOver: "La partita è già finita!",
-                youMustPlayInTheIndicatedGrid: "Devi giocare nella griglia indicata!",
-                thisGridIsAlreadyWon: "Questa griglia è già stata vinta!",
-                thisCellIsAlreadyTaken: "Questa cella è già occupata!",
-                difficultyChangedTo: "Difficoltà cambiata in:",
-                difficultyNames: {
-                    '1': 'Facile',
-                    '4': 'Normale',
-                    '6': 'Difficile',
-                    '9': 'Impossibile'
-                },
-                yourTurn: "Il tuo turno",
-                aiIsThinking: "L'IA sta pensando",
-                rule1: "Tris Ultimo consiste in 9 piccole griglie di Tris, che formano una grande griglia.",
-                rule2: "Ad ogni turno, devi giocare nella piccola griglia corrispondente alla cella giocata dal tuo avversario nella loro piccola griglia.",
-                rule3: "Ad esempio, se il tuo avversario gioca nella cella in alto a destra della loro piccola griglia, devi giocare nella piccola griglia in alto a destra della grande griglia.",
-                rule4: "Se vieni inviato a una griglia già vinta o piena, puoi giocare in qualsiasi griglia aperta.",
-                rule5: "Per vincere una piccola griglia, allinea 3 simboli come nel classico Tris.",
-                rule6: "Per vincere la partita, allinea 3 piccole griglie vinte."
-            },
-            sv: {
-                title: "Ultimate Tic Tac Toe",
-                playAgainstAI: "Spela mot AI",
-                localMultiplayer: "Lokal Multiplayer",
-                timedMode: "Tidläge",
-                gameRules: "Spelregler",
-                settings: "Inställningar",
-                difficulty: "Svårighetsgrad",
-                close: "Stäng",
-                continue: "Fortsätt",
-                newGame: "Nytt Spel",
-                backToLobby: "Tillbaka till Lobby",
-                language: "Språk",
-                easy: "Lätt",
-                normal: "Normal",
-                difficult: "Svår",
-                impossible: "Omöjlig",
-                youArePlayingAs: "Du spelar som",
-                youGoFirst: "Du börjar!",
-                aiGoesFirst: "AI börjar!",
-                youWon: "Du vann.",
-                aiWon: "AI vann.",
-                playerWon: "Spelaren vann.",
-                gameEndedInDraw: "Spelet slutade oavgjort.",
-                playerXRanOutOfTime: "Spelare X tog slut på tid. Spelare O vinner!",
-                playerORanOutOfTime: "Spelare O tog slut på tid. Spelare X vinner!",
-                playerXWon: "Spelare X vann.",
-                playerOWon: "Spelare O vann.",
-                gameOver: "Spel slut",
-                theGameIsAlreadyOver: "Spelet är redan över!",
-                youMustPlayInTheIndicatedGrid: "Du måste spela i den angivna rutan!",
-                thisGridIsAlreadyWon: "Den här rutan är redan vunnen!",
-                thisCellIsAlreadyTaken: "Den här cellen är redan tagen!",
-                difficultyChangedTo: "Svårighetsgrad ändrad till:",
-                difficultyNames: {
-                    '1': 'Lätt',
-                    '4': 'Normal',
-                    '6': 'Svår',
-                    '9': 'Omöjlig'
-                },
-                yourTurn: "Din tur",
-                aiIsThinking: "AI tänker",
-                rule1: "Ultimate Tic Tac Toe består av 9 små Tic Tac Toe-rutor som bildar ett stort rutnät.",
-                rule2: "På varje tur måste du spela i den lilla rutan som motsvarar cellen som din motståndare spelade i deras lilla rutnät.",
-                rule3: "Om din motståndare till exempel spelar i den övre högra cellen i deras lilla rutnät, måste du spela i den övre högra lilla rutan i det stora rutnätet.",
-                rule4: "Om du skickas till en ruta som redan är vunnen eller full, kan du spela i vilken öppen ruta som helst.",
-                rule5: "För att vinna en liten ruta, justera 3 symboler som i klassiskt Tic Tac Toe.",
-                rule6: "För att vinna spelet, justera 3 vunna små rutnät."
-            }
-        };
+    en: {
+        title: "Ultimate Tic Tac Toe",
+        playAgainstAI: "Play against AI",
+        localMultiplayer: "Local Multiplayer",
+        timedMode: "Timed Mode",
+        gameRules: "Game Rules",
+        settings: "Settings",
+        difficulty: "Difficulty",
+        close: "Close",
+        continue: "Continue",
+        newGame: "New Game",
+        backToLobby: "Back to Lobby",
+        language: "Language",
+        easy: "Easy",
+        normal: "Normal",
+        difficult: "Difficult",
+        impossible: "Impossible",
+        youArePlayingAs: "You are playing as",
+        youGoFirst: "You go first!",
+        aiGoesFirst: "AI goes first!",
+        youWon: "You won.",
+        aiWon: "AI won.",
+        playerWon: "Player won.",
+        gameEndedInDraw: "The game ended in a draw.",
+        playerXRanOutOfTime: "Player X ran out of time. Player O wins!",
+        playerORanOutOfTime: "Player O ran out of time. Player X wins!",
+        playerXWon: "Player X won.",
+        playerOWon: "Player O won.",
+        gameOver: "Game Over",
+        theGameIsAlreadyOver: "The game is already over!",
+        youMustPlayInTheIndicatedGrid: "You must play in the indicated grid!",
+        thisGridIsAlreadyWon: "This grid is already won!",
+        thisCellIsAlreadyTaken: "This cell is already taken!",
+        difficultyChangedTo: "Difficulty changed to:",
+        difficultyNames: {
+            '1': 'Easy',
+            '4': 'Normal',
+            '6': 'Difficult',
+            '9': 'Impossible'
+        },
+        yourTurn: "Your turn",
+        aiIsThinking: "AI is thinking",
+        rule1: "Ultimate Tic Tac Toe is made up of 9 smaller Tic Tac Toe boards arranged in a big 3x3 grid.",
+        rule2: "You must play in the small board that matches where your opponent last played.",
+        rule3: "If your opponent plays in the top-right of their small board, you play in the top-right small board of the big board.",
+        rule4: "If you're sent to a board that's already won or full, you can play anywhere.",
+        rule5: "Win a small board by getting three in a row, just like regular Tic Tac Toe.",
+        rule6: "Win the game by getting three of your small board wins in a row on the big board."
+    },
+    fr: {
+        title: "Morpion Ultime",
+        playAgainstAI: "Jouer contre l'IA",
+        localMultiplayer: "Multijoueur Local",
+        timedMode: "Mode Chronométré",
+        gameRules: "Règles du Jeu",
+        settings: "Paramètres",
+        difficulty: "Difficulté",
+        close: "Fermer",
+        continue: "Continuer",
+        newGame: "Nouvelle Partie",
+        backToLobby: "Retour au Lobby",
+        language: "Langue",
+        easy: "Facile",
+        normal: "Normal",
+        difficult: "Difficile",
+        impossible: "Impossible",
+        youArePlayingAs: "Vous jouez en tant que",
+        youGoFirst: "Vous commencez!",
+        aiGoesFirst: "L'IA commence!",
+        youWon: "Vous avez gagné.",
+        aiWon: "L'IA a gagné.",
+        playerWon: "Le joueur a gagné.",
+        gameEndedInDraw: "La partie s'est terminée par un match nul.",
+        playerXRanOutOfTime: "Le joueur X a manqué de temps. Le joueur O gagne!",
+        playerORanOutOfTime: "Le joueur O a manqué de temps. Le joueur X gagne!",
+        playerXWon: "Le joueur X a gagné.",
+        playerOWon: "Le joueur O a gagné.",
+        gameOver: "Fin de la partie",
+        theGameIsAlreadyOver: "La partie est déjà terminée!",
+        youMustPlayInTheIndicatedGrid: "Vous devez jouer dans la grille indiquée!",
+        thisGridIsAlreadyWon: "Cette grille est déjà gagnée!",
+        thisCellIsAlreadyTaken: "Cette cellule est déjà prise!",
+        difficultyChangedTo: "Difficulté changée en:",
+        difficultyNames: {
+            '1': 'Facile',
+            '4': 'Normal',
+            '6': 'Difficile',
+            '9': 'Impossible'
+        },
+        yourTurn: "Votre tour",
+        aiIsThinking: "L'IA réfléchit",
+        rule1: "Le Morpion Ultime est composé de 9 grilles de Morpion disposées en une grande grille 3x3.",
+        rule2: "Vous devez jouer dans la petite grille correspondant à la dernière case jouée par votre adversaire.",
+        rule3: "Si votre adversaire joue en haut à droite de sa petite grille, vous jouez dans la petite grille en haut à droite de la grande grille.",
+        rule4: "Si vous êtes dirigé vers une grille déjà gagnée ou pleine, vous pouvez jouer n'importe où.",
+        rule5: "Gagnez une petite grille en alignant trois symboles, comme au Morpion classique.",
+        rule6: "Gagnez la partie en alignant trois victoires de petites grilles sur la grande grille."
+    },
+    de: {
+        title: "Ultimatives Tic Tac Toe",
+        playAgainstAI: "Gegen KI spielen",
+        localMultiplayer: "Lokaler Mehrspieler",
+        timedMode: "Zeitmodus",
+        gameRules: "Spielregeln",
+        settings: "Einstellungen",
+        difficulty: "Schwierigkeit",
+        close: "Schließen",
+        continue: "Fortsetzen",
+        newGame: "Neues Spiel",
+        backToLobby: "Zurück zur Lobby",
+        language: "Sprache",
+        easy: "Einfach",
+        normal: "Normal",
+        difficult: "Schwierig",
+        impossible: "Unmöglich",
+        youArePlayingAs: "Sie spielen als",
+        youGoFirst: "Sie beginnen!",
+        aiGoesFirst: "Die KI beginnt!",
+        youWon: "Sie haben gewonnen.",
+        aiWon: "Die KI hat gewonnen.",
+        playerWon: "Der Spieler hat gewonnen.",
+        gameEndedInDraw: "Das Spiel endete unentschieden.",
+        playerXRanOutOfTime: "Spieler X hat keine Zeit mehr. Spieler O gewinnt!",
+        playerORanOutOfTime: "Spieler O hat keine Zeit mehr. Spieler X gewinnt!",
+        playerXWon: "Spieler X hat gewonnen.",
+        playerOWon: "Spieler O hat gewonnen.",
+        gameOver: "Spiel vorbei",
+        theGameIsAlreadyOver: "Das Spiel ist bereits vorbei!",
+        youMustPlayInTheIndicatedGrid: "Sie müssen im angegebenen Feld spielen!",
+        thisGridIsAlreadyWon: "Dieses Feld ist bereits gewonnen!",
+        thisCellIsAlreadyTaken: "Diese Zelle ist bereits belegt!",
+        difficultyChangedTo: "Schwierigkeit geändert zu:",
+        difficultyNames: {
+            '1': 'Einfach',
+            '4': 'Normal',
+            '6': 'Schwierig',
+            '9': 'Unmöglich'
+        },
+        yourTurn: "Ihr Zug",
+        aiIsThinking: "Die KI denkt nach",
+        rule1: "Ultimatives Tic Tac Toe besteht aus 9 kleinen Tic Tac Toe-Rastern, die ein großes Raster bilden.",
+        rule2: "Sie müssen in dem kleinen Raster spielen, das der zuletzt gespielten Zelle Ihres Gegners entspricht.",
+        rule3: "Wenn Ihr Gegner in der oberen rechten Ecke seines kleinen Rasters spielt, spielen Sie im oberen rechten kleinen Raster des großen Rasters.",
+        rule4: "Wenn Sie zu einem bereits gewonnenen oder vollen Raster geschickt werden, können Sie überall spielen.",
+        rule5: "Gewinnen Sie ein kleines Raster, indem Sie drei in einer Reihe bekommen, genau wie beim normalen Tic Tac Toe.",
+        rule6: "Gewinnen Sie das Spiel, indem Sie drei Ihrer kleinen Rastergewinne in einer Reihe auf dem großen Raster erhalten."
+    },
+    it: {
+        title: "Tris Ultimo",
+        playAgainstAI: "Gioca contro l'IA",
+        localMultiplayer: "Multigiocatore Locale",
+        timedMode: "Modalità Cronometrata",
+        gameRules: "Regole del Gioco",
+        settings: "Impostazioni",
+        difficulty: "Difficoltà",
+        close: "Chiudi",
+        continue: "Continua",
+        newGame: "Nuova Partita",
+        backToLobby: "Torna alla Lobby",
+        language: "Lingua",
+        easy: "Facile",
+        normal: "Normale",
+        difficult: "Difficile",
+        impossible: "Impossibile",
+        youArePlayingAs: "Stai giocando come",
+        youGoFirst: "Inizi tu!",
+        aiGoesFirst: "L'IA inizia!",
+        youWon: "Hai vinto.",
+        aiWon: "L'IA ha vinto.",
+        playerWon: "Il giocatore ha vinto.",
+        gameEndedInDraw: "La partita è finita in parità.",
+        playerXRanOutOfTime: "Il giocatore X ha finito il tempo. Il giocatore O vince!",
+        playerORanOutOfTime: "Il giocatore O ha finito il tempo. Il giocatore X vince!",
+        playerXWon: "Il giocatore X ha vinto.",
+        playerOWon: "Il giocatore O ha vinto.",
+        gameOver: "Partita finita",
+        theGameIsAlreadyOver: "La partita è già finita!",
+        youMustPlayInTheIndicatedGrid: "Devi giocare nella griglia indicata!",
+        thisGridIsAlreadyWon: "Questa griglia è già stata vinta!",
+        thisCellIsAlreadyTaken: "Questa cella è già occupata!",
+        difficultyChangedTo: "Difficoltà cambiata in:",
+        difficultyNames: {
+            '1': 'Facile',
+            '4': 'Normale',
+            '6': 'Difficile',
+            '9': 'Impossibile'
+        },
+        yourTurn: "Il tuo turno",
+        aiIsThinking: "L'IA sta pensando",
+        rule1: "Tris Ultimo consiste in 9 piccole griglie di Tris, che formano una grande griglia.",
+        rule2: "Devi giocare nella piccola griglia corrispondente all'ultima cella giocata dal tuo avversario.",
+        rule3: "Se il tuo avversario gioca in alto a destra della sua piccola griglia, giochi nella piccola griglia in alto a destra della grande griglia.",
+        rule4: "Se sei indirizzato a una griglia già vinta o piena, puoi giocare ovunque.",
+        rule5: "Vinci una piccola griglia ottenendo tre in fila, proprio come nel Tris normale.",
+        rule6: "Vinci la partita ottenendo tre delle tue vittorie di piccole griglie in fila sulla grande griglia."
+    },
+    es: {
+        title: "Tres en Raya Ultimate",
+        playAgainstAI: "Jugar contra la IA",
+        localMultiplayer: "Multijugador Local",
+        timedMode: "Modo Cronometrado",
+        gameRules: "Reglas del Juego",
+        settings: "Configuración",
+        difficulty: "Dificultad",
+        close: "Cerrar",
+        continue: "Continuar",
+        newGame: "Nuevo Juego",
+        backToLobby: "Volver al Lobby",
+        language: "Idioma",
+        easy: "Fácil",
+        normal: "Normal",
+        difficult: "Difícil",
+        impossible: "Imposible",
+        youArePlayingAs: "Estás jugando como",
+        youGoFirst: "¡Tú empiezas!",
+        aiGoesFirst: "¡La IA empieza!",
+        youWon: "Has ganado.",
+        aiWon: "La IA ha ganado.",
+        playerWon: "El jugador ha ganado.",
+        gameEndedInDraw: "El juego terminó en empate.",
+        playerXRanOutOfTime: "El jugador X se quedó sin tiempo. ¡El jugador O gana!",
+        playerORanOutOfTime: "El jugador O se quedó sin tiempo. ¡El jugador X gana!",
+        playerXWon: "El jugador X ha ganado.",
+        playerOWon: "El jugador O ha ganado.",
+        gameOver: "Juego terminado",
+        theGameIsAlreadyOver: "¡El juego ya ha terminado!",
+        youMustPlayInTheIndicatedGrid: "¡Debes jugar en la cuadrícula indicada!",
+        thisGridIsAlreadyWon: "¡Esta cuadrícula ya ha sido ganada!",
+        thisCellIsAlreadyTaken: "¡Esta celda ya está ocupada!",
+        difficultyChangedTo: "Dificultad cambiada a:",
+        difficultyNames: {
+            '1': 'Fácil',
+            '4': 'Normal',
+            '6': 'Difícil',
+            '9': 'Imposible'
+        },
+        yourTurn: "Tu turno",
+        aiIsThinking: "La IA está pensando",
+        rule1: "El Tres en Raya Ultimate consiste en 9 pequeñas cuadrículas de Tres en Raya, que forman una cuadrícula grande.",
+        rule2: "Debes jugar en la pequeña cuadrícula que corresponde a la última celda jugada por tu oponente.",
+        rule3: "Si tu oponente juega en la parte superior derecha de su pequeña cuadrícula, debes jugar en la pequeña cuadrícula superior derecha de la cuadrícula grande.",
+        rule4: "Si eres enviado a una cuadrícula que ya ha sido ganada o está llena, puedes jugar en cualquier lugar.",
+        rule5: "Gana una pequeña cuadrícula obteniendo tres en línea, justo como en el Tres en Raya regular.",
+        rule6: "Gana el juego obteniendo tres de tus victorias de pequeñas cuadrículas en línea en la cuadrícula grande."
+    },
+    ar: {
+        title: "تيك تاك تو النهائي",
+        playAgainstAI: "العب ضد الذكاء الاصطناعي",
+        localMultiplayer: "اللعب الجماعي المحلي",
+        timedMode: "الوضع المؤقت",
+        gameRules: "قوانين اللعبة",
+        settings: "الإعدادات",
+        difficulty: "الصعوبة",
+        close: "إغلاق",
+        continue: "استمرار",
+        newGame: "لعبة جديدة",
+        backToLobby: "العودة إلى اللوبي",
+        language: "اللغة",
+        easy: "سهل",
+        normal: "عادي",
+        difficult: "صعب",
+        impossible: "مستحيل",
+        youArePlayingAs: "أنت تلعب ك",
+        youGoFirst: "أنت تبدأ!",
+        aiGoesFirst: "الذكاء الاصطناعي يبدأ!",
+        youWon: "لقد فازت.",
+        aiWon: "الذكاء الاصطناعي فاز.",
+        playerWon: "اللاعب فاز.",
+        gameEndedInDraw: "انتهت اللعبة بالتعادل.",
+        playerXRanOutOfTime: "نفد الوقت من اللاعب X. اللاعب O يفوز!",
+        playerORanOutOfTime: "نفد الوقت من اللاعب O. اللاعب X يفوز!",
+        playerXWon: "اللاعب X فاز.",
+        playerOWon: "اللاعب O فاز.",
+        gameOver: "انتهاء اللعبة",
+        theGameIsAlreadyOver: "اللعبة انتهت بالفعل!",
+        youMustPlayInTheIndicatedGrid: "يجب أن تلعب في الشبكة المحددة!",
+        thisGridIsAlreadyWon: "هذه الشبكة قد فازت بالفعل!",
+        thisCellIsAlreadyTaken: "هذه الخلية مشغولة بالفعل!",
+        difficultyChangedTo: "تم تغيير الصعوبة إلى:",
+        difficultyNames: {
+            '1': 'سهل',
+            '4': 'عادي',
+            '6': 'صعب',
+            '9': 'مستحيل'
+        },
+        yourTurn: "دورك",
+        aiIsThinking: "الذكاء الاصطناعي يفكر",
+        rule1: "تيك تاك تو النهائي يتكون من 9 شبكات صغيرة من تيك تاك تو، تشكل شبكة كبيرة.",
+        rule2: "يجب أن تلعب في الشبكة الصغيرة التي تتوافق مع آخر خلية لعبها خصمك.",
+        rule3: "إذا لعب خصمك في الزاوية العلوية اليمنى من شبكته الصغيرة، تلعب في الشبكة الصغيرة العلوية اليمنى من الشبكة الكبيرة.",
+        rule4: "إذا تم إرسالك إلى شبكة فازت بالفعل أو ممتلئة، يمكنك اللعب في أي مكان.",
+        rule5: "افوز بشبكة صغيرة عن طريق الحصول على ثلاثة في صف، مثل تيك تاك تو العادي.",
+        rule6: "افوز باللعبة عن طريق الحصول على ثلاثة من انتصارات الشبكات الصغيرة في صف على الشبكة الكبيرة."
+    },
+    zh: {
+        title: "终极井字棋",
+        playAgainstAI: "与AI对战",
+        localMultiplayer: "本地多人游戏",
+        timedMode: "计时模式",
+        gameRules: "游戏规则",
+        settings: "设置",
+        difficulty: "难度",
+        close: "关闭",
+        continue: "继续",
+        newGame: "新游戏",
+        backToLobby: "返回大厅",
+        language: "语言",
+        easy: "简单",
+        normal: "普通",
+        difficult: "困难",
+        impossible: "不可能",
+        youArePlayingAs: "你正在扮演",
+        youGoFirst: "你先走！",
+        aiGoesFirst: "AI先走！",
+        youWon: "你赢了。",
+        aiWon: "AI赢了。",
+        playerWon: "玩家赢了。",
+        gameEndedInDraw: "游戏以平局结束。",
+        playerXRanOutOfTime: "玩家X时间用完。玩家O赢！",
+        playerORanOutOfTime: "玩家O时间用完。玩家X赢！",
+        playerXWon: "玩家X赢了。",
+        playerOWon: "玩家O赢了。",
+        gameOver: "游戏结束",
+        theGameIsAlreadyOver: "游戏已经结束！",
+        youMustPlayInTheIndicatedGrid: "你必须在指定的网格中玩！",
+        thisGridIsAlreadyWon: "这个网格已经赢了！",
+        thisCellIsAlreadyTaken: "这个单元格已经被占用！",
+        difficultyChangedTo: "难度更改为：",
+        difficultyNames: {
+            '1': '简单',
+            '4': '普通',
+            '6': '困难',
+            '9': '不可能'
+        },
+        yourTurn: "你的回合",
+        aiIsThinking: "AI正在思考",
+        rule1: "终极井字棋由9个小井字棋网格组成，形成一个大网格。",
+        rule2: "你必须在对应于对手最后一次移动的小网格中玩。",
+        rule3: "如果对手在其小网格的右上角移动，你必须在大网格的右上角小网格中移动。",
+        rule4: "如果你被发送到一个已经赢或已满的网格，你可以在任何地方玩。",
+        rule5: "通过获得三个连成一线来赢得一个小网格，就像普通井字棋一样。",
+        rule6: "通过在大网格上获得三个你的小网格胜利来赢得游戏。"
+    },
+    ja: {
+        title: "アルティメット三目並べ",
+        playAgainstAI: "AIと対戦",
+        localMultiplayer: "ローカルマルチプレイヤー",
+        timedMode: "タイムモード",
+        gameRules: "ゲームルール",
+        settings: "設定",
+        difficulty: "難易度",
+        close: "閉じる",
+        continue: "続ける",
+        newGame: "新しいゲーム",
+        backToLobby: "ロビーに戻る",
+        language: "言語",
+        easy: "簡単",
+        normal: "普通",
+        difficult: "難しい",
+        impossible: "不可能",
+        youArePlayingAs: "あなたはとしてプレイしています",
+        youGoFirst: "あなたが先に行きます！",
+        aiGoesFirst: "AIが先に行きます！",
+        youWon: "あなたの勝ちです。",
+        aiWon: "AIの勝ちです。",
+        playerWon: "プレイヤーの勝ちです。",
+        gameEndedInDraw: "ゲームは引き分けで終了しました。",
+        playerXRanOutOfTime: "プレイヤーXの時間切れ。プレイヤーOの勝ち！",
+        playerORanOutOfTime: "プレイヤーOの時間切れ。プレイヤーXの勝ち！",
+        playerXWon: "プレイヤーXの勝ちです。",
+        playerOWon: "プレイヤーOの勝ちです。",
+        gameOver: "ゲームオーバー",
+        theGameIsAlreadyOver: "ゲームは既に終了しています！",
+        youMustPlayInTheIndicatedGrid: "指定されたグリッドでプレイする必要があります！",
+        thisGridIsAlreadyWon: "このグリッドは既に勝っています！",
+        thisCellIsAlreadyTaken: "このセルは既に取られています！",
+        difficultyChangedTo: "難易度が変更されました：",
+        difficultyNames: {
+            '1': '簡単',
+            '4': '普通',
+            '6': '難しい',
+            '9': '不可能'
+        },
+        yourTurn: "あなたのターン",
+        aiIsThinking: "AIが考えています",
+        rule1: "アルティメット三目並べは、9つの小さな三目並べグリッドで構成され、1つの大きなグリッドを形成します。",
+        rule2: "あなたは、相手が最後にプレイしたセルに対応する小さなグリッドでプレイする必要があります。",
+        rule3: "例えば、相手が小さなグリッドの右上のセルでプレイした場合、あなたは大きなグリッドの右上の小さなグリッドでプレイする必要があります。",
+        rule4: "既に勝っているか満たされているグリッドに送られた場合、あなたはどこでもプレイできます。",
+        rule5: "小さなグリッドに勝つために、通常の三目並べのように3つのシンボルを揃えます。",
+        rule6: "ゲームに勝つために、大きなグリッドで3つの小さなグリッドの勝利を揃えます。"
+    },
+    ru: {
+        title: "Ультимативные крестики-нолики",
+        playAgainstAI: "Играть против ИИ",
+        localMultiplayer: "Локальный мультиплеер",
+        timedMode: "Режим с таймером",
+        gameRules: "Правила игры",
+        settings: "Настройки",
+        difficulty: "Сложность",
+        close: "Закрыть",
+        continue: "Продолжить",
+        newGame: "Новая игра",
+        backToLobby: "Вернуться в лобби",
+        language: "Язык",
+        easy: "Легко",
+        normal: "Нормально",
+        difficult: "Сложно",
+        impossible: "Невозможно",
+        youArePlayingAs: "Вы играете за",
+        youGoFirst: "Вы ходите первыми!",
+        aiGoesFirst: "ИИ ходит первым!",
+        youWon: "Вы выиграли.",
+        aiWon: "ИИ выиграл.",
+        playerWon: "Игрок выиграл.",
+        gameEndedInDraw: "Игра закончилась вничью.",
+        playerXRanOutOfTime: "У игрока X закончилось время. Игрок O побеждает!",
+        playerORanOutOfTime: "У игрока O закончилось время. Игрок X побеждает!",
+        playerXWon: "Игрок X победил.",
+        playerOWon: "Игрок O победил.",
+        gameOver: "Игра окончена",
+        theGameIsAlreadyOver: "Игра уже закончена!",
+        youMustPlayInTheIndicatedGrid: "Вы должны играть в указанной сетке!",
+        thisGridIsAlreadyWon: "Эта сетка уже выиграна!",
+        thisCellIsAlreadyTaken: "Эта ячейка уже занята!",
+        difficultyChangedTo: "Сложность изменена на:",
+        difficultyNames: {
+            '1': 'Легко',
+            '4': 'Нормально',
+            '6': 'Сложно',
+            '9': 'Невозможно'
+        },
+        yourTurn: "Ваш ход",
+        aiIsThinking: "ИИ думает",
+        rule1: "Ультимативные крестики-нолики состоят из 9 маленьких сеток крестиков-ноликов, образующих одну большую сетку.",
+        rule2: "Вы должны играть в маленькой сетке, соответствующей последней клетке, в которую сыграл ваш противник.",
+        rule3: "Если ваш противник играет в правой верхней ячейке своей маленькой сетки, вы должны играть в правой верхней маленькой сетке большой сетки.",
+        rule4: "Если вы отправлены в сетку, которая уже выиграна или заполнена, вы можете играть в любой открытой сетке.",
+        rule5: "Чтобы выиграть маленькую сетку, выстройте 3 символа в ряд, как в классических крестиках-ноликах.",
+        rule6: "Чтобы выиграть игру, выстройте 3 выигравших маленьких сетки в ряд на большой сетке."
+    },
+    sv: {
+        title: "Ultimate Tic Tac Toe",
+        playAgainstAI: "Spela mot AI",
+        localMultiplayer: "Lokal Multiplayer",
+        timedMode: "Tidsbegränsat Läge",
+        gameRules: "Spelregler",
+        settings: "Inställningar",
+        difficulty: "Svårighetsgrad",
+        close: "Stäng",
+        continue: "Fortsätt",
+        newGame: "Nytt Spel",
+        backToLobby: "Tillbaka till Lobby",
+        language: "Språk",
+        easy: "Lätt",
+        normal: "Normal",
+        difficult: "Svår",
+        impossible: "Omöjlig",
+        youArePlayingAs: "Du spelar som",
+        youGoFirst: "Du börjar!",
+        aiGoesFirst: "AI börjar!",
+        youWon: "Du vann.",
+        aiWon: "AI vann.",
+        playerWon: "Spelaren vann.",
+        gameEndedInDraw: "Spelet slutade oavgjort.",
+        playerXRanOutOfTime: "Spelare X tog slut på tid. Spelare O vinner!",
+        playerORanOutOfTime: "Spelare O tog slut på tid. Spelare X vinner!",
+        playerXWon: "Spelare X vann.",
+        playerOWon: "Spelare O vann.",
+        gameOver: "Spel slut",
+        theGameIsAlreadyOver: "Spelet är redan över!",
+        youMustPlayInTheIndicatedGrid: "Du måste spela i den angivna rutan!",
+        thisGridIsAlreadyWon: "Den här rutan är redan vunnen!",
+        thisCellIsAlreadyTaken: "Den här cellen är redan tagen!",
+        difficultyChangedTo: "Svårighetsgrad ändrad till:",
+        difficultyNames: {
+            '1': 'Lätt',
+            '4': 'Normal',
+            '6': 'Svår',
+            '9': 'Omöjlig'
+        },
+        yourTurn: "Din tur",
+        aiIsThinking: "AI tänker",
+        rule1: "Ultimate Tic Tac Toe består av 9 mindre Tic Tac Toe-brädor arrangerade i ett stort 3x3-rutnät.",
+        rule2: "Du måste spela i den lilla brädet som matchar var din motståndare senast spelade.",
+        rule3: "Om din motståndare spelar i det övre högra hörnet av sitt lilla bräde, spelar du i det övre högra lilla brädet på det stora brädet.",
+        rule4: "Om du skickas till ett bräde som redan är vunnet eller fullt, kan du spela var som helst.",
+        rule5: "Vinn ett litet bräde genom att få tre i rad, precis som vanligt Tic Tac Toe.",
+        rule6: "Vinn spelet genom att få tre av dina små brädvinster i rad på det stora brädet."
+    },
+    hi: {
+        title: "अल्टिमेट टिक टैक टो",
+        playAgainstAI: "एआई के खिलाफ खेलें",
+        localMultiplayer: "लोकल मल्टीप्लेयर",
+        timedMode: "समयबद्ध मोड",
+        gameRules: "गेम नियम",
+        settings: "सेटिंग्स",
+        difficulty: "कठिनाई",
+        close: "बंद करें",
+        continue: "जारी रखें",
+        newGame: "नया खेल",
+        backToLobby: "लॉबी पर वापस",
+        language: "भाषा",
+        easy: "आसान",
+        normal: "सामान्य",
+        difficult: "कठिन",
+        impossible: "असंभव",
+        youArePlayingAs: "आप खेल रहे हैं",
+        youGoFirst: "आप पहले जाते हैं!",
+        aiGoesFirst: "एआई पहले जाता है!",
+        youWon: "आप जीत गए।",
+        aiWon: "एआई जीत गया।",
+        playerWon: "खिलाड़ी जीत गया।",
+        gameEndedInDraw: "गेम ड्रॉ पर समाप्त हुआ।",
+        playerXRanOutOfTime: "खिलाड़ी X का समय समाप्त हो गया। खिलाड़ी O जीतता है!",
+        playerORanOutOfTime: "खिलाड़ी O का समय समाप्त हो गया। खिलाड़ी X जीतता है!",
+        playerXWon: "खिलाड़ी X जीत गया।",
+        playerOWon: "खिलाड़ी O जीत गया।",
+        gameOver: "गेम खत्म",
+        theGameIsAlreadyOver: "गेम पहले ही खत्म हो चुका है!",
+        youMustPlayInTheIndicatedGrid: "आपको निर्दिष्ट ग्रिड में खेलना चाहिए!",
+        thisGridIsAlreadyWon: "यह ग्रिड पहले ही जीत चुका है!",
+        thisCellIsAlreadyTaken: "यह सेल पहले ही लिया जा चुका है!",
+        difficultyChangedTo: "कठिनाई बदलकर:",
+        difficultyNames: {
+            '1': 'आसान',
+            '4': 'सामान्य',
+            '6': 'कठिन',
+            '9': 'असंभव'
+        },
+        yourTurn: "आपकी बारी",
+        aiIsThinking: "एआई सोच रहा है",
+        rule1: "अल्टिमेट टिक टैक टो 9 छोटे टिक टैक टो बोर्डों से बना होता है जो एक बड़े 3x3 ग्रिड में व्यवस्थित होते हैं।",
+        rule2: "आपको उस छोटे बोर्ड में खेलना चाहिए जो आपके प्रतिद्वंद्वी के अंतिम खेले गए स्थान से मेल खाता हो।",
+        rule3: "यदि आपका प्रतिद्वंद्वी अपने छोटे बोर्ड के ऊपरी दाएं कोने में खेलता है, तो आपको बड़े बोर्ड के ऊपरी दाएं छोटे बोर्ड में खेलना चाहिए।",
+        rule4: "यदि आपको एक ऐसे बोर्ड पर भेजा जाता है जो पहले से जीत चुका है या भर चुका है, तो आप कहीं भी खेल सकते हैं।",
+        rule5: "एक छोटे बोर्ड को जीतने के लिए, सामान्य टिक टैक टो की तरह तीन पंक्तियों में प्राप्त करें।",
+        rule6: "बड़े बोर्ड पर अपने छोटे बोर्ड की तीन जीत पंक्तियों में प्राप्त करके खेल जीतें।"
+    },
+    pt: {
+        title: "Jogo da Velha Ultimate",
+        playAgainstAI: "Jogar contra a IA",
+        localMultiplayer: "Multijogador Local",
+        timedMode: "Modo Cronometrado",
+        gameRules: "Regras do Jogo",
+        settings: "Configurações",
+        difficulty: "Dificuldade",
+        close: "Fechar",
+        continue: "Continuar",
+        newGame: "Novo Jogo",
+        backToLobby: "Voltar ao Lobby",
+        language: "Idioma",
+        easy: "Fácil",
+        normal: "Normal",
+        difficult: "Difícil",
+        impossible: "Impossível",
+        youArePlayingAs: "Você está jogando como",
+        youGoFirst: "Você começa!",
+        aiGoesFirst: "A IA começa!",
+        youWon: "Você ganhou.",
+        aiWon: "A IA ganhou.",
+        playerWon: "O jogador ganhou.",
+        gameEndedInDraw: "O jogo terminou em empate.",
+        playerXRanOutOfTime: "O jogador X ficou sem tempo. O jogador O ganha!",
+        playerORanOutOfTime: "O jogador O ficou sem tempo. O jogador X ganha!",
+        playerXWon: "O jogador X ganhou.",
+        playerOWon: "O jogador O ganhou.",
+        gameOver: "Fim de Jogo",
+        theGameIsAlreadyOver: "O jogo já terminou!",
+        youMustPlayInTheIndicatedGrid: "Você deve jogar na grade indicada!",
+        thisGridIsAlreadyWon: "Esta grade já foi vencida!",
+        thisCellIsAlreadyTaken: "Esta célula já está ocupada!",
+        difficultyChangedTo: "Dificuldade alterada para:",
+        difficultyNames: {
+            '1': 'Fácil',
+            '4': 'Normal',
+            '6': 'Difícil',
+            '9': 'Impossível'
+        },
+        yourTurn: "Sua vez",
+        aiIsThinking: "A IA está pensando",
+        rule1: "O Jogo da Velha Ultimate é composto por 9 tabuleiros menores de Jogo da Velha, formando um grande tabuleiro 3x3.",
+        rule2: "Você deve jogar no tabuleiro pequeno que corresponde à última jogada do seu oponente.",
+        rule3: "Se o seu oponente jogar no canto superior direito do tabuleiro pequeno dele, você deve jogar no tabuleiro pequeno do canto superior direito do grande tabuleiro.",
+        rule4: "Se você for enviado para um tabuleiro que já foi vencido ou está cheio, você pode jogar em qualquer lugar.",
+        rule5: "Ganhe um tabuleiro pequeno alinhando três símbolos, como no Jogo da Velha clássico.",
+        rule6: "Ganhe o jogo alinhando três vitórias de tabuleiros pequenos no grande tabuleiro."
+    },
+    eu: {
+        title: "Hiru Lerroren Joko Goratua",
+        playAgainstAI: "AIaren aurka jolastu",
+        localMultiplayer: "Jokalari Anitz Lokala",
+        timedMode: "Denbora Mugatuko Modua",
+        gameRules: "Joko Arauak",
+        settings: "Ezarpenak",
+        difficulty: "Zailtasuna",
+        close: "Itxi",
+        continue: "Jarraitu",
+        newGame: "Joko Berria",
+        backToLobby: "Itzuli Lobira",
+        language: "Hizkuntza",
+        easy: "Erraza",
+        normal: "Normala",
+        difficult: "Zaila",
+        impossible: "Ezinbestekoa",
+        youArePlayingAs: "Honekin jokatzen ari zara",
+        youGoFirst: "Zuk hasten du!",
+        aiGoesFirst: "AIak hasten du!",
+        youWon: "Zuk irabazi duzu.",
+        aiWon: "AIak irabazi du.",
+        playerWon: "Jokalariak irabazi du.",
+        gameEndedInDraw: "Jokoa berdinketa batean amaitu da.",
+        playerXRanOutOfTime: "X jokalariak denbora agortu du. O jokalariak irabazten du!",
+        playerORanOutOfTime: "O jokalariak denbora agortu du. X jokalariak irabazten du!",
+        playerXWon: "X jokalariak irabazi du.",
+        playerOWon: "O jokalariak irabazi du.",
+        gameOver: "Jokoa Amaitua",
+        theGameIsAlreadyOver: "Jokoa jada amaituta dago!",
+        youMustPlayInTheIndicatedGrid: "Indikatutako taulan jolastu behar duzu!",
+        thisGridIsAlreadyWon: "Taula hau jada irabazita dago!",
+        thisCellIsAlreadyTaken: "Kasila hau jada hartuta dago!",
+        difficultyChangedTo: "Zailtasun maila hauetara aldatu da:",
+        difficultyNames: {
+            '1': 'Erraza',
+            '4': 'Normala',
+            '6': 'Zaila',
+            '9': 'Ezinbestekoa'
+        },
+        yourTurn: "Zure txanda",
+        aiIsThinking: "AIak pentsatzen ari da",
+        rule1: "Hiru Lerroren Joko Goratua 3x3 sare handi batean antolatutako 9 Hiru Lerroren Joko txikiz osatuta dago.",
+        rule2: "Aurreko jokalariak bere taula txikian egindako azken mugimenduaren arabera, zure mugimendua egin behar duzu taula txiki horretara.",
+        rule3: "Adibidez, aurkariak bere taula txikian goiko eskuineko kasillan jokatzen badu, zuek taula handiaren goiko eskuineko taula txikian jokatuko duzue.",
+        rule4: "Iada irabazita edo beteta dagoen taula batera bidalita bazaraude, edozein taula libretan jolastu dezakezu.",
+        rule5: "Taula txiki bat irabazteko, hiru sinbolo lerroan jarri behar dituzu, Hiru Lerroren Joko klasikoan bezala.",
+        rule6: "Jokoa irabazteko, zure hiru taula txiki irabazitakoak lerroan jarri behar dituzu taula handian."
+    }
+};
+
+
 
         // Constantes pour la réutilisation
         const INITIAL_GAME_STATE = {
@@ -1263,31 +1657,30 @@
         }
 
         function backToLobby() {
-    if (gameState.activeTimer) {
-        clearInterval(gameState.activeTimer);
-        gameState.activeTimer = null;
-    }
+            if (gameState.activeTimer) {
+                clearInterval(gameState.activeTimer);
+                gameState.activeTimer = null;
+            }
 
-    gameState.playerTimes = {
-        X: 60,
-        O: 60
-    };
+            gameState.playerTimes = {
+                X: 60,
+                O: 60
+            };
 
-    const darkMode = gameState.darkMode;
-    gameState = {...INITIAL_GAME_STATE};
-    gameState.view = 'lobby';
-    gameState.preventAIMove = true;
-    gameState.darkMode = darkMode;
+            const darkMode = gameState.darkMode;
+            gameState = {...INITIAL_GAME_STATE};
+            gameState.view = 'lobby';
+            gameState.preventAIMove = true;
+            gameState.darkMode = darkMode;
 
-    // Restaurer la langue depuis localStorage
-    const savedLanguage = localStorage.getItem('selectedLanguage');
-    if (savedLanguage) {
-        gameState.language = savedLanguage;
-    }
+            // Restaurer la langue depuis localStorage
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                gameState.language = savedLanguage;
+            }
 
-    renderView();
-}
-
+            renderView();
+        }
 
         function startTimer(player) {
             if (gameState.activeTimer) {
@@ -1987,12 +2380,20 @@
             languageDropdown.className = 'language-dropdown';
 
             const languages = [
+                { code: 'ar', name: 'العربية (Arabic)' },
+                { code: 'de', name: 'Deutsch (German)' },
                 { code: 'en', name: 'English' },
-                { code: 'fr', name: 'Français' },
-                { code: 'de', name: 'Deutsch' },
-                { code: 'it', name: 'Italiano' },
-                { code: 'sv', name: 'Svenska' }
+                { code: 'es', name: 'Español (Spanish)' },
+                { code: 'fr', name: 'Français (French)' },
+                { code: 'hi', name: 'हिन्दी (Hindi)' },
+                { code: 'it', name: 'Italiano (Italian)' },
+                { code: 'ja', name: '日本語 (Japanese)' },
+                { code: 'ru', name: 'Русский (Russian)' },
+                { code: 'sv', name: 'Svenska (Swedish)' },
+                { code: 'zh', name: '中文 (Chinese)' }
             ];
+
+            languages.sort((a, b) => a.name.localeCompare(b.name));
 
             languages.forEach(langOption => {
                 const option = document.createElement('option');
@@ -2181,31 +2582,30 @@
         }
 
         function renderView() {
-    const appContainer = document.querySelector('#app .container');
-    appContainer.innerHTML = '';
+            const appContainer = document.querySelector('#app .container');
+            appContainer.innerHTML = '';
 
-    // Restaurer la langue depuis localStorage
-    const savedLanguage = localStorage.getItem('selectedLanguage');
-    if (savedLanguage) {
-        gameState.language = savedLanguage;
-    }
+            // Restaurer la langue depuis localStorage
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                gameState.language = savedLanguage;
+            }
 
-    document.body.classList.toggle('dark', gameState.darkMode);
+            document.body.classList.toggle('dark', gameState.darkMode);
 
-    switch (gameState.view) {
-        case 'lobby':
-            appContainer.appendChild(renderLobbyView());
-            break;
-        case 'rules':
-            appContainer.appendChild(renderRulesView());
-            break;
-        case 'game':
-            appContainer.appendChild(renderGameView());
-            setTimeout(postRenderAdjustments, 0);
-            break;
-    }
-}
-
+            switch (gameState.view) {
+                case 'lobby':
+                    appContainer.appendChild(renderLobbyView());
+                    break;
+                case 'rules':
+                    appContainer.appendChild(renderRulesView());
+                    break;
+                case 'game':
+                    appContainer.appendChild(renderGameView());
+                    setTimeout(postRenderAdjustments, 0);
+                    break;
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedLanguage = localStorage.getItem('selectedLanguage');
