@@ -26,11 +26,6 @@
             }
         }
 
-        /* animation de rebond aux symboles */
-        .symbol.bounce {
-            animation: bounce 0.5s;
-        }
-
         /* Animation d'entrée */
         @keyframes fadeIn {
             from {
@@ -42,6 +37,7 @@
                 transform: translateY(0);
             }
         }
+
         @keyframes fadeInlayout {
             from {
                 opacity: 0;
@@ -62,34 +58,36 @@
                 transform: translateY(-20px);
             }
         }
-        
-      @keyframes zoom {
-          0%, 100% {
-              transform: scale(1);
-          }
-          50% {
-              transform: scale(1.1);
-          }
-      }
 
-      .zoom {
-          animation: zoom 1s infinite;
-      }
-        /* animation d'entrée aux layouts */
+        @keyframes zoom {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .zoom {
+            animation: zoom 1s infinite;
+        }
+
+        /* Animation d'entrée aux layouts */
         .lobby-view, .game-view, .rules-view {
             animation: fadeInlayout 0.3s ease-in-out;
         }
 
-        /* animation de sortie aux layouts */
+        /* Animation de sortie aux layouts */
         .lobby-view.exit, .game-view.exit, .rules-view.exit {
             animation: fadeOut 0.3s ease-in-out;
         }
-        /* animation d'entrée aux messages */
+
+        /* Animation d'entrée aux messages */
         .tooltip, .modal-content {
             animation: fadeIn 0.3s ease-in-out;
         }
 
-        /* animation de sortie aux messages */
+        /* Animation de sortie aux messages */
         .tooltip.exit, .modal-content.exit {
             animation: fadeOut 0.3s ease-in-out;
         }
@@ -99,7 +97,67 @@
             transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
-        /* containers principaux */
+        /* Effet de survol pour les cases valides */
+        .cell.valid {
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .cell.valid:hover {
+            transform: scale(1.13);
+            background-color: #dbeafe;
+        }
+
+        /* Assurez-vous que l'effet est visible en mode sombre */
+        .dark .cell.valid:hover {
+            background-color: #4b5563;
+        }
+
+        /* Ajoutez ce style pour la modal de paramètres */
+        .settings-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+        .settings-modal-content {
+            border-radius: 0.5rem;
+            max-width: 384px;
+            width: 100%;
+            padding: 24px;
+        }
+
+        .settings-modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .settings-modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Assurez-vous que le conteneur d'en-tête est correctement configuré */
+        .header-responsive {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .title-responsive {
+            text-align: center;
+        }
+
+        /* Conteneurs principaux */
         .container {
             width: 100%;
             max-width: 512px;
@@ -262,12 +320,12 @@
             background-color: #059669;
         }
 
-       .hover\:bg-yellow-400:hover {
+        .hover\:bg-yellow-400:hover {
             background-color: #facc15;
-       }
-       .hover\:bg-emerald-600:hover {
-           background-color: #84cc16;
-       }
+        }
+        .hover\:bg-emerald-600:hover {
+            background-color: #84cc16;
+        }
 
         /* Layout */
         .flex {
@@ -283,7 +341,7 @@
             justify-content: center;
         }
         .justify-between {
-            justify-between: space-between;
+            justify-content: space-between;
         }
         .gap-2 {
             gap: 8px;
@@ -431,6 +489,27 @@
             color: #ffffff;
         }
 
+        /* Styles pour le sélecteur de langue */
+        .language-selector {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .language-dropdown {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .language-dropdown:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
         @media (max-width: 512px) {
             .game-board {
                 gap: 8px;
@@ -452,15 +531,14 @@
             }
 
             .header-responsive {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: center;
+                flex-direction: column;
+                align-items: fixed;
             }
 
             .title-responsive {
-                flex: 1;
+                width: 70%;
                 text-align: center;
-                padding-right: 42px;
+                margin-top: 10px;
             }
         }
 
@@ -756,36 +834,283 @@
     <div id="app" class="min-h-screen">
         <div class="container">
         </div>
-
         <footer class="text-gray-500">
             Ultimate Tic Tac Toe © 2025
         </footer>
     </div>
-
     <div id="tooltip" class="tooltip"></div>
-
     <script>
-        // Constants for reuse
+        // Ajoutez les traductions
+        const translations = {
+            en: {
+                title: "Ultimate Tic Tac Toe",
+                playAgainstAI: "Play against AI",
+                localMultiplayer: "Local Multiplayer",
+                timedMode: "Timed Mode",
+                gameRules: "Game Rules",
+                settings: "Settings",
+                difficulty: "Difficulty",
+                close: "Close",
+                continue: "Continue",
+                newGame: "New Game",
+                backToLobby: "Back to Lobby",
+                language: "Language",
+                easy: "Easy",
+                normal: "Normal",
+                difficult: "Difficult",
+                impossible: "Impossible",
+                youArePlayingAs: "You are playing as",
+                youGoFirst: "You go first!",
+                aiGoesFirst: "AI goes first!",
+                youWon: "You won.",
+                aiWon: "AI won.",
+                playerWon: "Player won.",
+                gameEndedInDraw: "The game ended in a draw.",
+                playerXRanOutOfTime: "Player X ran out of time. Player O wins!",
+                playerORanOutOfTime: "Player O ran out of time. Player X wins!",
+                playerXWon: "Player X won.",
+                playerOWon: "Player O won.",
+                gameOver: "Game Over",
+                theGameIsAlreadyOver: "The game is already over!",
+                youMustPlayInTheIndicatedGrid: "You must play in the indicated grid!",
+                thisGridIsAlreadyWon: "This grid is already won!",
+                thisCellIsAlreadyTaken: "This cell is already taken!",
+                difficultyChangedTo: "Difficulty changed to:",
+                difficultyNames: {
+                    '1': 'Easy',
+                    '4': 'Normal',
+                    '6': 'Difficult',
+                    '9': 'Impossible'
+                },
+                yourTurn: "Your turn",
+                aiIsThinking: "AI is thinking",
+                rule1: "Ultimate Tic Tac Toe consists of 9 small Tic Tac Toe grids, forming one large grid.",
+                rule2: "On each turn, you must play in the small grid corresponding to the cell played by your opponent in their small grid.",
+                rule3: "For example, if your opponent plays in the top-right cell of their small grid, you must play in the top-right small grid of the large grid.",
+                rule4: "If you are sent to a grid that is already won or full, you can play in any open grid.",
+                rule5: "To win a small grid, align 3 symbols as in classic Tic Tac Toe.",
+                rule6: "To win the game, align 3 won small grids."
+            },
+            fr: {
+                title: "Morpion Ultime",
+                playAgainstAI: "Jouer contre l'IA",
+                localMultiplayer: "Multijoueur Local",
+                timedMode: "Mode Chronométré",
+                gameRules: "Règles du Jeu",
+                settings: "Paramètres",
+                difficulty: "Difficulté",
+                close: "Fermer",
+                continue: "Continuer",
+                newGame: "Nouvelle Partie",
+                backToLobby: "Retour au Lobby",
+                language: "Langue",
+                easy: "Facile",
+                normal: "Normal",
+                difficult: "Difficile",
+                impossible: "Impossible",
+                youArePlayingAs: "Vous jouez en tant que",
+                youGoFirst: "Vous commencez!",
+                aiGoesFirst: "L'IA commence!",
+                youWon: "Vous avez gagné.",
+                aiWon: "L'IA a gagné.",
+                playerWon: "Le joueur a gagné.",
+                gameEndedInDraw: "La partie s'est terminée par un match nul.",
+                playerXRanOutOfTime: "Le joueur X a manqué de temps. Le joueur O gagne!",
+                playerORanOutOfTime: "Le joueur O a manqué de temps. Le joueur X gagne!",
+                playerXWon: "Le joueur X a gagné.",
+                playerOWon: "Le joueur O a gagné.",
+                gameOver: "Fin de la partie",
+                theGameIsAlreadyOver: "La partie est déjà terminée!",
+                youMustPlayInTheIndicatedGrid: "Vous devez jouer dans la grille indiquée!",
+                thisGridIsAlreadyWon: "Cette grille est déjà gagnée!",
+                thisCellIsAlreadyTaken: "Cette cellule est déjà prise!",
+                difficultyChangedTo: "Difficulté changée en:",
+                difficultyNames: {
+                    '1': 'Facile',
+                    '4': 'Normal',
+                    '6': 'Difficile',
+                    '9': 'Impossible'
+                },
+                yourTurn: "Votre tour",
+                aiIsThinking: "L'IA réfléchit",
+                rule1: "Le Morpion Ultime est composé de 9 petites grilles de Morpion, formant une grande grille.",
+                rule2: "À chaque tour, vous devez jouer dans la petite grille correspondant à la cellule jouée par votre adversaire dans leur petite grille.",
+                rule3: "Par exemple, si votre adversaire joue dans la cellule en haut à droite de leur petite grille, vous devez jouer dans la petite grille en haut à droite de la grande grille.",
+                rule4: "Si vous êtes envoyé vers une grille déjà gagnée ou pleine, vous pouvez jouer dans n'importe quelle grille ouverte.",
+                rule5: "Pour gagner une petite grille, alignez 3 symboles comme dans le Morpion classique.",
+                rule6: "Pour gagner la partie, alignez 3 petites grilles gagnées."
+            },
+            de: {
+                title: "Ultimatives Tic Tac Toe",
+                playAgainstAI: "Gegen KI spielen",
+                localMultiplayer: "Lokaler Mehrspieler",
+                timedMode: "Zeitmodus",
+                gameRules: "Spielregeln",
+                settings: "Einstellungen",
+                difficulty: "Schwierigkeit",
+                close: "Schließen",
+                continue: "Fortsetzen",
+                newGame: "Neues Spiel",
+                backToLobby: "Zurück zur Lobby",
+                language: "Sprache",
+                easy: "Einfach",
+                normal: "Normal",
+                difficult: "Schwierig",
+                impossible: "Unmöglich",
+                youArePlayingAs: "Sie spielen als",
+                youGoFirst: "Sie beginnen!",
+                aiGoesFirst: "Die KI beginnt!",
+                youWon: "Sie haben gewonnen.",
+                aiWon: "Die KI hat gewonnen.",
+                playerWon: "Der Spieler hat gewonnen.",
+                gameEndedInDraw: "Das Spiel endete unentschieden.",
+                playerXRanOutOfTime: "Spieler X hat keine Zeit mehr. Spieler O gewinnt!",
+                playerORanOutOfTime: "Spieler O hat keine Zeit mehr. Spieler X gewinnt!",
+                playerXWon: "Spieler X hat gewonnen.",
+                playerOWon: "Spieler O hat gewonnen.",
+                gameOver: "Spiel vorbei",
+                theGameIsAlreadyOver: "Das Spiel ist bereits vorbei!",
+                youMustPlayInTheIndicatedGrid: "Sie müssen im angegebenen Feld spielen!",
+                thisGridIsAlreadyWon: "Dieses Feld ist bereits gewonnen!",
+                thisCellIsAlreadyTaken: "Diese Zelle ist bereits belegt!",
+                difficultyChangedTo: "Schwierigkeit geändert zu:",
+                difficultyNames: {
+                    '1': 'Einfach',
+                    '4': 'Normal',
+                    '6': 'Schwierig',
+                    '9': 'Unmöglich'
+                },
+                yourTurn: "Ihr Zug",
+                aiIsThinking: "Die KI denkt nach",
+                rule1: "Ultimatives Tic Tac Toe besteht aus 9 kleinen Tic Tac Toe-Rastern, die ein großes Raster bilden.",
+                rule2: "In jeder Runde müssen Sie in dem kleinen Raster spielen, das der Zelle entspricht, die Ihr Gegner in ihrem kleinen Raster gespielt hat.",
+                rule3: "Wenn Ihr Gegner zum Beispiel in der oberen rechten Zelle ihres kleinen Rasters spielt, müssen Sie im oberen rechten kleinen Raster des großen Rasters spielen.",
+                rule4: "Wenn Sie zu einem Raster geschickt werden, das bereits gewonnen oder voll ist, können Sie in jedem offenen Raster spielen.",
+                rule5: "Um ein kleines Raster zu gewinnen, richten Sie 3 Symbole wie beim klassischen Tic Tac Toe aus.",
+                rule6: "Um das Spiel zu gewinnen, richten Sie 3 gewonnene kleine Raster aus."
+            },
+            it: {
+                title: "Tris Ultimo",
+                playAgainstAI: "Gioca contro l'IA",
+                localMultiplayer: "Multigiocatore Locale",
+                timedMode: "Modalità Cronometrata",
+                gameRules: "Regole del Gioco",
+                settings: "Impostazioni",
+                difficulty: "Difficoltà",
+                close: "Chiudi",
+                continue: "Continua",
+                newGame: "Nuova Partita",
+                backToLobby: "Torna alla Lobby",
+                language: "Lingua",
+                easy: "Facile",
+                normal: "Normale",
+                difficult: "Difficile",
+                impossible: "Impossibile",
+                youArePlayingAs: "Stai giocando come",
+                youGoFirst: "Inizi tu!",
+                aiGoesFirst: "L'IA inizia!",
+                youWon: "Hai vinto.",
+                aiWon: "L'IA ha vinto.",
+                playerWon: "Il giocatore ha vinto.",
+                gameEndedInDraw: "La partita è finita in parità.",
+                playerXRanOutOfTime: "Il giocatore X ha finito il tempo. Il giocatore O vince!",
+                playerORanOutOfTime: "Il giocatore O ha finito il tempo. Il giocatore X vince!",
+                playerXWon: "Il giocatore X ha vinto.",
+                playerOWon: "Il giocatore O ha vinto.",
+                gameOver: "Partita finita",
+                theGameIsAlreadyOver: "La partita è già finita!",
+                youMustPlayInTheIndicatedGrid: "Devi giocare nella griglia indicata!",
+                thisGridIsAlreadyWon: "Questa griglia è già stata vinta!",
+                thisCellIsAlreadyTaken: "Questa cella è già occupata!",
+                difficultyChangedTo: "Difficoltà cambiata in:",
+                difficultyNames: {
+                    '1': 'Facile',
+                    '4': 'Normale',
+                    '6': 'Difficile',
+                    '9': 'Impossibile'
+                },
+                yourTurn: "Il tuo turno",
+                aiIsThinking: "L'IA sta pensando",
+                rule1: "Tris Ultimo consiste in 9 piccole griglie di Tris, che formano una grande griglia.",
+                rule2: "Ad ogni turno, devi giocare nella piccola griglia corrispondente alla cella giocata dal tuo avversario nella loro piccola griglia.",
+                rule3: "Ad esempio, se il tuo avversario gioca nella cella in alto a destra della loro piccola griglia, devi giocare nella piccola griglia in alto a destra della grande griglia.",
+                rule4: "Se vieni inviato a una griglia già vinta o piena, puoi giocare in qualsiasi griglia aperta.",
+                rule5: "Per vincere una piccola griglia, allinea 3 simboli come nel classico Tris.",
+                rule6: "Per vincere la partita, allinea 3 piccole griglie vinte."
+            },
+            sv: {
+                title: "Ultimate Tic Tac Toe",
+                playAgainstAI: "Spela mot AI",
+                localMultiplayer: "Lokal Multiplayer",
+                timedMode: "Tidläge",
+                gameRules: "Spelregler",
+                settings: "Inställningar",
+                difficulty: "Svårighetsgrad",
+                close: "Stäng",
+                continue: "Fortsätt",
+                newGame: "Nytt Spel",
+                backToLobby: "Tillbaka till Lobby",
+                language: "Språk",
+                easy: "Lätt",
+                normal: "Normal",
+                difficult: "Svår",
+                impossible: "Omöjlig",
+                youArePlayingAs: "Du spelar som",
+                youGoFirst: "Du börjar!",
+                aiGoesFirst: "AI börjar!",
+                youWon: "Du vann.",
+                aiWon: "AI vann.",
+                playerWon: "Spelaren vann.",
+                gameEndedInDraw: "Spelet slutade oavgjort.",
+                playerXRanOutOfTime: "Spelare X tog slut på tid. Spelare O vinner!",
+                playerORanOutOfTime: "Spelare O tog slut på tid. Spelare X vinner!",
+                playerXWon: "Spelare X vann.",
+                playerOWon: "Spelare O vann.",
+                gameOver: "Spel slut",
+                theGameIsAlreadyOver: "Spelet är redan över!",
+                youMustPlayInTheIndicatedGrid: "Du måste spela i den angivna rutan!",
+                thisGridIsAlreadyWon: "Den här rutan är redan vunnen!",
+                thisCellIsAlreadyTaken: "Den här cellen är redan tagen!",
+                difficultyChangedTo: "Svårighetsgrad ändrad till:",
+                difficultyNames: {
+                    '1': 'Lätt',
+                    '4': 'Normal',
+                    '6': 'Svår',
+                    '9': 'Omöjlig'
+                },
+                yourTurn: "Din tur",
+                aiIsThinking: "AI tänker",
+                rule1: "Ultimate Tic Tac Toe består av 9 små Tic Tac Toe-rutor som bildar ett stort rutnät.",
+                rule2: "På varje tur måste du spela i den lilla rutan som motsvarar cellen som din motståndare spelade i deras lilla rutnät.",
+                rule3: "Om din motståndare till exempel spelar i den övre högra cellen i deras lilla rutnät, måste du spela i den övre högra lilla rutan i det stora rutnätet.",
+                rule4: "Om du skickas till en ruta som redan är vunnen eller full, kan du spela i vilken öppen ruta som helst.",
+                rule5: "För att vinna en liten ruta, justera 3 symboler som i klassiskt Tic Tac Toe.",
+                rule6: "För att vinna spelet, justera 3 vunna små rutnät."
+            }
+        };
+
+        // Constantes pour la réutilisation
         const INITIAL_GAME_STATE = {
-           view: 'lobby',
-           playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
-           playerSymbol: null,
-           currentTurn: 'X',
-           activeBoard: null,
-           boardStates: Array(9).fill().map(() => Array(9).fill(null)),
-           smallBoardWinners: Array(9).fill(null),
-           gameWinner: null,
-           tooltipMessage: '',
-           tooltipVisible: false,
-           gameMode: 'ai',
-           playerTimes: {
-               X: 60,
-               O: 60
-           },
-           activeTimer: null,
-           darkMode: false,
-           difficulty: 'medium'
-       };
+            view: 'lobby',
+            playerId: `player_${Math.random().toString(36).substring(2, 9)}`,
+            playerSymbol: null,
+            currentTurn: 'X',
+            activeBoard: null,
+            boardStates: Array(9).fill().map(() => Array(9).fill(null)),
+            smallBoardWinners: Array(9).fill(null),
+            gameWinner: null,
+            tooltipMessage: '',
+            tooltipVisible: false,
+            gameMode: 'ai',
+            playerTimes: {
+                X: 60,
+                O: 60
+            },
+            activeTimer: null,
+            darkMode: false,
+            difficulty: 'medium',
+            language: 'en'
+        };
 
         const WIN_PATTERNS = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -876,11 +1201,13 @@
         }
 
         function showTooltip(message) {
-            gameState.tooltipMessage = message;
+            const lang = gameState.language;
+            const translatedMessage = translations[lang][message] || message;
+            gameState.tooltipMessage = translatedMessage;
             gameState.tooltipVisible = true;
 
             const tooltip = document.getElementById('tooltip');
-            tooltip.textContent = message;
+            tooltip.textContent = translatedMessage;
             tooltip.style.display = 'block';
             tooltip.classList.remove('exit');
             tooltip.classList.add('tooltip');
@@ -936,24 +1263,31 @@
         }
 
         function backToLobby() {
-            if (gameState.activeTimer) {
-                clearInterval(gameState.activeTimer);
-                gameState.activeTimer = null;
-            }
+    if (gameState.activeTimer) {
+        clearInterval(gameState.activeTimer);
+        gameState.activeTimer = null;
+    }
 
-            gameState.playerTimes = {
-                X: 60,
-                O: 60
-            };
+    gameState.playerTimes = {
+        X: 60,
+        O: 60
+    };
 
-            const darkMode = gameState.darkMode;
-            gameState = {...INITIAL_GAME_STATE};
-            gameState.view = 'lobby';
-            gameState.preventAIMove = true;
-            gameState.darkMode = darkMode;
+    const darkMode = gameState.darkMode;
+    gameState = {...INITIAL_GAME_STATE};
+    gameState.view = 'lobby';
+    gameState.preventAIMove = true;
+    gameState.darkMode = darkMode;
 
-            renderView();
-        }
+    // Restaurer la langue depuis localStorage
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+        gameState.language = savedLanguage;
+    }
+
+    renderView();
+}
+
 
         function startTimer(player) {
             if (gameState.activeTimer) {
@@ -987,22 +1321,22 @@
                    activeBoard, smallBoardWinners, boardStates } = gameState;
 
             if (gameWinner) {
-                showTooltip("The game is already over!");
+                showTooltip("theGameIsAlreadyOver");
                 return;
             }
 
             if (activeBoard !== null && activeBoard !== bigIndex) {
-                showTooltip("You must play in the indicated grid!");
+                showTooltip("youMustPlayInTheIndicatedGrid");
                 return;
             }
 
             if (smallBoardWinners[bigIndex] !== null) {
-                showTooltip("This grid is already won!");
+                showTooltip("thisGridIsAlreadyWon");
                 return;
             }
 
             if (boardStates[bigIndex][smallIndex] !== null) {
-                showTooltip("This cell is already taken!");
+                showTooltip("thisCellIsAlreadyTaken");
                 return;
             }
 
@@ -1211,6 +1545,7 @@
             if (activeBoard === index && winner === null) {
                 boardDiv.classList.add('active');
                 if (viewportWidth < 400) {
+                    boardDiv.style.transform = 'scale(1.02)';
                     boardDiv.style.boxShadow = `0 0 0 2px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
                 } else {
                     boardDiv.style.boxShadow = `0 0 0 4px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`;
@@ -1278,158 +1613,166 @@
         }
 
         function renderGameInfo() {
-    const { gameMode, currentTurn, playerSymbol, darkMode, playerTimes } = gameState;
-    const theme = darkMode ? 'dark' : 'light';
+            const { gameMode, currentTurn, playerSymbol, darkMode, playerTimes } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            const lang = gameState.language;
 
-    const infoDiv = document.createElement('div');
-    infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
+            const infoDiv = document.createElement('div');
+            infoDiv.className = `game-info ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`;
 
-    const header = document.createElement('div');
-    header.className = 'game-info-header';
+            const header = document.createElement('div');
+            header.className = 'game-info-header header-responsive';
 
-    const modeTitleContainer = document.createElement('div');
-    modeTitleContainer.className = 'mode-title-container';
-    modeTitleContainer.style.padding = '10px';
-    modeTitleContainer.style.borderRadius = '8px';
-    modeTitleContainer.style.display = 'inline-block';
-    modeTitleContainer.style.backgroundColor = darkMode ? '#4b5563' : '#d1d5db';
+            const modeTitleContainer = document.createElement('div');
+            modeTitleContainer.className = 'mode-title-container';
+            modeTitleContainer.style.padding = '10px';
+            modeTitleContainer.style.borderRadius = '8px';
+            modeTitleContainer.style.display = 'inline-block';
+            modeTitleContainer.style.backgroundColor = darkMode ? '#4b5563' : '#d1d5db';
 
-    const modeTitle = document.createElement('h2');
-    modeTitle.className = 'text-3xl font-bold';
-    modeTitle.textContent = gameMode === 'ai' ? 'Solo vs AI' : gameMode === 'local' ? 'Local Multiplayer' : 'Timed Mode';
-    modeTitleContainer.appendChild(modeTitle);
-    header.appendChild(modeTitleContainer);
+            const modeTitle = document.createElement('h2');
+            modeTitle.className = 'text-3xl font-bold';
+            modeTitle.textContent = gameMode === 'ai' ? translations[lang].playAgainstAI : gameMode === 'local' ? translations[lang].localMultiplayer : translations[lang].timedMode;
+            modeTitleContainer.appendChild(modeTitle);
 
-    const toggleBtn = document.createElement('button');
-    toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
-    toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
-    toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
-    toggleBtn.textContent = darkMode ? '☀️' : '🌙';
-    toggleBtn.addEventListener('click', toggleDarkMode);
-    header.appendChild(toggleBtn);
+            const settingsBtn = document.createElement('button');
+            settingsBtn.className = 'p-2 rounded-full';
+            settingsBtn.style.position = 'absolute';
+            settingsBtn.style.left = '0';
+            settingsBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            settingsBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
+            settingsBtn.textContent = '⚙️';
+            settingsBtn.addEventListener('click', () => {
+                const modal = renderSettingsModal();
+                document.body.appendChild(modal);
+            });
 
-    infoDiv.appendChild(header);
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.style.position = 'absolute';
+            toggleBtn.style.right = '0';
+            toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
+            toggleBtn.textContent = darkMode ? '☀️' : '🌙';
+            toggleBtn.addEventListener('click', toggleDarkMode);
 
-    if (gameMode === 'timed') {
-        const timers = document.createElement('div');
-        timers.className = 'player-info';
+            header.appendChild(settingsBtn);
+            header.appendChild(modeTitleContainer);
+            header.appendChild(toggleBtn);
+            infoDiv.appendChild(header);
 
-        const timerXContainer = document.createElement('div');
-        timerXContainer.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        timerXContainer.innerHTML = `<span class="text-red-500 font-bold">${playerSymbol === 'X' ? '👤' : '🤖'} X : ${playerTimes.X}s</span>`;
+            if (gameMode === 'timed') {
+                const timers = document.createElement('div');
+                timers.className = 'player-info';
 
-        const timerOContainer = document.createElement('div');
-        timerOContainer.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        timerOContainer.innerHTML = `<span class="text-blue-500 font-bold">${playerSymbol === 'O' ? '👤' : '🤖'} O : ${playerTimes.O}s</span>`;
+                const timerXContainer = document.createElement('div');
+                timerXContainer.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                timerXContainer.innerHTML = `<span class="text-red-500 font-bold">${playerSymbol === 'X' ? '👤' : '🤖'} X : ${playerTimes.X}s</span>`;
 
-        timers.appendChild(timerXContainer);
-        timers.appendChild(timerOContainer);
-        infoDiv.appendChild(timers);
-    } else if (gameMode === 'local') {
-        const playerInfo = document.createElement('div');
-        playerInfo.className = 'player-info';
+                const timerOContainer = document.createElement('div');
+                timerOContainer.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                timerOContainer.innerHTML = `<span class="text-blue-500 font-bold">${playerSymbol === 'O' ? '👤' : '🤖'} O : ${playerTimes.O}s</span>`;
 
-        const playerX = document.createElement('div');
-        playerX.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - Your turn' : ''}`;
+                timers.appendChild(timerXContainer);
+                timers.appendChild(timerOContainer);
+                infoDiv.appendChild(timers);
+            } else if (gameMode === 'local') {
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
 
-        const playerO = document.createElement('div');
-        playerO.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - Your turn' : ''}`;
+                const playerX = document.createElement('div');
+                playerX.className = `player-box ${currentTurn === 'X' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerX.innerHTML = `<span class="text-red-500 font-bold">X</span>${currentTurn === 'X' ? ' - ' + translations[lang].yourTurn : ''}`;
 
-        playerInfo.appendChild(playerX);
-        playerInfo.appendChild(playerO);
-        infoDiv.appendChild(playerInfo);
-    } else if (gameMode === 'ai') {
-        const playerInfo = document.createElement('div');
-        playerInfo.className = 'player-info';
+                const playerO = document.createElement('div');
+                playerO.className = `player-box ${currentTurn === 'O' ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerO.innerHTML = `<span class="text-blue-500 font-bold">O</span>${currentTurn === 'O' ? ' - ' + translations[lang].yourTurn : ''}`;
 
-        const playerSymbolElement = document.createElement('div');
-        playerSymbolElement.className = `player-box ${currentTurn === playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        playerSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-red-500' : 'text-blue-500'} font-bold">${playerSymbol === 'X' ? '👤 X' : '👤 O'}</span>${currentTurn === playerSymbol ? ' - Your turn' : ''}`;
+                playerInfo.appendChild(playerX);
+                playerInfo.appendChild(playerO);
+                infoDiv.appendChild(playerInfo);
+            } else if (gameMode === 'ai') {
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
 
-        const aiSymbolElement = document.createElement('div');
-        aiSymbolElement.className = `player-box ${currentTurn !== playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
-        aiSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-blue-500' : 'text-red-500'} font-bold">🤖 ${playerSymbol === 'X' ? 'O' : 'X'}</span>${currentTurn !== playerSymbol ? ' - AI is thinking' : ''}`;
+                const playerSymbolElement = document.createElement('div');
+                playerSymbolElement.className = `player-box ${currentTurn === playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                playerSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-red-500' : 'text-blue-500'} font-bold">${playerSymbol === 'X' ? '👤 X' : '👤 O'}</span>${currentTurn === playerSymbol ? ' - ' + translations[lang].yourTurn : ''}`;
 
-        playerInfo.appendChild(playerSymbolElement);
-        playerInfo.appendChild(aiSymbolElement);
-        infoDiv.appendChild(playerInfo);
-    }
+                const aiSymbolElement = document.createElement('div');
+                aiSymbolElement.className = `player-box ${currentTurn !== playerSymbol ? (theme === 'dark' ? 'bg-blue-900 zoom' : 'bg-blue-100 zoom') : (theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100')}`;
+                aiSymbolElement.innerHTML = `<span class="${playerSymbol === 'X' ? 'text-blue-500' : 'text-red-500'} font-bold">🤖 ${playerSymbol === 'X' ? 'O' : 'X'}</span>${currentTurn !== playerSymbol ? ' - ' + translations[lang].aiIsThinking : ''}`;
 
-    const controls = document.createElement('div');
-    controls.className = 'mt-6 flex justify-center gap-2';
+                playerInfo.appendChild(playerSymbolElement);
+                playerInfo.appendChild(aiSymbolElement);
+                infoDiv.appendChild(playerInfo);
+            }
 
-    const newGameBtn = document.createElement('button');
-    newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
-    newGameBtn.textContent = 'New Game';
-    newGameBtn.addEventListener('click', () => {
-        if (gameState.gameMode === 'timed') {
-            pauseTimer();
+            const controls = document.createElement('div');
+            controls.className = 'mt-6 flex justify-center gap-2';
+
+            const newGameBtn = document.createElement('button');
+            newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+            newGameBtn.textContent = translations[lang].newGame;
+            newGameBtn.addEventListener('click', () => {
+                if (gameState.gameMode === 'timed') {
+                    pauseTimer();
+                }
+                startNewGame(gameState.gameMode);
+            });
+
+            const lobbyBtn = document.createElement('button');
+            lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
+            lobbyBtn.textContent = translations[lang].backToLobby;
+            lobbyBtn.addEventListener('click', backToLobby);
+
+            controls.appendChild(newGameBtn);
+            controls.appendChild(lobbyBtn);
+            infoDiv.appendChild(controls);
+
+            return infoDiv;
         }
-        startNewGame(gameState.gameMode);
-    });
-
-    const lobbyBtn = document.createElement('button');
-    lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600';
-    lobbyBtn.textContent = 'Back to Lobby';
-    lobbyBtn.addEventListener('click', backToLobby);
-
-    controls.appendChild(newGameBtn);
-    controls.appendChild(lobbyBtn);
-    infoDiv.appendChild(controls);
-
-    return infoDiv;
-}
 
         function renderTurnIndicator() {
-    // Retourne toujours un élément vide pour tous les modes
-    return document.createElement('div');
-}
-
+            return document.createElement('div');
+        }
 
         function renderGameOverModal() {
-            const { gameWinner, gameMode, playerSymbol, darkMode, difficulty, playerTimes } = gameState;
+            const { gameWinner, gameMode, playerSymbol, darkMode, difficulty, playerTimes, language } = gameState;
 
             if (!gameWinner) return null;
 
             const theme = darkMode ? 'dark' : 'light';
+            const lang = language;
 
             let message = "";
             let iconSymbol = "";
             let additionalInfo = "";
 
-            const difficultyNames = {
-                '1': 'Easy',
-                '4': 'Normal',
-                '6': 'Difficult',
-                '9': 'Impossible'
-            };
-
-            const difficultyName = difficultyNames[difficulty] || 'Unknown';
+            const difficultyName = translations[lang].difficultyNames[difficulty] || translations[lang].difficult;
 
             if (gameWinner === 'draw') {
-                message = "The game ended in a draw.";
+                message = translations[lang].gameEndedInDraw;
                 iconSymbol = "🤝";
-                additionalInfo = "Both players played well.";
+                additionalInfo = translations[lang].bothPlayersPlayedWell || "";
             } else if (gameMode === 'ai') {
-                message = gameWinner === playerSymbol ? "You won." : "AI won.";
+                message = gameWinner === playerSymbol ? translations[lang].youWon : translations[lang].aiWon;
                 iconSymbol = gameWinner === playerSymbol ? "🏆" : "🤖";
-                additionalInfo = gameWinner === playerSymbol ? `You defeated the AI at level ${difficultyName}.` : `The AI won at level ${difficultyName}.`;
+                additionalInfo = gameWinner === playerSymbol ? `${translations[lang].youDefeatedTheAI} ${difficultyName}.` : `${translations[lang].theAIWon} ${difficultyName}.`;
             } else if (gameMode === 'timed') {
                 if (playerTimes.X <= 0 || playerTimes.O <= 0) {
-                    message = gameWinner === 'X' ? "Player O ran out of time. Player X wins!" : "Player X ran out of time. Player O wins!";
+                    message = gameWinner === 'X' ? translations[lang].playerORanOutOfTime : translations[lang].playerXRanOutOfTime;
                     iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
-                    additionalInfo = `Time's up!`;
+                    additionalInfo = translations[lang].timesUp || "";
                 } else {
-                    message = `Player ${gameWinner} won.`;
+                    message = `${translations[lang].playerWon} ${gameWinner}.`;
                     iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
-                    additionalInfo = `Player ${gameWinner} played well.`;
+                    additionalInfo = `${translations[lang].playerPlayedWell} ${gameWinner}.`;
                 }
             } else {
-                message = `Player ${gameWinner} won.`;
+                message = `${translations[lang].playerWon} ${gameWinner}.`;
                 iconSymbol = gameWinner === 'X' ? "❌" : "⭕";
-                additionalInfo = `Player ${gameWinner} played well.`;
+                additionalInfo = `${translations[lang].playerPlayedWell} ${gameWinner}.`;
             }
 
             const overlay = document.createElement('div');
@@ -1462,7 +1805,7 @@
 
             const newGameBtn = document.createElement('button');
             newGameBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
-            newGameBtn.textContent = 'New Game';
+            newGameBtn.textContent = translations[lang].newGame;
             newGameBtn.addEventListener('click', () => {
                 closeMessage(overlay);
                 startNewGame(gameMode);
@@ -1470,7 +1813,7 @@
 
             const lobbyBtn = document.createElement('button');
             lobbyBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex-1';
-            lobbyBtn.textContent = 'Back to Lobby';
+            lobbyBtn.textContent = translations[lang].backToLobby;
             lobbyBtn.addEventListener('click', () => {
                 closeMessage(overlay);
                 backToLobby();
@@ -1487,26 +1830,42 @@
         }
 
         function renderLobbyView() {
-            const { darkMode } = gameState;
+            const { darkMode, language } = gameState;
             const theme = darkMode ? 'dark' : 'light';
+            const lang = language;
 
             const lobby = document.createElement('div');
             lobby.className = `lobby-view ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`;
 
             const header = document.createElement('div');
-            header.className = 'relative text-center mb-6 header-responsive';
+            header.className = 'header-responsive mb-6';
 
             const title = document.createElement('h1');
             title.className = 'text-3xl font-bold title-responsive';
-            title.textContent = 'Ultimate Tic Tac Toe';
+            title.textContent = translations[lang].title;
+
+            const settingsBtn = document.createElement('button');
+            settingsBtn.className = 'p-2 rounded-full';
+            settingsBtn.style.position = 'absolute';
+            settingsBtn.style.left = '0';
+            settingsBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
+            settingsBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
+            settingsBtn.textContent = '⚙️';
+            settingsBtn.addEventListener('click', () => {
+                const modal = renderSettingsModal();
+                document.body.appendChild(modal);
+            });
 
             const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'absolute right-0 top-0 p-2 rounded-full';
+            toggleBtn.className = 'p-2 rounded-full';
+            toggleBtn.style.position = 'absolute';
+            toggleBtn.style.right = '0';
             toggleBtn.style.backgroundColor = darkMode ? '#374151' : '#e5e7eb';
             toggleBtn.style.color = darkMode ? '#e5e7eb' : '#1f2937';
             toggleBtn.textContent = darkMode ? '☀️' : '🌙';
             toggleBtn.addEventListener('click', toggleDarkMode);
 
+            header.appendChild(settingsBtn);
             header.appendChild(title);
             header.appendChild(toggleBtn);
             lobby.appendChild(header);
@@ -1519,7 +1878,7 @@
 
             const aiBtn = document.createElement('button');
             aiBtn.className = 'bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 text-lg flex items-center justify-center gap-2';
-            aiBtn.innerHTML = '<span>🤖</span> Play against AI';
+            aiBtn.innerHTML = '<span>🤖</span> ' + translations[lang].playAgainstAI;
             aiBtn.addEventListener('click', () => startNewGame('ai'));
 
             const difficultySelector = document.createElement('div');
@@ -1527,7 +1886,7 @@
 
             const difficultyLabel = document.createElement('label');
             difficultyLabel.setAttribute('for', 'difficulty');
-            difficultyLabel.textContent = 'Difficulty:';
+            difficultyLabel.textContent = translations[lang].difficulty + ':';
 
             const difficultyDropdown = document.createElement('select');
             difficultyDropdown.id = 'difficulty';
@@ -1535,20 +1894,20 @@
 
             const easyOption = document.createElement('option');
             easyOption.value = '1';
-            easyOption.textContent = 'Easy';
+            easyOption.textContent = translations[lang].easy;
 
             const mediumOption1 = document.createElement('option');
             mediumOption1.value = '4';
-            mediumOption1.textContent = 'Normal';
+            mediumOption1.textContent = translations[lang].normal;
             mediumOption1.selected = true;
 
             const mediumOption2 = document.createElement('option');
             mediumOption2.value = '6';
-            mediumOption2.textContent = 'Difficult';
+            mediumOption2.textContent = translations[lang].difficult;
 
             const hardOption = document.createElement('option');
             hardOption.value = '9';
-            hardOption.textContent = 'Impossible';
+            hardOption.textContent = translations[lang].impossible;
 
             difficultyDropdown.appendChild(easyOption);
             difficultyDropdown.appendChild(mediumOption1);
@@ -1566,12 +1925,12 @@
 
             const multiplayerBtn = document.createElement('button');
             multiplayerBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
-            multiplayerBtn.innerHTML = '<span>👥</span> Local Multiplayer';
+            multiplayerBtn.innerHTML = '<span>👥</span> ' + translations[lang].localMultiplayer;
             multiplayerBtn.addEventListener('click', () => startNewGame('local'));
 
             const timedBtn = document.createElement('button');
             timedBtn.className = 'bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 text-lg flex items-center justify-center gap-2';
-            timedBtn.innerHTML = '<span>⏱️</span> Timed Mode';
+            timedBtn.innerHTML = '<span>⏱️</span> ' + translations[lang].timedMode;
             timedBtn.addEventListener('click', () => startNewGame('timed'));
 
             secondRow.appendChild(multiplayerBtn);
@@ -1579,7 +1938,7 @@
 
             const rulesBtn = document.createElement('button');
             rulesBtn.className = `${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-800'} px-4 py-2 rounded ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'} mt-4`;
-            rulesBtn.textContent = 'Game Rules';
+            rulesBtn.textContent = translations[lang].gameRules;
             rulesBtn.addEventListener('click', showRules);
 
             buttonContainer.appendChild(firstRow);
@@ -1589,24 +1948,105 @@
 
             difficultyDropdown.addEventListener('change', function() {
                 gameState.difficulty = this.value;
-                console.log('Difficulty changed to:', gameState.difficulty);
-                showTooltip(`Difficulty set to: ${gameState.difficulty}`);
+                showTooltip(`${translations[lang].difficultyChangedTo} ${this.value}`);
             });
 
             return lobby;
         }
 
-        function renderRulesView() {
-            const { darkMode } = gameState;
+        function renderSettingsModal() {
+            const { darkMode, language } = gameState;
             const theme = darkMode ? 'dark' : 'light';
+            const lang = language;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'settings-modal-overlay';
+
+            const modal = document.createElement('div');
+            modal.className = `settings-modal-content ${theme === 'dark' ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border`;
+
+            const header = document.createElement('div');
+            header.className = 'settings-modal-header';
+
+            const title = document.createElement('h2');
+            title.className = 'text-2xl font-bold mb-2';
+            title.textContent = translations[lang].settings;
+
+            const settingsContent = document.createElement('div');
+            settingsContent.className = 'mb-4';
+
+            const languageSelector = document.createElement('div');
+            languageSelector.className = 'language-selector';
+
+            const languageLabel = document.createElement('label');
+            languageLabel.setAttribute('for', 'language');
+            languageLabel.textContent = translations[lang].language + ': ';
+
+            const languageDropdown = document.createElement('select');
+            languageDropdown.id = 'language';
+            languageDropdown.className = 'language-dropdown';
+
+            const languages = [
+                { code: 'en', name: 'English' },
+                { code: 'fr', name: 'Français' },
+                { code: 'de', name: 'Deutsch' },
+                { code: 'it', name: 'Italiano' },
+                { code: 'sv', name: 'Svenska' }
+            ];
+
+            languages.forEach(langOption => {
+                const option = document.createElement('option');
+                option.value = langOption.code;
+                option.textContent = langOption.name;
+                if (langOption.code === language) {
+                    option.selected = true;
+                }
+                languageDropdown.appendChild(option);
+            });
+
+            languageDropdown.addEventListener('change', function() {
+                gameState.language = this.value;
+                localStorage.setItem('selectedLanguage', this.value);
+                renderView();
+            });
+
+            languageSelector.appendChild(languageLabel);
+            languageSelector.appendChild(languageDropdown);
+            settingsContent.appendChild(languageSelector);
+
+            header.appendChild(title);
+            modal.appendChild(header);
+            modal.appendChild(settingsContent);
+
+            const buttons = document.createElement('div');
+            buttons.className = 'settings-modal-buttons';
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
+            closeBtn.textContent = translations[lang].close;
+            closeBtn.addEventListener('click', () => {
+                closeMessage(overlay);
+            });
+
+            buttons.appendChild(closeBtn);
+            modal.appendChild(buttons);
+            overlay.appendChild(modal);
+
+            return overlay;
+        }
+
+        function renderRulesView() {
+            const { darkMode, language } = gameState;
+            const theme = darkMode ? 'dark' : 'light';
+            const lang = language;
 
             const rules = [
-                "Ultimate Tic Tac Toe consists of 9 small Tic Tac Toe grids, forming one large grid.",
-                "On each turn, you must play in the small grid corresponding to the cell played by your opponent in their small grid.",
-                "For example, if your opponent plays in the top-right cell of their small grid, you must play in the top-right small grid of the large grid.",
-                "If you are sent to a grid that is already won or full, you can play in any open grid.",
-                "To win a small grid, align 3 symbols as in classic Tic Tac Toe.",
-                "To win the game, align 3 won small grids."
+                translations[lang].rule1,
+                translations[lang].rule2,
+                translations[lang].rule3,
+                translations[lang].rule4,
+                translations[lang].rule5,
+                translations[lang].rule6
             ];
 
             const rulesView = document.createElement('div');
@@ -1617,7 +2057,7 @@
 
             const title = document.createElement('h1');
             title.className = 'text-2xl font-bold text-center';
-            title.textContent = 'Game Rules';
+            title.textContent = translations[lang].gameRules;
 
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'p-2 rounded-full absolute right-0 top-0';
@@ -1653,7 +2093,7 @@
 
             const backBtn = document.createElement('button');
             backBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full';
-            backBtn.textContent = 'Back to Lobby';
+            backBtn.textContent = translations[lang].backToLobby;
             backBtn.addEventListener('click', backToLobby);
 
             rulesView.appendChild(backBtn);
@@ -1677,8 +2117,9 @@
         }
 
         function renderFirstPlayerModal() {
-            const { playerSymbol, darkMode } = gameState;
+            const { playerSymbol, darkMode, language } = gameState;
             const theme = darkMode ? 'dark' : 'light';
+            const lang = language;
 
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
@@ -1695,11 +2136,11 @@
 
             const title = document.createElement('h2');
             title.className = 'text-2xl font-bold mb-2';
-            title.textContent = `You are playing as ${playerSymbol}`;
+            title.textContent = `${translations[lang].youArePlayingAs} ${playerSymbol}`;
 
             const info = document.createElement('p');
             info.className = 'text-lg mb-4';
-            info.textContent = playerSymbol === 'X' ? 'You go first!' : 'AI goes first!';
+            info.textContent = playerSymbol === 'X' ? translations[lang].youGoFirst : translations[lang].aiGoesFirst;
 
             header.appendChild(icon);
             header.appendChild(title);
@@ -1710,7 +2151,7 @@
 
             const continueBtn = document.createElement('button');
             continueBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex-1';
-            continueBtn.textContent = 'Continue';
+            continueBtn.textContent = translations[lang].continue;
             continueBtn.addEventListener('click', () => {
                 closeMessage(overlay);
                 if (playerSymbol === 'O') {
@@ -1740,26 +2181,37 @@
         }
 
         function renderView() {
-            const appContainer = document.querySelector('#app .container');
-            appContainer.innerHTML = '';
+    const appContainer = document.querySelector('#app .container');
+    appContainer.innerHTML = '';
 
-            document.body.classList.toggle('dark', gameState.darkMode);
+    // Restaurer la langue depuis localStorage
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+        gameState.language = savedLanguage;
+    }
 
-            switch (gameState.view) {
-                case 'lobby':
-                    appContainer.appendChild(renderLobbyView());
-                    break;
-                case 'rules':
-                    appContainer.appendChild(renderRulesView());
-                    break;
-                case 'game':
-                    appContainer.appendChild(renderGameView());
-                    setTimeout(postRenderAdjustments, 0);
-                    break;
-            }
-        }
+    document.body.classList.toggle('dark', gameState.darkMode);
+
+    switch (gameState.view) {
+        case 'lobby':
+            appContainer.appendChild(renderLobbyView());
+            break;
+        case 'rules':
+            appContainer.appendChild(renderRulesView());
+            break;
+        case 'game':
+            appContainer.appendChild(renderGameView());
+            setTimeout(postRenderAdjustments, 0);
+            break;
+    }
+}
+
 
         document.addEventListener('DOMContentLoaded', () => {
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                gameState.language = savedLanguage;
+            }
             renderView();
             adjustGameBoardSize();
 
