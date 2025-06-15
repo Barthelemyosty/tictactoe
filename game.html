@@ -26,6 +26,27 @@
             }
         }
 
+        .bounce {
+            animation: bounce 0.5s;
+        }
+
+        /* Animation accentuée */
+        @keyframes enhancedBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: scale(1);
+            }
+            40% {
+                transform: scale(1.4);
+            }
+            60% {
+                transform: scale(0.8);
+            }
+        }
+
+        .enhanced-bounce {
+            animation: enhancedBounce 0.7s;
+        }
+
         /* Animation d'entrée */
         @keyframes fadeIn {
             from {
@@ -542,15 +563,15 @@
             }
 
             .text-3xl {
-                font-size: 1.5rem; /* Réduire la taille de la police pour les titres sur mobile */
+                font-size: 1.5rem;
             }
 
             .game-info-header {
-                margin-bottom: 12px; /* Réduire la marge inférieure pour éviter les chevauchements */
+                margin-bottom: 12px;
             }
 
             .modal-buttons {
-                gap: 8px; /* Réduire l'espacement entre les boutons */
+                gap: 8px;
             }
         }
 
@@ -886,7 +907,6 @@
                 easy: "Easy",
                 normal: "Normal",
                 difficult: "Difficult",
-                impossible: "Impossible",
                 youArePlayingAs: "You are playing as",
                 youGoFirst: "You go first!",
                 aiGoesFirst: "AI goes first!",
@@ -907,8 +927,7 @@
                 difficultyNames: {
                     '1': 'Easy',
                     '4': 'Normal',
-                    '6': 'Difficult',
-                    '9': 'Impossible'
+                    '8': 'Difficult'
                 },
                 yourTurn: "Your turn",
                 aiIsThinking: "AI is thinking",
@@ -938,7 +957,6 @@
                 easy: "Facile",
                 normal: "Normal",
                 difficult: "Difficile",
-                impossible: "Impossible",
                 youArePlayingAs: "Vous jouez en tant que",
                 youGoFirst: "Vous commencez!",
                 aiGoesFirst: "L'IA commence!",
@@ -959,8 +977,7 @@
                 difficultyNames: {
                     '1': 'Facile',
                     '4': 'Normal',
-                    '6': 'Difficile',
-                    '9': 'Impossible'
+                    '8': 'Difficile'
                 },
                 yourTurn: "Votre tour",
                 aiIsThinking: "L'IA réfléchit",
@@ -990,7 +1007,6 @@
                 easy: "Einfach",
                 normal: "Normal",
                 difficult: "Schwierig",
-                impossible: "Unmöglich",
                 youArePlayingAs: "Sie spielen als",
                 youGoFirst: "Sie beginnen!",
                 aiGoesFirst: "Die KI beginnt!",
@@ -1011,8 +1027,7 @@
                 difficultyNames: {
                     '1': 'Einfach',
                     '4': 'Normal',
-                    '6': 'Schwierig',
-                    '9': 'Unmöglich'
+                    '8': 'Schwierig'
                 },
                 yourTurn: "Ihr Zug",
                 aiIsThinking: "Die KI denkt nach",
@@ -1042,7 +1057,6 @@
                 easy: "Facile",
                 normal: "Normale",
                 difficult: "Difficile",
-                impossible: "Impossibile",
                 youArePlayingAs: "Stai giocando come",
                 youGoFirst: "Inizi tu!",
                 aiGoesFirst: "L'IA inizia!",
@@ -1063,8 +1077,7 @@
                 difficultyNames: {
                     '1': 'Facile',
                     '4': 'Normale',
-                    '6': 'Difficile',
-                    '9': 'Impossibile'
+                    '8': 'Difficile'
                 },
                 yourTurn: "Il tuo turno",
                 aiIsThinking: "L'IA sta pensando",
@@ -1094,7 +1107,6 @@
                 easy: "Fácil",
                 normal: "Normal",
                 difficult: "Difícil",
-                impossible: "Imposible",
                 youArePlayingAs: "Estás jugando como",
                 youGoFirst: "¡Tú empiezas!",
                 aiGoesFirst: "¡La IA empieza!",
@@ -1115,8 +1127,7 @@
                 difficultyNames: {
                     '1': 'Fácil',
                     '4': 'Normal',
-                    '6': 'Difícil',
-                    '9': 'Imposible'
+                    '8': 'Difícil'
                 },
                 yourTurn: "Tu turno",
                 aiIsThinking: "La IA está pensando",
@@ -1146,7 +1157,6 @@
                 easy: "سهل",
                 normal: "عادي",
                 difficult: "صعب",
-                impossible: "مستحيل",
                 youArePlayingAs: "أنت تلعب ك",
                 youGoFirst: "أنت تبدأ!",
                 aiGoesFirst: "الذكاء الاصطناعي يبدأ!",
@@ -1167,8 +1177,7 @@
                 difficultyNames: {
                     '1': 'سهل',
                     '4': 'عادي',
-                    '6': 'صعب',
-                    '9': 'مستحيل'
+                    '8': 'صعب'
                 },
                 yourTurn: "دورك",
                 aiIsThinking: "الذكاء الاصطناعي يفكر",
@@ -1198,7 +1207,6 @@
                 easy: "简单",
                 normal: "普通",
                 difficult: "困难",
-                impossible: "不可能",
                 youArePlayingAs: "你正在扮演",
                 youGoFirst: "你先走！",
                 aiGoesFirst: "AI先走！",
@@ -1219,8 +1227,7 @@
                 difficultyNames: {
                     '1': '简单',
                     '4': '普通',
-                    '6': '困难',
-                    '9': '不可能'
+                    '8': '困难'
                 },
                 yourTurn: "你的回合",
                 aiIsThinking: "AI正在思考",
@@ -1250,7 +1257,6 @@
                 easy: "簡単",
                 normal: "普通",
                 difficult: "難しい",
-                impossible: "不可能",
                 youArePlayingAs: "あなたはとしてプレイしています",
                 youGoFirst: "あなたが先に行きます！",
                 aiGoesFirst: "AIが先に行きます！",
@@ -1271,8 +1277,7 @@
                 difficultyNames: {
                     '1': '簡単',
                     '4': '普通',
-                    '6': '難しい',
-                    '9': '不可能'
+                    '8': '難しい'
                 },
                 yourTurn: "あなたのターン",
                 aiIsThinking: "AIが考えています",
@@ -1302,7 +1307,6 @@
                 easy: "Легко",
                 normal: "Нормально",
                 difficult: "Сложно",
-                impossible: "Невозможно",
                 youArePlayingAs: "Вы играете за",
                 youGoFirst: "Вы ходите первыми!",
                 aiGoesFirst: "ИИ ходит первым!",
@@ -1315,7 +1319,7 @@
                 playerXWon: "Игрок X победил.",
                 playerOWon: "Игрок O победил.",
                 gameOver: "Игра окончена",
-                theGameIsAlreadyOver: "Игра уже закончена!",
+                theGameIsAlreadyOver: "Игра уже закінчена!",
                 youMustPlayInTheIndicatedGrid: "Вы должны играть в указанной сетке!",
                 thisGridIsAlreadyWon: "Эта сетка уже выиграна!",
                 thisCellIsAlreadyTaken: "Эта ячейка уже занята!",
@@ -1323,8 +1327,7 @@
                 difficultyNames: {
                     '1': 'Легко',
                     '4': 'Нормально',
-                    '6': 'Сложно',
-                    '9': 'Невозможно'
+                    '8': 'Сложно'
                 },
                 yourTurn: "Ваш ход",
                 aiIsThinking: "ИИ думает",
@@ -1354,7 +1357,6 @@
                 easy: "Lätt",
                 normal: "Normal",
                 difficult: "Svår",
-                impossible: "Omöjlig",
                 youArePlayingAs: "Du spelar som",
                 youGoFirst: "Du börjar!",
                 aiGoesFirst: "AI börjar!",
@@ -1375,8 +1377,7 @@
                 difficultyNames: {
                     '1': 'Lätt',
                     '4': 'Normal',
-                    '6': 'Svår',
-                    '9': 'Omöjlig'
+                    '8': 'Svår'
                 },
                 yourTurn: "Din tur",
                 aiIsThinking: "AI tänker",
@@ -1406,7 +1407,6 @@
                 easy: "आसान",
                 normal: "सामान्य",
                 difficult: "कठिन",
-                impossible: "असंभव",
                 youArePlayingAs: "आप खेल रहे हैं",
                 youGoFirst: "आप पहले जाते हैं!",
                 aiGoesFirst: "एआई पहले जाता है!",
@@ -1427,8 +1427,7 @@
                 difficultyNames: {
                     '1': 'आसान',
                     '4': 'सामान्य',
-                    '6': 'कठिन',
-                    '9': 'असंभव'
+                    '8': 'कठिन'
                 },
                 yourTurn: "आपकी बारी",
                 aiIsThinking: "एआई सोच रहा है",
@@ -1458,7 +1457,6 @@
                 easy: "Fácil",
                 normal: "Normal",
                 difficult: "Difícil",
-                impossible: "Impossível",
                 youArePlayingAs: "Você está jogando como",
                 youGoFirst: "Você começa!",
                 aiGoesFirst: "A IA começa!",
@@ -1479,8 +1477,7 @@
                 difficultyNames: {
                     '1': 'Fácil',
                     '4': 'Normal',
-                    '6': 'Difícil',
-                    '9': 'Impossível'
+                    '8': 'Difícil'
                 },
                 yourTurn: "Sua vez",
                 aiIsThinking: "A IA está pensando",
@@ -1510,7 +1507,6 @@
                 easy: "Erraza",
                 normal: "Normala",
                 difficult: "Zaila",
-                impossible: "Ezinbestekoa",
                 youArePlayingAs: "Honekin jokatzen ari zara",
                 youGoFirst: "Zuk hasten du!",
                 aiGoesFirst: "AIak hasten du!",
@@ -1531,8 +1527,7 @@
                 difficultyNames: {
                     '1': 'Erraza',
                     '4': 'Normala',
-                    '6': 'Zaila',
-                    '9': 'Ezinbestekoa'
+                    '8': 'Zaila'
                 },
                 yourTurn: "Zure txanda",
                 aiIsThinking: "AIak pentsatzen ari da",
@@ -1562,7 +1557,6 @@
                 easy: "Легко",
                 normal: "Нормально",
                 difficult: "Складно",
-                impossible: "Неможливо",
                 youArePlayingAs: "Ви граєте за",
                 youGoFirst: "Ви ходите першими!",
                 aiGoesFirst: "ШІ ходить першим!",
@@ -1583,8 +1577,7 @@
                 difficultyNames: {
                     '1': 'Легко',
                     '4': 'Нормально',
-                    '6': 'Складно',
-                    '9': 'Неможливо'
+                    '8': 'Складно'
                 },
                 yourTurn: "Ваш хід",
                 aiIsThinking: "ШІ думає",
@@ -1911,11 +1904,8 @@
                 case '4':
                     maxDepth = 4;
                     break;
-                case '6':
-                    maxDepth = 6;
-                    break;
-                case '9':
-                    maxDepth = 9;
+                case '8':
+                    maxDepth = 8;
                     break;
                 default:
                     maxDepth = 4;
@@ -2014,14 +2004,13 @@
 
             if (value) {
                 const symbol = document.createElement('span');
-                symbol.className = `symbol ${value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold'}`;
+                symbol.className = `symbol ${value === 'X' ? 'text-red-500 font-bold' : 'text-blue-500 font-bold'} ${lastMove && lastMove.bigIndex === bigIndex && lastMove.smallIndex === smallIndex ? 'enhanced-bounce' : ''}`;
                 symbol.textContent = value;
 
                 if (lastMove && lastMove.bigIndex === bigIndex && lastMove.smallIndex === smallIndex) {
-                    symbol.classList.add('bounce');
                     setTimeout(() => {
-                        symbol.classList.remove('bounce');
-                    }, 500);
+                        symbol.classList.remove('enhanced-bounce');
+                    }, 700);
                 }
 
                 cell.appendChild(symbol);
@@ -2411,17 +2400,12 @@
             mediumOption1.selected = true;
 
             const mediumOption2 = document.createElement('option');
-            mediumOption2.value = '6';
+            mediumOption2.value = '8';
             mediumOption2.textContent = translations[lang].difficult;
-
-            const hardOption = document.createElement('option');
-            hardOption.value = '9';
-            hardOption.textContent = translations[lang].impossible;
 
             difficultyDropdown.appendChild(easyOption);
             difficultyDropdown.appendChild(mediumOption1);
             difficultyDropdown.appendChild(mediumOption2);
-            difficultyDropdown.appendChild(hardOption);
 
             difficultySelector.appendChild(difficultyLabel);
             difficultySelector.appendChild(difficultyDropdown);
