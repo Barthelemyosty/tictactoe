@@ -1,5 +1,3 @@
-aiWorker.js
-// aiWorker.js
 const WIN_PATTERNS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -10,13 +8,11 @@ const WIN_PATTERNS = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-
 function checkWinSmallBoard(board) {
   return WIN_PATTERNS.some(
     ([a, b, c]) => board[a] && board[a] === board[b] && board[a] === board[c]
   );
 }
-
 function checkWinBigBoard(winners) {
   return WIN_PATTERNS.some(
     ([a, b, c]) =>
@@ -26,18 +22,15 @@ function checkWinBigBoard(winners) {
       winners[a] === winners[c]
   );
 }
-
 function isBoardFull(board) {
   return board.every((cell) => cell !== null);
 }
-
 function isBigBoardFull(winners, boardStates) {
   if (winners.every((winner) => winner !== null)) return true;
   return !boardStates.some(
     (board, i) => winners[i] === null && board.some((cell) => cell === null)
   );
 }
-
 function findValidMoves(activeBoard, boardStates, smallBoardWinners) {
   const validMoves = [];
   if (activeBoard === null || smallBoardWinners[activeBoard] !== null) {
@@ -59,7 +52,6 @@ function findValidMoves(activeBoard, boardStates, smallBoardWinners) {
   }
   return validMoves;
 }
-
 function minimax(
   activeBoard,
   boardStates,
@@ -87,7 +79,6 @@ function minimax(
       playerSymbol
     );
   }
-
   const validMoves = findValidMoves(
     activeBoard,
     boardStates,
@@ -96,7 +87,6 @@ function minimax(
   if (validMoves.length === 0) {
     return 0;
   }
-
   if (isMaximizing) {
     let maxEval = -Infinity;
     for (const [bigIndex, smallIndex] of validMoves) {
@@ -161,7 +151,6 @@ function minimax(
     return minEval;
   }
 }
-
 function evaluatePosition(
   activeBoard,
   boardStates,
@@ -199,9 +188,11 @@ function evaluatePosition(
       aiSymbol,
       playerSymbol
     ) * 200;
+  if (activeBoard !== null && smallBoardWinners[activeBoard] !== null) {
+    score -= 500;
+  }
   return score;
 }
-
 function evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) {
   let score = 0;
   for (const pattern of WIN_PATTERNS) {
@@ -220,7 +211,6 @@ function evaluateBigBoard(smallBoardWinners, aiSymbol, playerSymbol) {
   }
   return score;
 }
-
 function evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) {
   let score = 0;
   if (smallBoardWinners[4] === aiSymbol) score += 200;
@@ -238,7 +228,6 @@ function evaluateStrategicPositions(smallBoardWinners, aiSymbol, playerSymbol) {
   }
   return score;
 }
-
 function evaluateSmallBoards(
   boardStates,
   smallBoardWinners,
@@ -270,7 +259,6 @@ function evaluateSmallBoards(
   }
   return score;
 }
-
 function evaluateNextBoardAdvantage(
   activeBoard,
   boardStates,
@@ -294,11 +282,10 @@ function evaluateNextBoardAdvantage(
     }
     if ([0, 2, 6, 8, 4].includes(activeBoard)) score += 10;
   } else {
-    score += 15;
+    score -= 100;
   }
   return score;
 }
-
 function evaluateThreats(
   boardStates,
   smallBoardWinners,
@@ -306,6 +293,8 @@ function evaluateThreats(
   playerSymbol
 ) {
   let score = 0;
+
+  // Vérifier les menaces dans les petites grilles
   for (let boardIdx = 0; boardIdx < 9; boardIdx++) {
     if (smallBoardWinners[boardIdx] === null) {
       const board = boardStates[boardIdx];
@@ -320,11 +309,41 @@ function evaluateThreats(
         const emptyCells = [a, b, c].filter(
           (idx) => board[idx] === null
         ).length;
-        if (aiCells === 2 && emptyCells === 1) score += 100;
-        if (playerCells === 2 && emptyCells === 1) score -= 150;
+
+        if (playerCells === 2 && emptyCells === 1) {
+          score -= 150; // Priorité élevée pour bloquer les menaces immédiates
+        }
+
+        // Vérifier si le blocage mène à une victoire adverse
+        if (aiCells === 2 && emptyCells === 1) {
+          const newBoard = [...board];
+          newBoard[c] = aiSymbol; // Supposons que l'IA bloque ici
+          if (checkWinSmallBoard(newBoard)) {
+            score -= 200; // Décourager le blocage si cela mène à une victoire adverse
+          }
+        }
       }
     }
   }
+
+  // Vérifier les menaces dans la grande grille
+  for (const pattern of WIN_PATTERNS) {
+    const [a, b, c] = pattern;
+    const aiCount = pattern.filter(
+      (idx) => smallBoardWinners[idx] === aiSymbol
+    ).length;
+    const playerCount = pattern.filter(
+      (idx) => smallBoardWinners[idx] === playerSymbol
+    ).length;
+    const emptyCount = pattern.filter(
+      (idx) => smallBoardWinners[idx] === null
+    ).length;
+
+    if (playerCount === 2 && emptyCount === 1) {
+      score -= 1000; // Priorité très élevée pour bloquer les menaces dans la grande grille
+    }
+  }
+
   return score;
 }
 
@@ -350,7 +369,6 @@ function evaluateTraps(
   }
   return score;
 }
-
 function findBestMoveWithMinimax(
   activeBoard,
   boardStates,
@@ -365,12 +383,10 @@ function findBestMoveWithMinimax(
     smallBoardWinners
   );
   if (validMoves.length === 0) return null;
-
   let bestScore = -Infinity;
-  let bestMove = null;
+  let bestMoves = [];
   let alpha = -Infinity;
   let beta = Infinity;
-
   for (const [bigIndex, smallIndex] of validMoves) {
     const newBoardStates = JSON.parse(JSON.stringify(boardStates));
     newBoardStates[bigIndex][smallIndex] = aiSymbol;
@@ -380,12 +396,13 @@ function findBestMoveWithMinimax(
     } else if (isBoardFull(newBoardStates[bigIndex])) {
       newSmallBoardWinners[bigIndex] = "draw";
     }
-
-    if (checkWinBigBoard(newSmallBoardWinners)) return [bigIndex, smallIndex];
-
+    if (checkWinBigBoard(newSmallBoardWinners)) {
+      return [bigIndex, smallIndex];
+    }
     let nextActiveBoard = smallIndex;
-    if (newSmallBoardWinners[smallIndex] !== null) nextActiveBoard = null;
-
+    if (newSmallBoardWinners[smallIndex] !== null) {
+      nextActiveBoard = null;
+    }
     const score = minimax(
       nextActiveBoard,
       newBoardStates,
@@ -397,19 +414,22 @@ function findBestMoveWithMinimax(
       aiSymbol,
       playerSymbol
     );
-
     if (score > bestScore) {
       bestScore = score;
-      bestMove = [bigIndex, smallIndex];
+      bestMoves = [[bigIndex, smallIndex]];
+    } else if (score === bestScore) {
+      bestMoves.push([bigIndex, smallIndex]);
     }
-
     alpha = Math.max(alpha, bestScore);
     if (beta <= alpha) break;
   }
-
-  return bestMove;
+  // Choisir un coup aléatoire parmi les meilleurs coups
+  if (bestMoves.length > 0) {
+    const randomIndex = Math.floor(Math.random() * bestMoves.length);
+    return bestMoves[randomIndex];
+  }
+  return null;
 }
-
 self.onmessage = function (e) {
   const {
     activeBoard,
